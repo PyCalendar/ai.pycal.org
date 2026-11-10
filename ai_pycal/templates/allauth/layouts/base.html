@@ -1,0 +1,4 @@
+{% extends "ai_pycal/base.html" %}
+{% comment %}The pages of allauth, such as signing out, in the layout of the site.{% endcomment %}
+{% block title %}{% block head_title %}{% endblock head_title %} · {{ site_name }}{% endblock %}
+{% block main %}<div class="card narrow">{% block content %}{% endblock content %}</div>{% block extra_body %}{% endblock extra_body %}{% endblock %}

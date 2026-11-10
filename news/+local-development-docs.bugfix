@@ -1,0 +1,2 @@
+Point documentation, changelog and error help links to the local make livehtml
+server when using make run. Both commands accept DOCS_PORT, defaulting to 8000.

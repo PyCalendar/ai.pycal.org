@@ -1,0 +1,51 @@
+/* The pycal colors of the site (ai_pycal/theme.py). */
+html[data-theme="light"] {
+  --pst-color-primary: #2b5b84;
+  --pst-color-secondary: #3b79aa;
+  --pst-color-link: #2b5b84;
+  --pst-color-link-hover: #1e3f5c;
+  --pst-color-accent: #ffd43b;
+}
+html[data-theme="dark"] {
+  --pst-color-primary: #8fbbe0;
+  --pst-color-secondary: #ffd43b;
+  --pst-color-link: #8fbbe0;
+  --pst-color-link-hover: #c6dcef;
+  --pst-color-accent: #ffd43b;
+}
+
+.github-app-form {
+  padding: 1.25rem;
+  margin-block: 1.5rem;
+  border: 1px solid var(--pst-color-border);
+  border-radius: .5rem;
+}
+.github-app-form label {
+  display: block;
+  margin-bottom: .35rem;
+  font-weight: 600;
+}
+.github-app-form label span, .github-app-form small {
+  font-weight: 400;
+  color: var(--pst-color-text-muted);
+}
+.github-app-form input:not([type="hidden"]) {
+  display: block;
+  width: 100%;
+  padding: .5rem;
+  color: var(--pst-color-text-base);
+  background: var(--pst-color-background);
+  border: 1px solid var(--pst-color-border);
+  border-radius: .25rem;
+}
+.github-app-form button {
+  padding: .6rem 1rem;
+  color: var(--pst-color-background);
+  background: var(--pst-color-primary);
+  border: 0;
+  border-radius: .25rem;
+  font-weight: 600;
+}
+.github-app-form button:disabled { opacity: .5; }
+.github-app-form [role="alert"] { color: var(--pst-color-danger); }
+.github-app-form pre { white-space: pre-wrap; overflow-wrap: anywhere; }

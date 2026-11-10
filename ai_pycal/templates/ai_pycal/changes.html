@@ -1,0 +1,9 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Changes" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "Changes of the agreement" %}</h1>
+<p>{{ version.source }}/{{ version.path }}: <a href="{{ previous.url }}"><code>{{ previous.short_commit }}</code></a> → <a href="{{ version.url }}"><code>{{ version.short_commit }}</code></a></p>
+<section class="card">{% include "ai_pycal/_diff.html" %}</section>
+<p><a class="button" href="{% url 'agreement' version.pk %}#sign">{% translate "Read and sign the new version" %}</a></p>
+{% endblock %}

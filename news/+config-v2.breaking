@@ -1,0 +1,4 @@
+Introduce configuration version 2.0.0 with ref instead of tag and pr.labels instead
+of pr.tags, plus mandatory agreements and policy choices. Version 1 configurations
+remain readable. Agreement versions are now identified by source repository, commit
+and path; existing signatures are preserved through new migrations.

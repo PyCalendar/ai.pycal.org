@@ -1,0 +1,14 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{{ repository }} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1><a href="{{ repository.url }}">{{ repository.full_name }}</a></h1>
+{% if not repository.active %}<p class="message message-warning">{% translate "The pull requests of this repository are not checked." %}</p>{% endif %}
+{% if repository.error_code %}<div class="message message-error" data-error="{{ repository.error_code }}">
+  <strong>{{ repository.error.title }}</strong> <code>{{ repository.error_detail }}</code>
+  <a href="{{ repository.error.docs_url }}">{% translate "How to solve it" %}</a></div>{% endif %}
+<p class="muted">{% translate "Configuration version" %} {{ repository.config_version|default:"–" }} · {% translate "commit" %} <code>{{ repository.config_commit|slice:":7"|default:"–" }}</code></p>
+<ul class="list">{% for agreement in agreements %}
+  <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.name }}</a> <span class="muted">{{ agreement.version.source }}/{{ agreement.version.path }} @ {{ agreement.ref|default:"default branch" }} (<code>{{ agreement.version.short_commit }}</code>)</span> → {% for label in agreement.labels %}<code>{{ label }}</code> {% endfor %}</li>
+{% empty %}<li>{% translate "No agreements were read yet." %}</li>{% endfor %}</ul>
+{% endblock %}

@@ -1,0 +1,3 @@
+Split GitHub App setup into complete manifest and manual registration tutorials.
+Explain browser submission, return-code exchange, credential configuration and
+installation, and link both paths from Setup when the site has no GitHub App.

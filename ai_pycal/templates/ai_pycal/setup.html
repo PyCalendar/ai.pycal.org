@@ -1,0 +1,61 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Setup" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "Set up a repository" %}</h1>
+<ol class="steps card">
+  <li>{% blocktranslate with docs=links.config_file %}Add the file <code>.github/agreements.yml</code> to the default branch of the repository, as described in <a href="{{ docs }}">the configuration file</a>.{% endblocktranslate %}</li>
+  <li>{% translate "Install the GitHub App on the account or organization and choose the repository. GitHub asks you to accept these permissions:" %}
+    <ul>{% for name, level in required %}<li><code>{{ name }}: {{ level }}</code></li>{% endfor %}</ul>
+    {% if install_url %}<p><a class="button" href="{{ install_url }}">{% translate "Install the GitHub App" %}</a></p>{% endif %}</li>
+  <li>{% translate "Add the repository below. Its open pull requests are checked and labelled." %}</li>
+  <li>{% translate "Enter an email address: when a new version of this site needs more permissions, you are asked there to accept them." %}</li>
+</ol>
+<p><a href="{{ links.admin_tutorial }}">{% translate "The whole tutorial" %}</a></p>
+
+{% if not configured %}
+<section class="card">
+  <h2>{% translate "Configure this site" %}</h2>
+  <p class="message message-error">{% translate "This site has no GitHub App yet." %}</p>
+  <p>{% blocktranslate %}For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these six values from your GitHub App:{% endblocktranslate %}</p>
+  <pre><code>GITHUB_APP_ID=
+GITHUB_APP_SLUG=
+GITHUB_CLIENT_ID=
+GITHUB_SECRET=
+GITHUB_WEBHOOK_SECRET=
+GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
+  <p>{% blocktranslate %}<code>GITHUB_SECRET</code> is the app's client secret. Save its private key as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</code> automatically; restart it after editing the file. It supplies localhost defaults for other required settings. Run <code>make livehtml</code> in another terminal for the local documentation.{% endblocktranslate %}</p>
+  <p>{% translate "If you run this site, choose one setup tutorial:" %}</p>
+  <ul>
+    <li><a href="{{ links.app_create }}">{% translate "Create a GitHub App using the documentation form" %}</a></li>
+    <li><a href="{{ links.app_manifest_tutorial }}">{% translate "Configure the site with the app manifest workflow" %}</a></li>
+    <li><a href="{{ links.app_manual_tutorial }}">{% translate "Register the GitHub App by hand" %}</a></li>
+  </ul>
+</section>
+{% endif %}
+{% if error %}<div class="message message-error" data-error="{{ error.code }}"><strong>{{ error.title }}</strong> <a href="{{ error.docs_url }}">{% translate "How to solve it" %}</a></div>{% endif %}
+
+{% for item in installations %}
+<section class="card installation">
+  <h2>{{ item.github.account.login }}</h2>
+  {% if item.missing %}<p class="message message-warning" data-missing-permissions>{% blocktranslate with missing=item.missing %}The app needs new permissions: {{ missing }}.{% endblocktranslate %} <a href="{{ item.github.html_url }}">{% translate "Accept them on GitHub" %}</a></p>{% endif %}
+  <form method="post" action="{% url 'notify_email' item.github.id %}" class="inline-form">{% csrf_token %}
+    <label for="email-{{ item.github.id }}">{% translate "Email for new permissions" %}</label>
+    <input id="email-{{ item.github.id }}" type="email" name="email" value="{{ item.stored.notify_email|default:'' }}">
+    <button class="button button-small">{% translate "Save" %}</button>
+  </form>
+  <table class="table"><tbody>
+  {% for repo in item.repositories %}<tr>
+    <td>{% if repo.stored %}<a href="/{{ repo.full_name }}/">{{ repo.full_name }}</a>{% else %}{{ repo.full_name }}{% endif %}</td>
+    <td>{% if repo.stored.active %}<span class="badge badge-success">{% translate "checked" %}</span>{% endif %}
+        {% if repo.stored.error_code %}<span class="badge badge-error" title="{{ repo.stored.error_detail }}">{{ repo.stored.error_code }}</span>{% endif %}</td>
+    <td>{% if repo.can_administer %}
+      <form method="post" action="{% url 'add_repository' item.github.id repo.id %}" class="inline">{% csrf_token %}<button class="button button-small">{% if repo.stored.active %}{% translate "Read again" %}{% else %}{% translate "Add" %}{% endif %}</button></form>
+      {% if repo.stored.active %}<form method="post" action="{% url 'remove_repository' item.github.id repo.id %}" class="inline">{% csrf_token %}<button class="button button-small button-quiet">{% translate "Remove" %}</button></form>{% endif %}
+    {% else %}<span class="muted">{% translate "needs the role admin or maintain" %}</span>{% endif %}</td>
+  </tr>{% empty %}<tr><td>{% translate "No repositories you can access." %}</td></tr>{% endfor %}
+  </tbody></table>
+</section>
+{% empty %}{% if configured and not error %}<p>{% translate "You manage no installation of the GitHub App yet." %}</p>{% endif %}
+{% endfor %}
+{% endblock %}

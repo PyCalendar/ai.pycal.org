@@ -1,0 +1,17 @@
+{% autoescape off %}Hello,
+
+a new version of {{ site_name }} needs more permissions for the GitHub App
+installed on {{ installation.account_login }}:
+
+{% for name, level in missing %}- {{ name }}: {{ level }}
+{% endfor %}
+Until they are accepted, pull requests can not be labelled and checked.
+Please accept the new permissions on GitHub:
+
+{{ installation.settings_url }}
+
+What the permissions are for:
+{{ docs_url }}reference/permissions.html
+
+You get this email as an administrator of the installation on {{ site_url }}.
+{% endautoescape %}

@@ -1,0 +1,13 @@
+.git
+.venv
+.prompts
+.claude
+.codex
+data
+docs
+tests
+example
+news
+__pycache__
+.env
+staticfiles

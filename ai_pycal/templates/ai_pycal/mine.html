@@ -1,0 +1,29 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "My agreements" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "My agreements" %}</h1>
+{% if not github %}<p class="message message-warning">{% translate "Your account is not connected to GitHub. Sign out and sign in with GitHub." %}</p>{% endif %}
+<section class="card">
+  <h2>{% translate "To sign" %}</h2>
+  {% if to_sign %}<ul class="list">{% for agreement in to_sign %}
+    <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.name }}</a> <span class="muted">{{ agreement.version.path }} @ <code>{{ agreement.version.short_commit }}</code></span></li>
+  {% endfor %}</ul>{% else %}<p>{% translate "Your open pull requests need no more agreements." %}</p>{% endif %}
+</section>
+<section class="card">
+  <h2>{% translate "My open pull requests" %}</h2>
+  {% if pulls %}<ul class="list">{% for pull in pulls %}
+    <li>{% if pull.all_signed %}<span class="badge badge-success">{% translate "signed" %}</span>{% else %}<span class="badge badge-warning">{% translate "to sign" %}</span>{% endif %}
+      <a href="/{{ pull.repository.full_name }}/pull/{{ pull.number }}/">{{ pull.repository.full_name }}#{{ pull.number }}</a> {{ pull.title }}</li>
+  {% endfor %}</ul>{% else %}<p>{% translate "The site knows no open pull requests of yours." %}</p>{% endif %}
+</section>
+<section class="card">
+  <h2>{% translate "Signed" %}</h2>
+  {% if signatures %}<table class="table"><thead><tr><th>{% translate "Agreement" %}</th><th>{% translate "Commit" %}</th><th>{% translate "Signed" %}</th></tr></thead><tbody>
+  {% for signature in signatures %}<tr>
+    <td><a href="{% url 'agreement' signature.version_id %}">{{ signature.version.source }}/{{ signature.version.path }}</a></td>
+    <td><a href="{{ signature.version.url }}"><code>{{ signature.version.short_commit }}</code></a></td>
+    <td><time datetime="{{ signature.signed|date:'c' }}">{{ signature.signed|date:"Y-m-d H:i" }} UTC</time></td>
+  </tr>{% endfor %}</tbody></table>{% else %}<p>{% translate "You have not signed an agreement yet." %}</p>{% endif %}
+</section>
+{% endblock %}

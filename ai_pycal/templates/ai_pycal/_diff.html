@@ -1,0 +1,2 @@
+<pre class="diff" aria-label="Changes">{% for line in changes %}<span class="diff-{{ line.kind }}">{% if line.kind == "added" %}+ {% elif line.kind == "removed" %}- {% else %}  {% endif %}{{ line.text }}</span>
+{% empty %}<span class="diff-same">  (no changes of the text)</span>{% endfor %}</pre>

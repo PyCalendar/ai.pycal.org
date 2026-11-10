@@ -1,0 +1,1 @@
+The first version: contributors sign agreements, such as AI policies and contributor license agreements, with their GitHub account; the GitHub App labels their pull requests and adds a check for each agreement.

@@ -1,0 +1,189 @@
+# todo.txt: the prompts as items. [x] done and tested; [ ] open.
+
+## 2026-11-06: a new service like community-insights
+
+- [x] New Django service like community-insights (settings by environment, errors package, Docker, docs)
+- [x] Sign in with GitHub only (allauth, SOCIALACCOUNT_ONLY, no passwords)
+- [x] Repositories are added only if they contain a configuration file (.github/agreements.yml)
+- [x] The configuration file is versioned (version: 1.0.0; major refused, newer minor tolerated)
+- [x] The example repository in example/ gets the configuration and two test agreements (uncommitted there)
+- [x] Agreements are signed by people only: page token, ticked box, typed handle, minimum time, no API
+- [x] Generic agreements: AI policies, CLAs, anything with name/tag/repository/path/pr.tags
+- [x] The bot labels the pull requests with pr.tags when signed, and removes them when not signed (any more)
+- [x] Two test agreements (example/agreements/ai-policy.md, cla.md; copies in tests/data/)
+- [x] It is obvious from the PR: one commit status per agreement, linking to a page of the PR
+- [x] Test: a new commit of the agreement needs a new signature, and the diff to the signed version is shown
+- [x] GitHub App: installed on the repository, asks for permissions (manifest: manage.py app_manifest)
+- [x] Missing permissions after an update: email to the administrators, once (manage.py check_permissions)
+- [x] Roles: contributor (handle only) and admin (installations, admin/maintain role, setup tutorial)
+- [x] Same agreement in several repositories is signed once (identified by commit and path)
+- [x] pycal colors (blue #3b79aa and yellow #ffd43b of the logo)
+- [x] Colors adjustable (COLOR_..., COLOR_DARK_..., EXTRA_CSS_URL) and favicon (FAVICON_FILE)
+- [x] Docker (Dockerfile, compose, nginx, health check)
+- [x] Tests (pytest, fake GitHub, no network)
+- [x] Read the Docs (.readthedocs.yml, Sphinx with pydata theme)
+- [x] Fine-grained errors with links to their documentation (57 classes, anchors checked)
+- [x] Commit hooks installed (pre-commit with ai-prompt-auto-commit v0.1.0) and prompts logged in .prompts/
+- [x] License: AGPL-3.0-or-later like community-insights; REUSE.toml
+- [x] Do not commit; wait for the review
+
+## Open: decisions of the person
+
+- [x] Rename `tag` to `ref` and `pr.tags` to `pr.labels` in version 2; keep version 1 readable.
+- [ ] Name of the Read the Docs project: assumed ai-pycal-org (DOCS in ai_pycal/errors/base.py)
+- [ ] Name of the GitHub App and its slug; who creates it and holds the private key
+- [ ] Image name ghcr.io/pycalendar/ai.pycal.org and a release workflow
+- [ ] Bots (dependabot, pre-commit-ci) can not sign: their pull requests stay pending.
+      Ignore bots, or a setting in the configuration file (version 1.1.0)?
+- [ ] Location of the configuration file: .github/agreements.yml — another name?
+- [ ] Should the checks be "pending" or "failure" when not signed?
+- [ ] Is the SIGN_MIN_SECONDS default of 3 seconds wanted?
+
+## Open: work
+
+- [ ] Docker image not built here: docker is not installed in this environment (make docker-test in CI)
+- [ ] Webhooks are handled synchronously; a queue if repositories with many agreements time out (GitHub waits 10 s)
+- [ ] Translations (texts are marked with gettext, no locale/ yet)
+- [ ] A switch for light/dark theme as in community-insights (now the system decides)
+- [ ] Browser tests with Playwright
+- [x] GitHub App user tokens expire after 8 hours: refresh them with the refresh token
+- [ ] Vale for the prose of the documentation, zizmor for the workflows
+
+## Library proposals
+
+- allauth: sign in with GitHub (used)
+- PyJWT[crypto]: the JWT of the GitHub App (used)
+- markdown-it-py with html off: safe Markdown of the agreements (used)
+- githubkit or PyGithub could replace ai_pycal/github/client.py; kept small with httpx for now
+
+## 2026-11-06: make dev and make run
+
+- [x] make dev sets up the development environment (Python, packages, git hooks, prompt recording, database)
+- [x] make run runs the site on http://localhost:5000 with the settings of .env (if it exists)
+- [x] Without a GitHub App, the sign-in page shows SignInNotConfigured instead of a 500 error
+
+## 2026-11-10: test
+
+- [x] Run make lint, make test, and make docs: passed; 339 tests, 95% coverage, no missing migrations.
+- [x] Check REUSE: passed offline with cached packages and --no-multiprocessing;
+      plain make reuse is blocked by the sandbox's multiprocessing restriction.
+
+## 2026-11-10: continue work
+
+- [x] Renew expiring GitHub user tokens with the stored refresh token, including tests, error pages and documentation.
+- [x] Validation: make lint, make test (380 passed, 95% coverage), make docs;
+      offline REUSE lint passed with --no-multiprocessing (345 files).
+
+## 2026-11-10: policies, choices and contributor pages
+
+- [x] Version the new configuration: ref, pr.labels, descriptions, mandatory agreements and choices.
+- [x] Support contributor defaults and PR-specific choices; sign only through human-facing forms.
+- [x] Add focused public PR pages, contributor profiles, projects and agreement histories.
+- [x] Add public contributor policy JSON status and SVG badges.
+- [x] Add verified-email preferences and actionable project problems in messages and email.
+- [x] Document changes and migration to configuration v2; add news and regression tests.
+- [x] make lint and make docs passed; make test passed 464 tests with 96% coverage
+      and no missing migrations. GitHub App configuration warning remains in this local environment.
+- [x] REUSE passed offline with --no-multiprocessing (402 files); plain make reuse
+      is blocked by the sandbox's multiprocessing restriction.
+- [x] Apply local SQLite migrations and smoke-test the home page, projects,
+      agreement histories and contributor page (all HTTP 200).
+
+## 2026-11-10: clarify contributor defaults
+
+- [x] Save choices on PRs: changing a project default affects future PRs only;
+      list existing PRs on the contributor page for individual changes.
+- [x] Apply and test new migrations while preserving existing references and signatures.
+
+## 2026-11-10: local documentation for make run
+
+- [x] Point make run documentation and error help links to make livehtml; share a configurable DOCS_PORT.
+- [x] Use DOCS_URL for permission-notification email links as well.
+- [x] Update docs and news; verify default/custom ports, .env precedence and documentation links.
+- [x] make lint, make test (470 passed, 96% coverage) and make docs passed;
+      permission-email regression tested separately after the full suite.
+- [x] REUSE passed offline with --no-multiprocessing (405 files); plain make reuse
+      is blocked by the sandbox's multiprocessing restriction.
+
+## 2026-11-10: user-facing agreement names
+
+- [x] Use Agreements in navigation and pages, Browse agreements on the front page, and matching user documentation.
+- [x] Test the public labels and run lint, tests, docs and REUSE: label tests, lint,
+      docs and single-process REUSE passed. make test: 471 passed, one failure because
+      example/.github/agreements.yml has mandatory: false for ai-policy while
+      tests/data/agreements.yml has mandatory: true. Preserve that separate example edit.
+      Plain make reuse remains blocked by the sandbox's multiprocessing restriction.
+
+## 2026-11-10: commit the example repository
+
+- [x] Validate and commit the example configuration and agreements with model attribution;
+      commit 9993cc0 in example/, preserving optional AI policy and mandatory CLA.
+      Example working tree clean, one commit ahead of origin/main; not pushed.
+      Parent repository remains uncommitted.
+- [x] Checks: lint and docs passed; make test: 471 passed, one known example/fixture
+      mismatch (optional AI policy in example versus mandatory in tests/data).
+      Single-process REUSE passed; plain make reuse is blocked by sandbox multiprocessing.
+
+## 2026-11-10: version agreements by their last file edit
+
+- [x] Resolve each agreement to its last file-changing commit within the configured ref, preserving signatures across unrelated pushes.
+- [x] Test file edits, unrelated commits, pinned refs, branches, deletion, invalid history
+      and recovery; update docs and news. Lint and docs passed. make test: 488 passed,
+      one known example/fixture mismatch; 96% coverage. Single-process REUSE passed
+      (409 files); plain make reuse is blocked by sandbox multiprocessing.
+
+## 2026-11-10: default local development environment
+
+- [x] Fill missing development settings after loading .env; preserve configured values.
+- [x] Generate the development manifest with localhost:5000 URLs and support custom ports.
+      Verified actual make app-manifest output and 11 focused development tests.
+- [x] Add regression tests, docs and news. Lint and docs passed. make test:
+      498 passed, one known example/fixture mismatch; 95% coverage.
+      Single-process REUSE passed (414 files); plain make reuse is blocked
+      by sandbox multiprocessing. Changes remain uncommitted.
+
+## 2026-11-10: local site configuration file
+
+- [x] Show the required GitHub App variables in Configure this site and provide a local .env example loaded by make run.
+- [x] Document copying, filling in and reloading .env; test the example with the development commands and run the required checks.
+      All 42 focused tests, lint and docs passed. make test: 511 passed, one known
+      example/fixture mismatch (optional AI policy in example versus mandatory in
+      tests/data); 95% coverage. Single-process REUSE passed (427 files); plain
+      make reuse is blocked by sandbox multiprocessing. Changes remain uncommitted.
+
+## 2026-11-10: split GitHub App setup tutorials
+
+- [x] Add separate complete tutorials for the manifest workflow and registering an app by hand.
+- [x] Explain manifest submission, redirect/code exchange, credential mapping, local URLs and installation verification.
+- [x] Link both paths from Setup and documentation, test the documented workflow offline, and run the required checks.
+      All 28 focused tests, lint and docs passed. make test: 508 passed, one known
+      example/fixture mismatch (optional AI policy in example versus mandatory in
+      tests/data); 95% coverage. Single-process REUSE passed (425 files); plain
+      make reuse is blocked by sandbox multiprocessing. Changes remain uncommitted.
+
+## 2026-11-10: documentation app registration form
+
+- [x] Add a usable documentation form to create personal or organization GitHub Apps with the required manifest and localhost defaults.
+- [x] Support site and webhook URLs, preserve registration state for the code exchange, and link the form from Setup and tutorials.
+- [x] Test the form without network requests and run lint, tests, docs and REUSE.
+      All 31 focused tests passed, including 11 offline JavaScript form checks.
+      Lint and docs passed. make test: 513 passed, one known example/fixture
+      mismatch; 95% coverage. Single-process REUSE passed (441 files); plain
+      make reuse and the Chromium preview are blocked by sandbox restrictions.
+      No registration was submitted to GitHub. Changes remain uncommitted.
+
+## 2026-11-10: completion sound
+
+- [x] Test playing a completion chime through the desktop audio service; paplay
+      succeeded outside the sandbox. In this conversation, play the chime when
+      all requested work is finished or when waiting for the person's input.
+      No global Codex configuration or application code was changed.
+
+## 2026-11-10: commit and push both repositories
+
+- [x] Record standing authorization to commit finished work and push both repositories without creating empty commits.
+- [x] Correct the fixture check to preserve the example's optional AI policy and rerun the required checks.
+      All 514 tests passed with 95% coverage. Lint, docs and all pre-commit checks
+      passed. Single-process REUSE passed (442 files); plain make reuse remains
+      blocked by sandbox multiprocessing restrictions.
+- [ ] Commit the main application work with model attribution, push both repositories and verify both branches are synchronized with their remotes.

@@ -1,0 +1,40 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{{ title }} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{{ title }}</h1>
+<p class="muted">{% blocktranslate with source=version.source path=version.path %}{{ path }} of {{ source }}{% endblocktranslate %} @ <a href="{{ version.url }}"><code>{{ version.short_commit }}</code></a>
+{% if required_by %} · {% translate "asked for by" %} {% for agreement in required_by %}<a href="/{{ agreement.repository.full_name }}/">{{ agreement.repository.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</p>
+
+{% if signature %}
+<p class="message message-success" data-signed>{% blocktranslate with date=signature.signed|date:"Y-m-d" %}You signed this agreement on {{ date }}.{% endblocktranslate %}</p>
+{% elif previous %}
+<section class="card changes" data-changes>
+  <h2>{% translate "Changed since you signed it" %}</h2>
+  <p>{% blocktranslate with commit=previous.short_commit %}You signed the version of commit {{ commit }}. This version needs a new signature. The changes:{% endblocktranslate %}
+    <a href="{% url 'changes' version.pk previous.pk %}">{% translate "Show on its own page" %}</a></p>
+  {% include "ai_pycal/_diff.html" %}
+</section>
+{% endif %}
+
+<article class="card agreement" id="agreement">{{ html }}</article>
+
+{% if not signature %}
+<section class="card sign" id="sign">
+  <h2>{% translate "Sign" %}</h2>
+  {% if user.is_authenticated and shown_token %}
+  <form method="post" action="{% url 'sign' version.pk %}">
+    {% csrf_token %}
+    <input type="hidden" name="shown" value="{{ shown_token }}">
+    <input type="hidden" name="next" value="{{ next }}">
+    <p><label><input type="checkbox" name="accept" value="yes" required> {% translate "I have read and accept this agreement." %}</label></p>
+    <p><label for="handle">{% translate "Type your GitHub handle to sign:" %}</label>
+      <input id="handle" name="handle" required autocomplete="off" spellcheck="false" placeholder="{{ github.login }}"></p>
+    <p><button class="button" type="submit">{% translate "Sign the agreement" %}</button></p>
+  </form>
+  {% else %}
+  <p><a class="button" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">{% translate "Sign in with GitHub to sign" %}</a></p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

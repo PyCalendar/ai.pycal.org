@@ -1,0 +1,57 @@
+{% load static i18n %}<!doctype html>{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{% block title %}{{ site_name }}{% endblock %}</title>
+<link rel="icon" href="{% url 'favicon' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>{{ theme_css }}</style>
+{% if extra_css_url %}<link rel="stylesheet" href="{{ extra_css_url }}">{% endif %}
+</head>
+<body>
+<a class="skip" href="#main">{% translate "Skip to the content" %}</a>
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="{% url 'home' %}"><img src="{% url 'favicon' %}" alt="" width="28" height="28"> {{ site_name }}</a>
+    <nav aria-label="{% translate "Menu" %}">
+      <ul class="menu">
+      {% if user.is_authenticated %}
+        {% if not focused %}
+        <li><a href="{% url 'projects' %}">Projects</a></li>
+        <li><a href="{% url 'histories' %}">Agreements</a></li>
+        <li><a href="{% url 'mine' %}">{% translate "My agreements" %}</a></li>
+        <li><a href="{% url 'setup' %}">{% translate "Setup" %}</a></li>
+        {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">{% translate "Admin" %}</a></li>{% endif %}
+        {% endif %}
+        <li class="handle">{% if github %}<a href="{% url 'contributor' github.login %}">@{{ github.login }}</a>{% else %}{{ user.username }}{% endif %}</li>
+        {% if not focused %}<li><a href="{% url 'profile' %}">Profile</a></li>{% endif %}
+        <li><form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button class="link-button">{% translate "Sign out" %}</button></form></li>
+      {% else %}
+        <li><a class="button button-accent" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">{% translate "Sign in with GitHub" %}</a></li>
+      {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+  {% if messages %}<div class="messages">{% for message in messages %}
+    <p class="message message-{{ message.level_tag }}" role="status">{{ message }}</p>
+  {% endfor %}</div>{% endif %}
+  {% if project_problems %}<div class="messages">{% for problem in project_problems %}<p class="message message-error" role="status"><a href="/project/{{ problem.repository.full_name }}/">{{ problem.repository.full_name }}</a>: {{ problem.error.title }} · {{ problem.detail }} <a href="{{ problem.error.docs_url }}">How to resolve</a></p>{% endfor %}</div>{% endif %}
+  {% block main %}{% endblock %}
+</main>
+{% if not focused %}<footer class="footer">
+  <div class="wrap footer-row">
+    <ul class="footer-links">
+      <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
+      <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
+      <li><a href="{{ links.source }}">{% translate "Source code" %}</a></li>
+      <li><a href="{{ links.issues }}">{% translate "Report a bug" %}</a></li>
+    </ul>
+    <small>AGPL-3.0-or-later</small>
+  </div>
+</footer>{% endif %}
+</body>
+</html>

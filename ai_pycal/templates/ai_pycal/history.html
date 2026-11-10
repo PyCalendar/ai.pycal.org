@@ -1,0 +1,2 @@
+{% extends "ai_pycal/base.html" %}
+{% block main %}<h1>{{ source }} · {{ path }}</h1><p>Agreement</p>{% for row in versions %}<section class="card"><h2><a href="{% url 'agreement' row.version.pk %}">{{ row.version.short_commit }}</a></h2><p>First fetched {{ row.version.fetched|date:"Y-m-d" }}</p><p>Currently used by: {% for project in row.projects %}<a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a> {% empty %}No current projects.{% endfor %}</p></section>{% endfor %}{% endblock %}

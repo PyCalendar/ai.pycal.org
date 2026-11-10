@@ -1,0 +1,5 @@
+{% extends "ai_pycal/base.html" %}
+{% block main %}<h1>Profile · @{{ github.login }}</h1><p><a href="{% url 'contributor' github.login %}">My public contributor page</a></p>
+<h2>Email</h2><ul>{% for address in addresses %}<li>{{ address.email }} · {% if address.verified %}verified{% else %}not verified{% endif %}</li>{% empty %}<li>No email address added.</li>{% endfor %}</ul><p><a href="{% url 'account_email' %}">Add, verify or remove email addresses</a></p><p>Project problem emails are sent only to verified addresses. Email addresses and preferences are private.</p>
+<form method="post">{% csrf_token %}<p><label><input type="checkbox" name="email_notifications" value="yes" {% if preferences.email_notifications %}checked{% endif %}> Email me when a project I maintain has an invalid setup or cannot write labels</label></p><button class="button">Save preferences</button></form>
+<h2>Projects I can write to</h2><ul>{% for project in projects %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% empty %}<li>No projects found. Install the GitHub App and visit Setup.</li>{% endfor %}</ul>{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "ai_pycal/base.html" %}
+{% block title %}{{ project.full_name }} · {{ site_name }}{% endblock %}
+{% block main %}<h1>{{ project.full_name }}</h1><p><a href="{{ project.url }}">Project on GitHub</a></p>
+{% if project.error %}<section class="message message-error" data-error="{{ project.error_code }}"><h2>{{ project.error.title }}</h2><p>{{ project.error_detail }}</p><a href="{{ project.error.docs_url }}">How to resolve</a></section>{% endif %}
+<h2>Agreements and signatures</h2>
+{% for policy in policies %}<section class="card"><h3><a href="{% url 'agreement' policy.version_id %}">{{ policy.name }}</a> · {% if policy.mandatory %}Mandatory{% else %}Optional{% endif %}</h3>{{ policy.description_html }}
+<p><a href="/agreements/history/{{ policy.version.source }}/{{ policy.version.path }}/">Agreement</a> · <code>{{ policy.version.short_commit }}</code></p>
+{% if policy.labels %}<p>PR labels: {% for label in policy.labels %}<code>{{ label }}</code> {% endfor %}</p>{% endif %}
+<ul>{% for signature in policy.signers %}<li><a href="{% url 'contributor' signature.login %}">@{{ signature.login }}</a> · {{ signature.signed|date:"Y-m-d H:i T" }}</li>{% empty %}<li>No signatures yet for this version.</li>{% endfor %}</ul></section>{% endfor %}
+{% if choices %}<h2>Policy choices</h2>{% if github %}<form method="post" action="/project/{{ project.full_name }}/default/">{% csrf_token %}{% endif %}
+{% for choice in choices %}<section class="card"><h3>{% if github %}<label><input type="radio" name="choice" value="{{ choice.key }}" required> {{ choice.name }}</label>{% else %}{{ choice.name }}{% endif %}{% if choice.default %} · Project default{% endif %}</h3>{{ choice.description_html }}<ul>{% for agreement in choice.agreements.all %}<li>{{ agreement.name }}</li>{% endfor %}</ul></section>{% endfor %}
+{% if github %}<button class="button">Set my default for future PRs</button><p>Existing PRs keep their choices.</p></form>{% endif %}{% endif %}
+<h2>Pull requests</h2><ul>{% for pull in project.pull_requests.all %}<li><a href="/project/{{ project.full_name }}/pulls/{{ pull.number }}/">#{{ pull.number }} · {{ pull.title }}</a> · @{{ pull.author_login }} · {% if pull.all_signed %}agreements signed{% else %}agreements pending{% endif %}</li>{% empty %}<li>No pull requests recorded.</li>{% endfor %}</ul>
+{% endblock %}

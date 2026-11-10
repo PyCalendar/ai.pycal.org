@@ -1,0 +1,3 @@
+Renew expiring GitHub user access tokens automatically before administrator
+requests, saving the rotated refresh token and expiry together. Explain when
+signing in again is needed and preserve stored credentials on temporary errors.

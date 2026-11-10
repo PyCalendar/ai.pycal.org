@@ -1,0 +1,115 @@
+[project]
+name = "ai-pycal-org"
+dynamic = ["version"]  # from the git tag, by hatch-vcs
+description = "Sign agreements, such as AI policies and contributor license agreements, for pull requests on GitHub"
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+requires-python = ">=3.13"
+dependencies = [
+    "Django>=5.2,<6",
+    "django-allauth[socialaccount]>=65",
+    "django-environ>=0.14.0",
+    "gunicorn>=23",
+    "httpx>=0.28.1",
+    "markdown-it-py>=3.0",
+    "PyJWT[crypto]>=2.10",
+    "PyYAML>=6.0.2",
+    "whitenoise>=6.9",
+]
+
+[build-system]
+requires = ["hatchling==1.27.0", "hatch-vcs==0.5.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { fallback_version = "0.0.0" }
+
+[tool.hatch.build.targets.wheel]
+packages = ["ai_pycal"]
+
+[tool.uv]
+package = false  # uv sync installs the dependencies only; the code runs from the checkout
+
+[project.urls]
+Homepage = "https://ai.pycal.org"
+Documentation = "https://ai-pycal-org.readthedocs.io/en/latest/"
+Source = "https://github.com/PyCalendar/ai.pycal.org"
+Changelog = "https://ai-pycal-org.readthedocs.io/en/latest/changelog.html"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx==9.1.0",
+    "pydata-sphinx-theme==0.23.0",
+    "sphinx-autobuild==2025.8.25",
+    "sphinx-copybutton==0.5.2",
+    "sphinx-design==0.7.0",
+    "sphinx-issues==6.0.0",
+    "sphinx-notfound-page==1.1.0",
+    "towncrier==26.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "ruff==0.16.10",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "ai_pycal.settings"
+pythonpath = ["."]
+testpaths = ["tests", "ai_pycal"]
+addopts = "--doctest-modules --ignore=docs --ignore=example --ignore=docker"
+filterwarnings = ["ignore:No directory at:UserWarning"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [".claude", ".codex", "ai_pycal/migrations", "docs/_build", "example"]
+
+[tool.ruff.lint]
+# D: every class and function has a docstring, in Google style
+select = ["E", "F", "I", "UP", "D"]
+ignore = ["D100", "D104", "D105", "D106", "D107"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "E501"]  # the YAML of the tests reads better on one line
+
+[tool.towncrier]
+directory = "news/"
+filename = "docs/changelog.rst"
+issue_format = "`#{issue} <https://github.com/PyCalendar/ai.pycal.org/issues/{issue}>`_"
+start_string = ".. towncrier release notes start\n"
+title_format = "{version} ({project_date})"
+underlines = ["-", "~", "`"]
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking changes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "New features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug fixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Maintenance"
+showcontent = true

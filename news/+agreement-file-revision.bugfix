@@ -1,0 +1,4 @@
+Record agreement versions using the commit that last changed the agreement file
+within its configured reference. Unrelated pushes to main, including configuration
+changes, retain existing versions and signatures. File edits create new versions;
+deleted files and invalid GitHub file history produce documented errors.

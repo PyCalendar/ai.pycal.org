@@ -1,0 +1,21 @@
+# The setup of https://ai-pycal-org.readthedocs.io/en/latest/how-to/run-docker.html
+#   cp .env.example .env    # then edit .env
+#   docker compose up -d
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  ai-pycal:
+    image: ghcr.io/pycalendar/ai.pycal.org:latest
+    # build: .   # to use the local code instead
+    ports:
+      - "5000:5000"
+    env_file: .env
+    volumes:
+      - ./data:/app/data   # the database, the secret key and the key of the GitHub App
+    restart: unless-stopped
+    logging: *logging

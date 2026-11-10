@@ -1,0 +1,2 @@
+{% extends "ai_pycal/base.html" %}
+{% block main %}<h1>Projects</h1><ul>{% for project in projects %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% empty %}<li>No projects yet.</li>{% endfor %}</ul>{% endblock %}

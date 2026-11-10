@@ -1,0 +1,25 @@
+# The agreements that contributors sign on https://ai.pycal.org before their pull
+# requests are labelled. The format: https://ai-pycal-org.readthedocs.io/en/latest/reference/config-file.html
+version: 2.0.0
+agreements:
+  ai-policy:
+    name: AI Policy (example)
+    description: Use AI responsibly and disclose assistance.
+    mandatory: true
+    # a tag, a branch or a commit; a tag keeps the agreement stable
+    ref: main
+    repository: https://github.com/PyCalendar/ai.pycal.org-example.git
+    path: agreements/ai-policy.md
+    pr:
+      labels: ai-policy-accepted
+  cla:
+    name: Contributor License Agreement (example)
+    description: Give the project permission to distribute your contributions.
+    mandatory: true
+    ref: main
+    repository: git@github.com:PyCalendar/ai.pycal.org-example.git
+    path: agreements/cla.md
+    pr:
+      labels:
+        - cla-signed
+        - agreements-signed

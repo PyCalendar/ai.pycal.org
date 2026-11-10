@@ -1,0 +1,3 @@
+Apply localhost development defaults after loading .env in make run, preserving
+explicit settings. Add make app-manifest using the same environment, with all
+manifest URLs defaulting to http://localhost:5000 and configurable PORT.
