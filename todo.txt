@@ -191,3 +191,11 @@
       origin/main in their respective repositories. Both remote commit IDs
       matched local HEAD, both working trees were clean, and both branches
       reported zero commits ahead or behind.
+
+## 2026-11-10: general completion-sound preference
+
+- [x] Replay the requested completion chime; desktop playback completed successfully.
+- [x] Save and verify the user-wide rule in ~/.codex/AGENTS.md: chime when a
+      long-running task and its verification finish, or when progress requires
+      the person's input; avoid sounds for quick replies and routine updates.
+      The rule is now included in the active instructions.
