@@ -1,10 +1,12 @@
-=================================================
-Configure the site with the app manifest workflow
-=================================================
+=====================
+App manifest CLI flow
+=====================
 
-Use this path to let GitHub create the app, private key, client secret and
-webhook secret from the site's manifest. You need a GitHub account allowed to
-register the app, a browser, and a checkout with ``uv`` installed.
+Use this flow to generate a manifest and a registration form from the command
+line, then exchange the return code for credentials. You need a GitHub account
+allowed to register the app, a browser, and a checkout with ``uv`` installed.
+For the recommended submission form or manual creation, return to
+:doc:`github-app`.
 
 The steps below configure a local site at ``http://localhost:5000``. The
 manifest workflow consists of generating JSON, submitting it to GitHub in a
@@ -72,15 +74,6 @@ step. The running container must already have the intended ``SITE_URL``.
 
 3. Submit the manifest in your browser
 ======================================
-
-The easiest option is :doc:`create-github-app`: fill in the app name and site
-URL, optionally choose an organization and forwarded webhook URL, and press
-**Create app on GitHub**. After confirming on GitHub, return to that page to
-save its registration state file and continue with :ref:`manifest-code-exchange`.
-This replaces the form-generation and form-server commands below.
-
-Command-line alternative
-------------------------
 
 Create a local registration form with the following command. Change
 ``organization`` to your organization's GitHub login to register the app
@@ -164,82 +157,12 @@ registration return to ``/``, not the OAuth callback under ``/accounts/``.
 Stop the form server with Ctrl-C before saving credentials into ``data``.
 Leave the site running until you have copied the return URL.
 
-Within one hour of starting registration, run the next command. Paste the
-return URL at its hidden prompt. It checks the saved state, exchanges the
-code with GitHub and writes the private key and a settings fragment without
-printing their contents:
-
-.. code-block:: shell
-
-   uv run python - <<'PY'
-   import getpass
-   import hmac
-   import os
-   from pathlib import Path
-   from urllib.parse import parse_qs, quote, urlsplit
-
-   import httpx
-
-   for filename in ("data/github-app.pem", "data/github-app-settings.env"):
-       if Path(filename).exists():
-           raise SystemExit("Credential files already exist; choose fresh filenames before conversion.")
-   returned = getpass.getpass("Paste the full manifest return URL: ")
-   parameters = parse_qs(urlsplit(returned).query)
-   expected = Path("data/github-app-state.txt").read_text()
-   states = parameters.get("state", [])
-   codes = parameters.get("code", [])
-   if len(states) != 1 or not hmac.compare_digest(states[0], expected):
-       raise SystemExit("The return state does not match this registration attempt.")
-   if len(codes) != 1:
-       raise SystemExit("The manifest return URL must contain one code.")
-   response = httpx.post(
-       "https://api.github.com/app-manifests/" + quote(codes[0], safe="") + "/conversions",
-       headers={"Accept": "application/vnd.github+json"},
-       timeout=20,
-   )
-   if response.status_code != 201:
-       raise SystemExit("GitHub rejected the conversion; check the code and one-hour deadline.")
-   credentials = response.json()
-   pem = credentials["pem"]
-   values = {
-       "GITHUB_APP_ID": credentials["id"],
-       "GITHUB_APP_SLUG": credentials["slug"],
-       "GITHUB_CLIENT_ID": credentials["client_id"],
-       "GITHUB_SECRET": credentials["client_secret"],
-       "GITHUB_WEBHOOK_SECRET": credentials["webhook_secret"],
-       "GITHUB_APP_PRIVATE_KEY_FILE": "data/github-app.pem",
-   }
-   os.umask(0o077)
-   with Path("data/github-app.pem").open("x") as output:
-       output.write(pem)
-   with Path("data/github-app-settings.env").open("x") as output:
-       output.write("".join(f"{key}={value}\n" for key, value in values.items()))
-   print("Saved data/github-app.pem and data/github-app-settings.env.")
-   PY
-
-Open ``data/github-app-settings.env`` in your editor and copy its six settings
-into ``.env``, replacing any existing values for those keys. These files
-contain credentials; ``data/`` and ``.env`` are excluded from version control.
-Keep the generated private key rather than generating another one on GitHub.
-
-For Docker, mount the key as ``/app/data/github-app.pem`` and change
-``GITHUB_APP_PRIVATE_KEY_FILE`` to that container path. The response fields
-map directly to the six environment settings shown in the example;
-``GITHUB_SECRET`` means the **client secret**, not the webhook secret or key.
+.. include:: ../_includes/github-app-manifest-exchange.rst
 
 5. Restart, sign in and install the app
 =======================================
 
-Stop the development server and run ``make run`` again so it reads the new
-credentials. For Docker, restart the service with its updated environment.
-There should be no ``ai_pycal.W001`` warning about missing GitHub App settings.
-
-Open http://localhost:5000/accounts/login/, sign in with GitHub, open **Setup**
-and press **Install the GitHub App**. Select the repositories to include.
-Registration creates the app; installation grants it access to repositories.
-Continue with :doc:`/tutorial/admin` to add ``.github/agreements.yml`` and
-activate a repository. Open a test PR and inspect the app's recent webhook
-deliveries on GitHub if it is not checked.
+.. include:: ../_includes/github-app-manifest-finish.rst
 
 The registration and conversion steps follow GitHub's `manifest workflow
 <https://docs.github.com/en/apps/sharing-github-apps/registering-a-github-app-from-a-manifest>`_

@@ -46,11 +46,9 @@ See the configuration reference for a full choices example and migration instruc
 
 ## Documentation
 
-- [Create a GitHub App with the registration form](https://ai-pycal-org.readthedocs.io/en/latest/how-to/create-github-app.html)
+- [Set up the GitHub App: submission form (recommended), CLI or manual](https://ai-pycal-org.readthedocs.io/en/latest/how-to/github-app.html)
 - [Sign an agreement](https://ai-pycal-org.readthedocs.io/en/latest/tutorial/sign.html)
 - [Set up a repository](https://ai-pycal-org.readthedocs.io/en/latest/tutorial/admin.html)
-- [Configure the site using the app manifest workflow](https://ai-pycal-org.readthedocs.io/en/latest/how-to/github-app-manifest.html)
-- [Register the GitHub App by hand](https://ai-pycal-org.readthedocs.io/en/latest/how-to/github-app-manual.html)
 - [The configuration file](https://ai-pycal-org.readthedocs.io/en/latest/reference/config-file.html)
 - [Run the site with Docker](https://ai-pycal-org.readthedocs.io/en/latest/how-to/run-docker.html)
 - [Change the colors and the icon](https://ai-pycal-org.readthedocs.io/en/latest/how-to/brand.html)

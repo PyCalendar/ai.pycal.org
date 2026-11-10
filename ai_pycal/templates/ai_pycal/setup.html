@@ -25,11 +25,11 @@ GITHUB_SECRET=
 GITHUB_WEBHOOK_SECRET=
 GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
   <p>{% blocktranslate %}<code>GITHUB_SECRET</code> is the app's client secret. Save its private key as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</code> automatically; restart it after editing the file. It supplies localhost defaults for other required settings. Run <code>make livehtml</code> in another terminal for the local documentation.{% endblocktranslate %}</p>
-  <p>{% translate "If you run this site, choose one setup tutorial:" %}</p>
+  <p><a href="{{ links.app_setup }}">{% translate "Choose a GitHub App setup flow" %}</a></p>
   <ul>
-    <li><a href="{{ links.app_create }}">{% translate "Create a GitHub App using the documentation form" %}</a></li>
-    <li><a href="{{ links.app_manifest_tutorial }}">{% translate "Configure the site with the app manifest workflow" %}</a></li>
-    <li><a href="{{ links.app_manual_tutorial }}">{% translate "Register the GitHub App by hand" %}</a></li>
+    <li><a href="{{ links.app_create }}">{% translate "App manifest with the submission form (recommended)" %}</a></li>
+    <li><a href="{{ links.app_manifest_tutorial }}">{% translate "App manifest CLI flow" %}</a></li>
+    <li><a href="{{ links.app_manual_tutorial }}">{% translate "Manual app creation" %}</a></li>
   </ul>
 </section>
 {% endif %}

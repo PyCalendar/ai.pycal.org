@@ -59,8 +59,8 @@ Set the six ``GITHUB_*`` values from your development GitHub App, and save its
 private key at the path named by ``GITHUB_APP_PRIVATE_KEY_FILE``.
 ``GITHUB_SECRET`` is the client secret; ``GITHUB_WEBHOOK_SECRET`` is the
 separate webhook secret. Choose a unique ``SITE_NAME`` before creating the
-app. Follow :doc:`github-app-manifest` or :doc:`github-app-manual` to obtain
-the credentials.
+app. Start at :doc:`github-app` to choose the recommended submission form,
+manifest CLI flow or manual app creation and obtain the credentials.
 
 Run ``make run`` after saving the file, or stop and restart it if it is
 already running. Both ``make run`` and ``make app-manifest`` load ``.env``
@@ -101,8 +101,9 @@ cause, are in :file:`AGENTS.md`.
 Run the site with a GitHub App
 ==============================
 
-Create a second GitHub App for development using either
-:doc:`github-app-manifest` or :doc:`github-app-manual`, with
-``http://localhost:5000`` as address, and put its settings into :file:`.env`. GitHub can not send webhooks to
+Create a second GitHub App for development by following :doc:`github-app`.
+Use the recommended submission form or choose the CLI or manual flow, with
+``http://localhost:5000`` as address, and put its settings into :file:`.env`.
+GitHub can not send webhooks to
 ``localhost``: forward them with `smee.io <https://smee.io>`_ or the ``gh
 webhook forward`` extension of the GitHub CLI.

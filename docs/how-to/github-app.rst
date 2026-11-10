@@ -1,5 +1,5 @@
 =====================
-Create the GitHub App
+Set up the GitHub App
 =====================
 
 This guide is for the person running an instance of ai.pycal.org. Create one
@@ -7,27 +7,40 @@ GitHub App for the site, then configure the site with that app's credentials.
 Maintainers using an already configured site can go straight to
 :doc:`/tutorial/admin` to install its app on a repository.
 
-Choose a setup tutorial
-=======================
+Choose a setup flow
+====================
+
+**Start with the submission form.** It is the recommended default: enter your
+site details and submit the manifest directly from the documentation.
+Choose the CLI flow if you prefer to generate the registration form locally,
+or create the app manually if you want to fill in GitHub's settings yourself.
 
 .. toctree::
    :maxdepth: 1
+   :hidden:
 
-   github-app-manifest
    create-github-app
+   github-app-manifest
    github-app-manual
 
-- :doc:`github-app-manifest` walks through generating the manifest, submitting
-  it in a browser, receiving GitHub's temporary code and exchanging that code
-  for the app's credentials.
-- :doc:`github-app-manual` walks through the GitHub registration form, choosing
-  permissions, generating secrets and a private key, and configuring the site.
+.. list-table:: Setup flows
+   :header-rows: 1
 
-To submit a manifest directly from your browser, use :doc:`create-github-app`.
+   * - Flow
+     - What you do
+   * - :doc:`create-github-app` **(recommended default)**
+     - Fill in the documentation form, confirm on GitHub and exchange the
+       return code. Permissions, events and callback URLs are filled in for you.
+   * - :doc:`github-app-manifest`
+     - Generate the manifest and registration form with commands, submit the
+       local form and exchange the return code.
+   * - :doc:`github-app-manual`
+     - Fill in GitHub's registration settings, permissions and events yourself,
+       then generate a client secret and private key.
 
-Both paths end with signing in and installing the app from the site's **Setup**
-page. They cover the local ``http://localhost:5000`` setup and explain which
-URLs and file paths change for a deployment.
+Each page is a complete walkthrough, from preparing ``.env`` to signing in
+and installing the app from the site's **Setup** page. All three cover the
+local ``http://localhost:5000`` setup and explain the changes for deployment.
 
 New permissions
 ===============

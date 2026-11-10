@@ -147,13 +147,17 @@ def test_without_a_github_app(client, settings, maintainer):
     assert "This site has no GitHub App yet." in client.get("/setup/").content.decode()
 
 
-def test_unconfigured_setup_links_to_both_complete_app_tutorials(client, settings, maintainer):
+def test_unconfigured_setup_links_to_common_page_and_three_flows(client, settings, maintainer):
     settings.GITHUB_APP_ID = ""
     settings.DOCS_URL = "http://localhost:8000/"
     client.force_login(maintainer)
     page = client.get("/setup/").content.decode()
-    assert "Configure the site with the app manifest workflow" in page
-    assert "Register the GitHub App by hand" in page
+    assert "Choose a GitHub App setup flow" in page
+    assert 'href="http://localhost:8000/how-to/github-app.html"' in page
+    form = page.index("App manifest with the submission form (recommended)")
+    cli = page.index("App manifest CLI flow")
+    manual = page.index("Manual app creation")
+    assert form < cli < manual
     assert 'href="http://localhost:8000/how-to/github-app-manifest.html"' in page
     assert 'href="http://localhost:8000/how-to/github-app-manual.html"' in page
     assert 'href="http://localhost:8000/how-to/create-github-app.html"' in page

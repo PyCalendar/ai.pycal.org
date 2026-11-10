@@ -7,9 +7,9 @@ sign agreements. You need the role *admin* or *maintain* of the repository, and
 the right to install GitHub Apps on its account or organization.
 
 The site must already have its GitHub App configured. If you run the site,
-first follow either :doc:`/how-to/github-app-manifest` or
-:doc:`/how-to/github-app-manual`. Then return here to install that app and
-activate repositories.
+first go to :doc:`/how-to/github-app` and choose the recommended submission
+form, manifest CLI flow or manual creation. Then return here to install
+that app and activate repositories.
 
 1. Write the agreements
 =======================

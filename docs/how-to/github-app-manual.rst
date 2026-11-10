@@ -1,11 +1,13 @@
-===============================
-Register the GitHub App by hand
-===============================
+===================
+Manual app creation
+===================
 
 Use this path to fill in GitHub's app registration form yourself, generate a
 client secret and private key, and put the resulting values into the site.
 This walkthrough uses ``http://localhost:5000`` and does not use the manifest
 submission or conversion steps.
+For the recommended submission form and the manifest CLI flow, return to
+:doc:`github-app`.
 
 1. Prepare the site and choose an app owner
 ===========================================

@@ -36,6 +36,7 @@ def site(request) -> dict:
             "documentation": docs,
             "sign": f"{docs}tutorial/sign.html",
             "admin_tutorial": f"{docs}tutorial/admin.html",
+            "app_setup": f"{docs}how-to/github-app.html",
             "app_manifest_tutorial": f"{docs}how-to/github-app-manifest.html",
             "app_create": f"{docs}how-to/create-github-app.html",
             "app_manual_tutorial": f"{docs}how-to/github-app-manual.html",

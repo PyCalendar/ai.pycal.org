@@ -15,12 +15,19 @@ import pytest
 from ai_pycal.github.permissions import manifest
 
 GUIDE = Path(__file__).parents[2] / "docs/how-to/github-app-manifest.rst"
-EXAMPLES = [
-    textwrap.dedent(code)
-    for code in re.findall(
-        r"^   uv run python - <<'PY'\n(.*?)^   PY$", GUIDE.read_text(), re.M | re.S
-    )
-]
+
+
+def documented_examples(guide):
+    text = guide.read_text()
+    for include in re.findall(r"^\.\. include:: (.+)$", text, re.M):
+        text = text.replace(f".. include:: {include}", (guide.parent / include).read_text())
+    return [
+        textwrap.dedent(code)
+        for code in re.findall(r"^   uv run python - <<'PY'\n(.*?)^   PY$", text, re.M | re.S)
+    ]
+
+
+EXAMPLES = documented_examples(GUIDE)
 
 
 @pytest.fixture
@@ -33,10 +40,10 @@ def registration_files(tmp_path, monkeypatch):
     return data, specification
 
 
-def execute_example(number):
+def execute_example(number, guide=GUIDE):
     previous = os.umask(0o022)
     try:
-        exec(compile(EXAMPLES[number], str(GUIDE), "exec"), {})
+        exec(compile(documented_examples(guide)[number], str(guide), "exec"), {})
     finally:
         os.umask(previous)
 
@@ -63,8 +70,9 @@ def test_registration_form_preserves_manifest_and_escapes_html(registration_file
     assert len(state) >= 32
 
 
+@pytest.mark.parametrize("guide", [GUIDE, GUIDE.with_name("create-github-app.rst")])
 def test_credentials_example_checks_state_and_maps_github_fields(
-    registration_files, monkeypatch, capsys
+    registration_files, monkeypatch, capsys, guide
 ):
     data, _ = registration_files
     execute_example(0)
@@ -87,7 +95,7 @@ def test_credentials_example_checks_state_and_maps_github_fields(
         return httpx.Response(201, json=credentials)
 
     monkeypatch.setattr(httpx, "post", convert)
-    execute_example(1)
+    execute_example(-1, guide)
     assert len(calls) == 1
     assert calls[0][0] == "https://api.github.com/app-manifests/temporary-code/conversions"
     assert calls[0][1]["headers"]["Accept"] == "application/vnd.github+json"

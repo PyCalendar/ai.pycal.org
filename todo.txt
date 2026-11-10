@@ -199,3 +199,13 @@
       long-running task and its verification finish, or when progress requires
       the person's input; avoid sounds for quick replies and routine updates.
       The rule is now included in the active instructions.
+
+## 2026-11-10: three app setup flows
+
+- [x] Provide a common developer entry page with three separate complete flows: submission form (recommended default), manifest CLI and manual creation.
+- [x] Keep each manifest page complete through credential exchange and installation, and link developer docs and Setup to the common page.
+- [x] Test the documentation and navigation and run the required checks.
+      All 32 focused tests and 515 full-suite tests passed (95% coverage).
+      Lint and docs passed; the built common page, three complete guides and
+      developer links were verified. Single-process REUSE passed; plain
+      make reuse remains blocked by sandbox multiprocessing restrictions.

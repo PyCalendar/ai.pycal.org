@@ -1,20 +1,50 @@
-=================
-Create GitHub App
-=================
+=====================================
+App manifest with the submission form
+=====================================
 
-Fill in this form and press **Create app on GitHub**. GitHub opens in a new
-tab, where you review the name and confirm **Create GitHub App**. You must be
-signed in to an account allowed to register the app for the chosen owner.
+**Recommended default.** Use this form to register an app with the project's
+required permissions and events. You need a GitHub account allowed to register
+the app, a browser, and a checkout with ``uv`` installed to save credentials.
+For the other setup flows, return to :doc:`github-app`.
 
-The form includes this project's required permissions and events. Callback,
-installation and registration-return URLs are derived from your site URL.
-For local development, keep ``http://localhost:5000`` and start ``make run``
-before creating the app. For a deployed site, enter its public HTTPS address.
+1. Prepare the site
+====================
+
+From the checkout:
+
+.. code-block:: shell
+
+   make dev
+   test -f .env || cp .env.development.example .env
+   mkdir -p data
+
+Set your app name and site address in ``.env``. Use the same values in the form:
+
+.. code-block:: shell
+
+   SITE_NAME=your-unique-development-app-name
+   SITE_URL=http://localhost:5000
+
+Choose a distinct app name of at most 34 characters. For a deployed site,
+use its public HTTPS address; see :doc:`run-docker`. Start ``make run`` in
+another terminal so the site can receive GitHub's registration return.
+
+2. Submit the manifest
+=======================
+
+Fill in the form and press **Create app on GitHub**. GitHub opens in a new
+tab, where you review the name and confirm **Create GitHub App**. Leave the
+organization empty for your personal account, or enter its GitHub login.
+
+Callback, installation and registration-return URLs are derived from your site
+URL. For local testing, supply a public forwarded webhook URL: GitHub cannot
+deliver webhooks directly to localhost. Leave that field empty to use the
+site address plus ``/github/webhook/`` for a deployed site.
 
 .. github-app-form::
 
-Finish configuring the site
-===========================
+3. Save the return URL and registration state
+=============================================
 
 #. GitHub returns the new tab to your site with ``code`` and ``state`` in the
    URL. Copy that **whole return URL**. The homepage currently does not exchange
@@ -23,21 +53,26 @@ Finish configuring the site
    Save the downloaded ``github-app-state.txt`` as
    ``data/github-app-state.txt`` in your checkout. Keep it unchanged and do not
    replace a state file from another registration that is still in progress.
-#. Within one hour, follow :ref:`manifest-code-exchange` to exchange the code
-   and save the app's private key and settings. That command checks your saved
-   state against the return URL.
-#. Copy the generated settings into ``.env`` and restart ``make run``. Use the
-   same site address and app name here and in ``.env``. Then sign in and install
-   the app from **Setup**.
 
 If this tab is lost before you save the state, use a fresh registration attempt;
 the code-exchange check requires the state of the attempt you submitted.
 The form sends configuration to GitHub; it does not install the app or save
 credentials to your checkout.
 
-For the complete walkthrough, including the command-line alternative, see
-:doc:`github-app-manifest`. For registration without a manifest, see
-:doc:`github-app-manual`.
+.. _manifest-form-code-exchange:
+
+4. Exchange the code and configure credentials
+==============================================
+
+Keep the saved state file at ``data/github-app-state.txt``. The following
+command checks it against the return URL before exchanging the code.
+
+.. include:: ../_includes/github-app-manifest-exchange.rst
+
+5. Restart, sign in and install the app
+=======================================
+
+.. include:: ../_includes/github-app-manifest-finish.rst
 
 This form follows GitHub's `manifest registration examples
 <https://docs.github.com/en/apps/sharing-github-apps/registering-a-github-app-from-a-manifest#examples>`_.

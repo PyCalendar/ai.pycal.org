@@ -60,7 +60,7 @@ html_js_files = [("github-app-form.js", {"defer": "defer"})]
 
 autodoc_member_order = "bysource"
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
-exclude_patterns = ["_build"]
+exclude_patterns = ["_build", "_includes"]
 
 linkcheck_ignore = [
     r"http://localhost",
