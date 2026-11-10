@@ -1,0 +1,3 @@
+Add an optional Playwright Chromium suite and CI job for setup-guide navigation,
+native manifest submission and validation, and downloading the matching state.
+All browser requests are intercepted; the tests never register a GitHub App.

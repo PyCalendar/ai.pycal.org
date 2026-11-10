@@ -5,7 +5,7 @@
     <input id="app-site-url" type="url" value="http://localhost:5000" required aria-describedby="app-site-help">
     <small id="app-site-help">The site that make run serves. For deployment, use its public HTTPS URL.</small></p>
   <p><label for="app-organization">GitHub organization <span>(optional)</span></label>
-    <input id="app-organization" type="text" maxlength="39" pattern="[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?" autocomplete="off" placeholder="Leave empty for your personal account" aria-describedby="app-owner-help">
+    <input id="app-organization" type="text" maxlength="39" pattern="[A-Za-z0-9]([A-Za-z0-9\-]*[A-Za-z0-9])?" autocomplete="off" placeholder="Leave empty for your personal account" aria-describedby="app-owner-help">
     <small id="app-owner-help">Enter an organization login, such as PyCalendar, to register the app there.</small></p>
   <p><label for="app-webhook-url">Forwarded webhook URL <span>(optional)</span></label>
     <input id="app-webhook-url" type="url" placeholder="https://your-forwarder.example/github/webhook/" aria-describedby="app-webhook-help">
@@ -19,5 +19,5 @@
     <summary>Review the generated manifest</summary>
     <pre id="app-manifest-preview"></pre>
   </details>
-  <noscript><p>This form needs JavaScript to assemble the manifest. Use the command-line alternative in the manifest tutorial if JavaScript is disabled.</p></noscript>
+  <noscript><p>This form needs JavaScript to assemble the manifest. Use the <a href="github-app-manifest.html">App manifest CLI flow</a> when JavaScript is disabled.</p></noscript>
 </form>

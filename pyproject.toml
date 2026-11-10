@@ -51,6 +51,9 @@ docs = [
 ]
 
 [dependency-groups]
+browser = [
+    "playwright>=1.65.0",
+]
 dev = [
     "pre-commit",
     "pytest",
@@ -63,7 +66,7 @@ dev = [
 DJANGO_SETTINGS_MODULE = "ai_pycal.settings"
 pythonpath = ["."]
 testpaths = ["tests", "ai_pycal"]
-addopts = "--doctest-modules --ignore=docs --ignore=example --ignore=docker"
+addopts = "--doctest-modules --ignore=docs --ignore=example --ignore=docker --ignore=tests/browser"
 filterwarnings = ["ignore:No directory at:UserWarning"]
 
 [tool.ruff]

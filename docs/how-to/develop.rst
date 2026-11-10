@@ -98,6 +98,26 @@ configuration difference and that the agreement texts match.
 The rules for the code, such as one class per module and one error class per
 cause, are in :file:`AGENTS.md`.
 
+Browser tests
+==============
+
+The optional Chromium suite exercises the three setup guides and the manifest
+submission form, including browser validation, popup submission and the state
+download. Install the browser once, then run the suite:
+
+.. code-block:: shell
+
+   uv run --group browser playwright install --with-deps --only-shell chromium
+   make browser-test
+
+``make browser-test`` builds the documentation and runs ``tests/browser``.
+These tests are separate from ``make test`` so the regular suite needs no
+browser installation. Browser and package installation need network access;
+the tests themselves serve built pages through intercepted requests and block
+external requests. GitHub registration POSTs receive fake responses, including
+those opened in a new tab; no app is created. CI runs the suite in its browser
+job, and its Docker job builds and checks the container with ``make docker-test``.
+
 Run the site with a GitHub App
 ==============================
 

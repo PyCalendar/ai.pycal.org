@@ -45,6 +45,10 @@ lint: .venv  ## Check the code style
 	@uv run ruff check .
 	@uv run ruff format --check .
 
+.PHONY: browser-test
+browser-test: .venv docs  ## Test the setup docs and manifest form in Chromium without external requests
+	@uv run --group browser pytest -o addopts= tests/browser
+
 .PHONY: docs
 docs:  ## Build the documentation; warnings fail
 	@uv run --extra docs sphinx-build -W -n --keep-going -b html docs docs/_build/html

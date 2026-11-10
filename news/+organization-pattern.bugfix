@@ -1,0 +1,3 @@
+Fix the organization-name pattern so modern browsers reject invalid logins
+before submitting the GitHub App manifest. Link directly to the CLI setup guide
+when JavaScript is disabled.

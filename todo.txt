@@ -41,11 +41,11 @@
 
 ## Open: work
 
-- [ ] Docker image not built here: docker is not installed in this environment (make docker-test in CI)
+- [x] Docker build and health check verified in CI run 42858732414 (make docker-test passed).
 - [ ] Webhooks are handled synchronously; a queue if repositories with many agreements time out (GitHub waits 10 s)
 - [ ] Translations (texts are marked with gettext, no locale/ yet)
 - [ ] A switch for light/dark theme as in community-insights (now the system decides)
-- [ ] Browser tests with Playwright
+- [x] Browser tests with Playwright for setup-guide navigation, native registration, validation and state download (11 Chromium tests).
 - [x] GitHub App user tokens expire after 8 hours: refresh them with the refresh token
 - [ ] Vale for the prose of the documentation, zizmor for the workflows
 
@@ -209,3 +209,14 @@
       Lint and docs passed; the built common page, three complete guides and
       developer links were verified. Single-process REUSE passed; plain
       make reuse remains blocked by sandbox multiprocessing restrictions.
+
+## 2026-11-10: continue with browser verification
+
+- [x] Check recent CI and repository status; verify the Docker build and health check passed.
+- [x] Add browser tests for setup-guide navigation, native manifest submission, validation and state download without external requests.
+      Fixed a browser-invalid organization pattern and linked the CLI guide
+      from the no-JavaScript fallback. All 11 Chromium tests passed.
+- [x] Document and run the browser suite and required checks.
+      All 515 unit tests passed with 95% coverage. Lint and docs passed.
+      Single-process REUSE passed; plain make reuse remains blocked by sandbox
+      multiprocessing restrictions. Added an independent browser job in CI.
