@@ -186,4 +186,8 @@
       All 514 tests passed with 95% coverage. Lint, docs and all pre-commit checks
       passed. Single-process REUSE passed (442 files); plain make reuse remains
       blocked by sandbox multiprocessing restrictions.
-- [ ] Commit the main application work with model attribution, push both repositories and verify both branches are synchronized with their remotes.
+- [x] Commit the main application work with model attribution, push both repositories and verify both branches are synchronized with their remotes.
+      Application commit 7c34736 and example commit 9993cc0 were pushed to
+      origin/main in their respective repositories. Both remote commit IDs
+      matched local HEAD, both working trees were clean, and both branches
+      reported zero commits ahead or behind.
