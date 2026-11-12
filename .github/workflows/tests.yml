@@ -133,9 +133,24 @@ jobs:
             echo "::notice::No SENCHO_TOKEN in the environment ai.pycal.org: the image is pushed, nothing is deployed."
             exit 0
           fi
-          curl --request POST --fail-with-body \
-            --url "https://sencho.pycal.org/api/stacks/${SENCHO_STACK}/update" \
-            --header "Authorization: Bearer $SENCHO_TOKEN"
+          # Sencho answers 409 while the stack is deploying, such as by hand: wait and retry
+          for attempt in $(seq 10); do
+            status=$(curl --silent --output response.json --write-out "%{http_code}" \
+              --request POST \
+              --url "https://sencho.pycal.org/api/stacks/${SENCHO_STACK}/update" \
+              --header "Authorization: Bearer $SENCHO_TOKEN")
+            cat response.json; echo
+            if [ "$status" = 409 ]; then
+              echo "::notice::The stack is deploying already; try $attempt of 10, waiting 30 s."
+              sleep 30
+              continue
+            fi
+            [ "$status" -lt 300 ] && exit 0
+            echo "::error::Sencho answered $status"
+            exit 1
+          done
+          echo "::error::The stack was still deploying after 10 tries."
+          exit 1
         env:
           SENCHO_TOKEN: ${{ secrets.SENCHO_TOKEN }}
           SENCHO_STACK: ${{ vars.SENCHO_STACK || 'ai-pycal' }}
