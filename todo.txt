@@ -30,7 +30,7 @@
 ## Open: decisions of the person
 
 - [x] Rename `tag` to `ref` and `pr.tags` to `pr.labels` in version 2; keep version 1 readable.
-- [ ] Name of the Read the Docs project: assumed ai-pycal-org (DOCS in ai_pycal/errors/base.py)
+- [x] Documentation on GitHub Pages at docs.ai.pycal.org instead of Read the Docs (2026-11-12)
 - [ ] Name of the GitHub App and its slug; who creates it and holds the private key
 - [ ] Image name ghcr.io/pycalendar/ai.pycal.org and a release workflow: CI pushes it now; is the
       Sencho stack name ai-pycal and the environment ai.pycal.org with SENCHO_TOKEN right?
@@ -265,4 +265,11 @@
 - [x] .env.example: every setting, ordered by importance, explained, with links to the reference.
 - [x] Settings reference lists every environment variable; a test checks code, reference and example.
 - [x] Checked in the built image with Chromium: dropdown, 404 page and About page (dark).
-- [ ] Commit, push and check that CI pushes the image.
+- [x] Commit, push and check that CI pushes the image (fixed a test that saw the GITHUB_* variables of CI).
+
+## 2026-11-12: documentation on GitHub Pages under docs.ai.pycal.org
+
+- [x] CI jobs docs (build, upload) and pages (deploy for main); actions pinned; the image waits for the docs.
+- [x] All links (settings, errors, docs, README, example) point to https://docs.ai.pycal.org/; .readthedocs.yml removed.
+- [x] GitHub Pages enabled in the repository: source GitHub Actions, custom domain docs.ai.pycal.org.
+- [ ] The person: DNS record docs.ai.pycal.org CNAME pycalendar.github.io, then Enforce HTTPS.

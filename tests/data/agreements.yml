@@ -1,5 +1,5 @@
 # The agreements that contributors sign on https://ai.pycal.org before their pull
-# requests are labelled. The format: https://ai-pycal-org.readthedocs.io/en/latest/reference/config-file.html
+# requests are labelled. The format: https://docs.ai.pycal.org/reference/config-file.html
 version: 2.0.0
 agreements:
   ai-policy:

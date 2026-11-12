@@ -134,7 +134,7 @@ emails are written to the log.
    Default ``https://github.com/PyCalendar/ai.pycal.org``.
 ``DOCS_URL``
    The documentation, for the footer and the links of the errors and emails.
-   Default ``https://ai-pycal-org.readthedocs.io/en/latest/``; ``make run``
+   Default ``https://docs.ai.pycal.org/``; ``make run``
    uses the local ``make livehtml`` server at ``http://localhost:8000/``. Set
    ``DOCS_PORT`` on both commands to use a different local port.
 ``COLOR_<NAME>``, ``COLOR_DARK_<NAME>``

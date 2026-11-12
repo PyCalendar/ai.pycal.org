@@ -47,7 +47,7 @@ def test_the_image_is_pushed_after_all_checks_and_deployed():
     jobs = re.findall(r"^  ([\w-]+):\n", text, re.MULTILINE)
     push = text.split("\n  push:\n")[1].split("\n  deploy:\n")[0]
     needed = set(re.search(r"needs: \[(.*)\]", push).group(1).replace(" ", "").split(","))
-    assert needed == set(jobs) - {"push", "deploy"}
+    assert needed == set(jobs) - {"push", "deploy", "pages"}
     assert "if: github.event_name == 'push'" in push
     assert "platforms: linux/amd64,linux/arm64" in push
     assert "make docker-scan" in text
@@ -68,3 +68,13 @@ def test_every_make_target_of_the_ci_exists():
     text = (ROOT / ".github" / "workflows" / "tests.yml").read_text()
     for target in re.findall(r"run: make ([\w-]+)", text):
         assert re.search(rf"^{target}:", makefile, re.MULTILINE), target
+
+
+def test_the_documentation_is_published_on_github_pages():
+    text = (ROOT / ".github" / "workflows" / "tests.yml").read_text().split("\njobs:\n")[1]
+    pages = text.split("\n  pages:\n")[1]
+    assert "github.ref == 'refs/heads/main'" in pages
+    assert "actions/deploy-pages@" in pages
+    assert "path: docs/_build/html" in text
+    for path in ("ai_pycal/settings.py", "ai_pycal/errors/base.py", "docs/conf.py", ".env.example"):
+        assert "https://docs.ai.pycal.org/" in (ROOT / path).read_text(), path

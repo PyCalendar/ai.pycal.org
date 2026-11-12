@@ -68,7 +68,7 @@ def test_permission_email_uses_the_configured_documentation(old_installation, ma
     call_command("check_permissions")
     assert len(mailoutbox) == 1
     assert "http://localhost:8123/reference/permissions.html" in mailoutbox[0].body
-    assert "readthedocs.io" not in mailoutbox[0].body
+    assert "docs.ai.pycal.org" not in mailoutbox[0].body
 
 
 def test_a_new_installation_with_too_few_permissions(client, example, mailoutbox, db):

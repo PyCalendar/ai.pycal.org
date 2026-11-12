@@ -1,4 +1,4 @@
-# The setup of https://ai-pycal-org.readthedocs.io/en/latest/how-to/run-docker.html
+# The setup of https://docs.ai.pycal.org/how-to/run-docker.html
 #   cp .env.example .env    # then edit .env
 #   docker compose up -d
 

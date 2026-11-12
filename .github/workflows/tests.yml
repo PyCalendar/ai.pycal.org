@@ -1,6 +1,7 @@
 # The checks of every change. The Docker image is pushed to ghcr.io only if all of them pass:
 # "latest" for every commit of main; "stable", "1.2.3" and "1.2" for a tag v1.2.3; each for
 # linux/amd64 and linux/arm64. Then Sencho updates the stack of the site (docs/how-to/run-docker.rst).
+# The documentation of main is published on GitHub Pages: https://docs.ai.pycal.org/
 name: tests
 
 on:
@@ -66,7 +67,7 @@ jobs:
 
   push:
     name: Push the Docker image to ghcr.io
-    needs: [test, checks, docker, browser]
+    needs: [test, checks, docker, browser, docs]
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
     permissions:
@@ -135,3 +136,36 @@ jobs:
         env:
           SENCHO_TOKEN: ${{ secrets.SENCHO_TOKEN }}
           SENCHO_STACK: ${{ vars.SENCHO_STACK || 'ai-pycal' }}
+
+  docs:
+    name: Build the documentation for GitHub Pages
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          enable-cache: false
+      - run: make docs
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/_build/html
+
+  pages:
+    name: Publish the documentation on docs.ai.pycal.org
+    needs: [docs, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

@@ -29,7 +29,7 @@ extensions = [
     "sphinx_issues",
 ]
 
-html_baseurl = "https://ai-pycal-org.readthedocs.io/en/latest/"
+html_baseurl = "https://docs.ai.pycal.org/"
 issues_github_path = "PyCalendar/ai.pycal.org"
 
 html_theme = "pydata_sphinx_theme"

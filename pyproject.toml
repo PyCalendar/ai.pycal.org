@@ -34,9 +34,9 @@ package = false  # uv sync installs the dependencies only; the code runs from th
 
 [project.urls]
 Homepage = "https://ai.pycal.org"
-Documentation = "https://ai-pycal-org.readthedocs.io/en/latest/"
+Documentation = "https://docs.ai.pycal.org/"
 Source = "https://github.com/PyCalendar/ai.pycal.org"
-Changelog = "https://ai-pycal-org.readthedocs.io/en/latest/changelog.html"
+Changelog = "https://docs.ai.pycal.org/changelog.html"
 
 [project.optional-dependencies]
 docs = [

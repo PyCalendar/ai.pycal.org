@@ -169,7 +169,7 @@ THEME = Theme.from_environment(dict(os.environ))
 FAVICON_FILE = env("FAVICON_FILE", default="")
 EXTRA_CSS_URL = env("EXTRA_CSS_URL", default="")
 SOURCE_URL = env("SOURCE_URL", default="https://github.com/PyCalendar/ai.pycal.org")
-DOCS_URL = env("DOCS_URL", default="https://ai-pycal-org.readthedocs.io/en/latest/")
+DOCS_URL = env("DOCS_URL", default="https://docs.ai.pycal.org/")
 # the extra links of the footer and the About page: Title=URL, separated by commas
 FOOTER_LINKS = parse_footer_links(env("FOOTER_LINKS", default=DEFAULT_FOOTER_LINKS))
 

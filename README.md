@@ -1,6 +1,6 @@
 # ai.pycal.org
 
-[![Documentation](https://readthedocs.org/projects/ai-pycal-org/badge/?version=latest)](https://ai-pycal-org.readthedocs.io/en/latest/)
+[![Documentation](https://img.shields.io/badge/docs-docs.ai.pycal.org-3b79aa)](https://docs.ai.pycal.org/)
 ![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)
 
 Contributors sign the agreements a project asks of them, such as an **AI
@@ -46,13 +46,13 @@ See the configuration reference for a full choices example and migration instruc
 
 ## Documentation
 
-- [Set up the GitHub App: submission form (recommended), CLI or manual](https://ai-pycal-org.readthedocs.io/en/latest/how-to/github-app.html)
-- [Sign an agreement](https://ai-pycal-org.readthedocs.io/en/latest/tutorial/sign.html)
-- [Set up a repository](https://ai-pycal-org.readthedocs.io/en/latest/tutorial/admin.html)
-- [The configuration file](https://ai-pycal-org.readthedocs.io/en/latest/reference/config-file.html)
-- [Run the site with Docker](https://ai-pycal-org.readthedocs.io/en/latest/how-to/run-docker.html)
-- [Change the colors and the icon](https://ai-pycal-org.readthedocs.io/en/latest/how-to/brand.html)
-- [Errors](https://ai-pycal-org.readthedocs.io/en/latest/reference/errors.html)
+- [Set up the GitHub App: submission form (recommended), CLI or manual](https://docs.ai.pycal.org/how-to/github-app.html)
+- [Sign an agreement](https://docs.ai.pycal.org/tutorial/sign.html)
+- [Set up a repository](https://docs.ai.pycal.org/tutorial/admin.html)
+- [The configuration file](https://docs.ai.pycal.org/reference/config-file.html)
+- [Run the site with Docker](https://docs.ai.pycal.org/how-to/run-docker.html)
+- [Change the colors and the icon](https://docs.ai.pycal.org/how-to/brand.html)
+- [Errors](https://docs.ai.pycal.org/reference/errors.html)
 
 ## Development
 
