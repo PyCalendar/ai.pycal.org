@@ -48,7 +48,7 @@ GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
   </form>
   <table class="table"><tbody>
   {% for repo in item.repositories %}<tr>
-    <td>{% if repo.stored %}<a href="/{{ repo.full_name }}/">{{ repo.full_name }}</a>{% else %}{{ repo.full_name }}{% endif %}</td>
+    <td>{% if repo.stored %}<a href="/repository/{{ repo.full_name }}/">{{ repo.full_name }}</a>{% else %}{{ repo.full_name }}{% endif %}</td>
     <td>{% if repo.stored.active %}<span class="badge badge-success">{% translate "checked" %}</span>{% endif %}
         {% if repo.stored.error_code %}<span class="badge badge-error" title="{{ repo.stored.error_detail }}">{{ repo.stored.error_code }}</span>{% endif %}</td>
     <td>{% if repo.can_administer %}

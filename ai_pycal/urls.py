@@ -78,12 +78,16 @@ urlpatterns = [
     path("accounts/github/login/callback/", setup.github_callback, name="github_callback_install"),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),
-    path("<str:owner>/<str:repo>/", setup.repository, name="repository"),
+    path("repository/<str:owner>/<str:repo>/", setup.repository, name="repository"),
     path(
-        "<str:owner>/<str:repo>/pull/<int:number>/",
+        "repository/<str:owner>/<str:repo>/pull/<int:number>/",
         policies.pull,
         name="pull_request",
     ),
+    # The older addresses, without "repository/", which links may still use; last, so that
+    # every page of the site takes precedence over an owner of the same name.
+    path("<str:owner>/<str:repo>/", setup.older_address),
+    path("<str:owner>/<str:repo>/pull/<int:number>/", setup.older_address),
 ]
 
 handler400 = "ai_pycal.views.errors.bad_request"

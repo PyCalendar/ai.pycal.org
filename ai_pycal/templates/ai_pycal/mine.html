@@ -14,7 +14,7 @@
   <h2>{% translate "My open pull requests" %}</h2>
   {% if pulls %}<ul class="list">{% for pull in pulls %}
     <li>{% if pull.all_signed %}<span class="badge badge-success">{% translate "signed" %}</span>{% else %}<span class="badge badge-warning">{% translate "to sign" %}</span>{% endif %}
-      <a href="/{{ pull.repository.full_name }}/pull/{{ pull.number }}/">{{ pull.repository.full_name }}#{{ pull.number }}</a> {{ pull.title }}</li>
+      <a href="/repository/{{ pull.repository.full_name }}/pull/{{ pull.number }}/">{{ pull.repository.full_name }}#{{ pull.number }}</a> {{ pull.title }}</li>
   {% endfor %}</ul>{% else %}<p>{% translate "The site knows no open pull requests of yours." %}</p>{% endif %}
 </section>
 <section class="card">

@@ -4,7 +4,7 @@
 {% block main %}
 <h1>{{ title }}</h1>
 <p class="muted">{% blocktranslate with source=version.source path=version.path %}{{ path }} of {{ source }}{% endblocktranslate %} @ <a href="{{ version.url }}"><code>{{ version.short_commit }}</code></a>
-{% if required_by %} · {% translate "asked for by" %} {% for agreement in required_by %}<a href="/{{ agreement.repository.full_name }}/">{{ agreement.repository.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</p>
+{% if required_by %} · {% translate "asked for by" %} {% for agreement in required_by %}<a href="/repository/{{ agreement.repository.full_name }}/">{{ agreement.repository.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</p>
 
 {% if signature %}
 <p class="message message-success" data-signed>{% when signature.signed as signed %}{% blocktranslate %}You signed this agreement {{ signed }}.{% endblocktranslate %}</p>

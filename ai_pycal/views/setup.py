@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -204,6 +205,35 @@ def repository_or_404(full_name: str) -> Repository:
     if repository is None:
         raise RepositoryNotFound(full_name)
     return repository
+
+
+def older_address(request, owner: str, repo: str, number: int | None = None):
+    """The older addresses of repositories, without ``repository/``, for links that use them.
+
+    Only repositories that the site knows are redirected; any other address of two parts,
+    such as ``/accounts/signup/``, is not found.
+
+    Args:
+        request: The request.
+        owner: The owner of the repository.
+        repo: The name of the repository.
+        number: The number of a pull request, or None.
+
+    Returns:
+        A permanent redirect to ``/repository/...``.
+
+    Raises:
+        Http404: The site knows no such repository.
+    """
+    if not Repository.objects.filter(full_name__iexact=f"{owner}/{repo}").exists():
+        raise Http404(f"{owner}/{repo}")
+    kwargs = {"owner": owner, "repo": repo}
+    if number is None:
+        target = reverse("repository", kwargs=kwargs)
+    else:
+        target = reverse("pull_request", kwargs={**kwargs, "number": number})
+    query = request.META.get("QUERY_STRING", "")
+    return redirect(f"{target}?{query}" if query else target, permanent=True)
 
 
 def repository(request, owner: str, repo: str):

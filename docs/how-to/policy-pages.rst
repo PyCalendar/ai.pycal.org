@@ -35,7 +35,8 @@ administrator action can sign for someone else.
 
 This page and the login flow returning to it omit the footer and extra menu
 links. The site name at the top left returns to the home page; login is at
-the top right. Existing ``/<owner>/<repo>/pull/<number>/`` links still work.
+the top right. ``/repository/<owner>/<repo>/pull/<number>/`` shows the same page; the older
+``/<owner>/<repo>/pull/<number>/`` links redirect there.
 
 Profile, email and project problems
 ===================================

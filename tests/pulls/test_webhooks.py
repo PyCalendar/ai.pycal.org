@@ -143,7 +143,7 @@ def test_a_broken_configuration_keeps_the_last_agreements(client, github, reposi
     repository.refresh_from_db()
     assert repository.error_code == "ConfigVersionUnsupported"
     assert repository.required_agreements.count() == 2
-    page = client.get(f"/{REPOSITORY}/").content.decode()
+    page = client.get(f"/repository/{REPOSITORY}/").content.decode()
     assert 'data-error="ConfigVersionUnsupported"' in page
     assert "ai_pycal.errors.config_file.ConfigVersionUnsupported" in page
 

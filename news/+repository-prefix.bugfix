@@ -1,0 +1,2 @@
+Repository pages are at ``/repository/<owner>/<repo>/`` so they cannot clash
+with pages of the site; the older addresses redirect for known repositories.

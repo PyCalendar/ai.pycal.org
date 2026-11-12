@@ -85,3 +85,23 @@ def test_documentation_navigation_and_error_help_share_the_configured_url(client
     page = response.content.decode()
     assert f"{base}reference/errors.html#ai_pycal.errors.github.SignInNotConfigured" in page
     assert f"{base}how-to/github-app.html" in page
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        ("/{name}/", "/repository/{name}/"),
+        ("/{name}/pull/3/", "/repository/{name}/pull/3/"),
+        ("/{name}/?x=1", "/repository/{name}/?x=1"),
+    ],
+)
+def test_the_older_repository_addresses_redirect(client, repository, old, new):
+    name = repository.full_name
+    response = client.get(old.format(name=name))
+    assert response.status_code == 301
+    assert response["Location"] == new.format(name=name)
+
+
+@pytest.mark.parametrize("page", ["/accounts/signup/", "/nobody/nothing/", "/a/b/pull/1/"])
+def test_other_addresses_of_two_parts_are_not_found(client, page):
+    assert client.get(page).status_code == 404
