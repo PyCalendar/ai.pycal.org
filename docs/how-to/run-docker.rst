@@ -66,8 +66,8 @@ pushed image.
 #. Push to ``main``. The job *Deploy to Sencho* calls
    ``https://sencho.pycal.org/api/stacks/<stack>/update``; Sencho pulls the
    image and waits until the container is healthy. While the stack is deploying
-   already, such as by hand, Sencho answers 409: the job waits 30 seconds and tries
-   again, up to 10 times. Without ``SENCHO_TOKEN``,
+   already, such as by hand, Sencho answers 409, and passing errors of the server
+   answer 5xx: the job waits 30 seconds and tries again, up to 10 times. Without ``SENCHO_TOKEN``,
    the job pushes the image and deploys nothing.
 
 The health check sends the first host of ``ALLOWED_HOSTS``: with only
