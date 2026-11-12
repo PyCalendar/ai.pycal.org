@@ -42,6 +42,9 @@ def app_settings(settings, private_key):
     settings.GITHUB_APP_SLUG = "ai-pycal-test"
     settings.GITHUB_APP_PRIVATE_KEY = private_key
     settings.GITHUB_WEBHOOK_SECRET = WEBHOOK_SECRET
+    # most tests read what a webhook did from the answer; tests/pulls/test_webhook_queue.py
+    # tests the queue that the site uses by default
+    settings.WEBHOOK_QUEUE = False
     settings.SITE_URL = "https://ai.example.org"
     settings.STATUS_CONTEXT = "ai.example.org"
     settings.SIGN_MIN_SECONDS = 0

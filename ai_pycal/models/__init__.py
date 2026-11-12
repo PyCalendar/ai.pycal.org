@@ -14,6 +14,7 @@ from .repository import Repository
 from .required_agreement import RequiredAgreement
 from .signature import Signature
 from .todo_dismissal import TodoDismissal
+from .webhook_delivery import WebhookDelivery
 
 __all__ = [
     "AgreementUse",
@@ -30,4 +31,5 @@ __all__ = [
     "TodoDismissal",
     "LogTrigger",
     "LogAction",
+    "WebhookDelivery",
 ]

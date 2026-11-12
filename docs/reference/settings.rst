@@ -186,6 +186,14 @@ These have good defaults in the image.
    the agreements and the pull requests are read again, which makes up for
    webhooks lost while the site was down. The first update runs a minute after
    the start. Default ``6``.
+``WEBHOOK_QUEUE``
+   ``true`` (the default): the site answers a webhook as soon as its signature
+   is checked, and the worker ``manage.py process_webhooks``, which the
+   container starts, handles the webhooks in the order they came. GitHub waits
+   at most 10 seconds for an answer; the queue makes the time of the work
+   independent of that, and webhooks wait in the database while the site
+   restarts. ``false`` handles them before the answer, for a site without the
+   worker.
 ``LOG_LEVEL``
    ``DEBUG``, ``INFO``, ``WARNING`` or ``ERROR``. Default ``INFO``.
 ``DEBUG``

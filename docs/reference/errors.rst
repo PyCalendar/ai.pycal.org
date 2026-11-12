@@ -4,8 +4,10 @@ Errors
 
 The site shows an error with its title, what happened and a link to its
 description here. Each description says what the error means and how to solve
-it. The webhooks answer GitHub with the same name, title and link, shown in the
-recent deliveries of the GitHub App. An error the site does not know is shown
+it. Webhooks that the site refuses, such as without a valid signature, answer
+GitHub with the same name, title and link, shown in the recent deliveries of
+the GitHub App. Accepted webhooks are answered with ``202`` at once and
+handled afterwards; their errors are in the global log. An error the site does not know is shown
 as :class:`~ai_pycal.errors.base.UnexpectedError`: please report it.
 
 Pages of HTTP errors

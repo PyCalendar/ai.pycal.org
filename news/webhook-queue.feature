@@ -1,0 +1,1 @@
+Webhooks are answered as soon as their signature is checked and handled afterwards by a worker, in the order they came: GitHub's time limit no longer cuts the work short, and webhooks wait in the database while the site restarts (``WEBHOOK_QUEUE``).

@@ -168,6 +168,9 @@ STATUS_CONTEXT = env("STATUS_CONTEXT", default=SITE_NAME)
 SIGN_MIN_SECONDS = env.float("SIGN_MIN_SECONDS", default=3)
 # hours a shown agreement can be signed in
 SIGN_MAX_HOURS = env.float("SIGN_MAX_HOURS", default=24)
+# webhooks are answered at once and handled by manage.py process_webhooks; False handles them
+# while GitHub waits for the answer, such as without the worker
+WEBHOOK_QUEUE = env.bool("WEBHOOK_QUEUE", default=True)
 
 # Branding: docs/how-to/brand.rst
 THEME = Theme.from_environment(dict(os.environ))

@@ -1,58 +1,63 @@
 """The webhook of the GitHub App."""
 
 import json
-import logging
 
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from ai_pycal.actions import Trigger, WebhookTrigger
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementError, WebhookError, WebhookPayloadInvalid
 from ai_pycal.github.webhook_signature import verify
-from ai_pycal.services.webhook_handler import WebhookHandler
-
-log = logging.getLogger(__name__)
+from ai_pycal.services.webhook_queue import WebhookQueue
 
 
 @csrf_exempt  # GitHub signs the webhooks instead
 @require_POST
 def webhook(request):
-    """Receive a webhook of GitHub, check its signature and handle it.
+    """Receive a webhook of GitHub, check its signature and queue it.
+
+    The signature is checked at once, so that GitHub sees refused deliveries. The work is
+    done afterwards by ``manage.py process_webhooks``, so that GitHub's time limit for the
+    answer does not matter; with ``WEBHOOK_QUEUE = False`` it is done before the answer.
 
     Args:
         request: The request of GitHub.
 
     Returns:
-        JSON with what was done, or the error with its link to the documentation.
+        JSON with the queued delivery or what was done, or the error with its link to the
+        documentation.
     """
     event = request.headers.get("X-GitHub-Event", "")
     delivery = request.headers.get("X-GitHub-Delivery", "")[:100]
-    # every webhook is a trigger of the log; refused ones only in the global log
-    with Trigger.start("webhook", f"Webhook {event}", delivery=delivery, public=False) as trigger:
+    try:
+        verify(
+            settings.GITHUB_WEBHOOK_SECRET,
+            request.body,
+            request.headers.get("X-Hub-Signature-256"),
+        )
         try:
-            verify(
-                settings.GITHUB_WEBHOOK_SECRET,
-                request.body,
-                request.headers.get("X-Hub-Signature-256"),
-            )
-            try:
-                payload = json.loads(request.body)
-            except ValueError as error:
-                raise WebhookPayloadInvalid(str(error)) from error
-            done = WebhookHandler(event, payload).handle()
-        except WebhookError as error:
-            trigger.summary = f"Refused webhook {event}: {error.code}"[:300]
-            trigger.save(update_fields=["summary"])
+            payload = json.loads(request.body)
+        except ValueError as error:
+            raise WebhookPayloadInvalid(str(error)) from error
+        if not isinstance(payload, dict):
+            raise WebhookPayloadInvalid(type(payload).__name__)
+    except WebhookError as error:
+        # refused webhooks are triggers of the global log only
+        with Trigger.start(
+            "webhook", f"Refused webhook {event}: {error.code}", delivery=delivery, public=False
+        ):
+            pass
+        return error_json(error)
+    if settings.WEBHOOK_QUEUE:
+        queued = WebhookQueue.add(event, delivery, payload)
+        return JsonResponse({"queued": queued.pk}, status=202)
+    done, error = WebhookQueue.handle(event, delivery, payload)
+    if error is not None:
+        if isinstance(error, WebhookError):
             return error_json(error)
-        except AgreementError as error:
-            # GitHub answered with an error or the configuration is broken: the pull request
-            # is checked again on its next change; the delivery shows why
-            log.warning("webhook: %s %s", error.code, error)
-            WebhookTrigger.complete(trigger, event, payload, error.code)
-            return error_json(error, status=200)
-        WebhookTrigger.complete(trigger, event, payload, done)
+        return error_json(error, status=200)  # the delivery shows why
     return JsonResponse({"done": done})
 
 
