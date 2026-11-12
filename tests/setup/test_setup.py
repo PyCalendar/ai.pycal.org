@@ -41,20 +41,23 @@ def test_an_installation_of_someone_else(client, example, maintainer):
     assert error_of(response) == "InstallationNotYours"
 
 
-def test_an_expired_sign_in(client, example, maintainer):
-    maintainer.socialaccount_set.get().socialtoken_set.update(token="expired")
+def test_no_token_of_the_person_is_needed(client, example, maintainer):
+    """The app reads the role of the person itself: a sign-in without a stored token works."""
+    maintainer.socialaccount_set.get().socialtoken_set.all().delete()
     client.force_login(maintainer)
-    response = client.get("/setup/installed/?installation_id=1")
-    assert response.status_code == 401
-    assert error_of(response) == "GitHubLoginExpired"
     page = client.get("/setup/").content.decode()
-    assert 'data-error="GitHubLoginExpired"' in page
+    assert "data-error" not in page and "PyCalendar" in page
+    assert client.get("/setup/installed/?installation_id=1").status_code == 302
 
 
-def test_contributors_without_a_token_see_the_tutorial(client, example, alice):
+def test_contributors_manage_no_installation(client, example, alice):
     client.force_login(alice)
     page = client.get("/setup/").content.decode()
-    assert 'data-error="GitHubLoginExpired"' in page
+    assert "data-error" not in page
+    assert "You manage no installation of the GitHub App yet." in page
+    repo_id = example.repositories[REPOSITORY].id
+    response = client.post(f"/setup/1/{repo_id}/add/")
+    assert response.status_code == 403
 
 
 def test_adding_a_repository(client, example, maintainer):

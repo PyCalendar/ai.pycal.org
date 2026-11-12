@@ -57,10 +57,8 @@ App**. GitHub asks you to choose the repositories and to accept the permissions
 listed in :doc:`/reference/permissions`. Afterwards GitHub sends you back to the
 page **Setup**.
 
-The site renews expiring GitHub user tokens automatically while you use setup.
-If it shows **Your sign in with GitHub has expired**, sign out and sign in
-again: the stored authorization can no longer be renewed. If GitHub is
-temporarily unavailable, try again later.
+The site does not act on your behalf on GitHub: its app reads, with its own
+token, whether you have the role *admin* or *maintain* of a repository.
 
 4. Add the repository
 =====================

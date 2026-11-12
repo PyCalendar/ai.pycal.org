@@ -64,6 +64,12 @@ precedence. Or create the app yourself as :doc:`/how-to/github-app` describes.
    ``/app/data/github-app.pem`` in the volume of the data.
 ``GITHUB_APP_PRIVATE_KEY``
    The private key itself, instead of a file; ``\n`` stands for a line break.
+``GITHUB_OAUTH_CLIENT_ID``, ``GITHUB_OAUTH_SECRET``
+   An OAuth app without scopes that signs people in, so that GitHub does not
+   ask them to let the app act on their behalf; see
+   :ref:`the OAuth app <oauth-app>`. Without it, the GitHub App signs people in.
+   Administrators of the site can enter it on the page **Setup**, which keeps
+   it in ``DATA_DIR/.env``.
 ``GITHUB_API``
    The API of GitHub. Default ``https://api.github.com``. Change it only for
    GitHub Enterprise Server.

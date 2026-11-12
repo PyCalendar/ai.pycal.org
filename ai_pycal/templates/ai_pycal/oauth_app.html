@@ -1,0 +1,30 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n help github %}
+{% block title %}{% translate "Sign in without acting on behalf" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "Sign in without acting on behalf" %}</h1>
+<p class="lead">{% blocktranslate %}When people sign in with the GitHub App, GitHub asks them to let it act on their behalf, although the site only reads who they are. An OAuth app without scopes signs them in with read access to their public information only. The GitHub App keeps writing labels and checks with its own token.{% endblocktranslate %} {% help_link links.oauth_app "OAuth app for signing in" %}</p>
+{% if configured %}<p class="message message-success" data-oauth-configured>{% translate "People sign in with an OAuth app." %}</p>{% endif %}
+{% if from_environment %}<p class="message message-warning">{% translate "The OAuth app is set in the environment (GITHUB_OAUTH_CLIENT_ID); change it there." %}</p>
+{% else %}
+<section class="card">
+  <h2>{% translate "1. Create the OAuth app on GitHub" %}</h2>
+  <ol class="steps">
+    <li>{% translate "New OAuth app" as new_app %}{% github_link "https://github.com/settings/applications/new" new_app new_app %} {% blocktranslate %}of your account, or <em>Settings → Developer settings → OAuth apps</em> of the organization.{% endblocktranslate %}</li>
+    <li>{% blocktranslate %}Homepage URL: <code>{{ site_url }}</code>{% endblocktranslate %}</li>
+    <li>{% blocktranslate %}Authorization callback URL: <code>{{ callback_url }}</code>{% endblocktranslate %}</li>
+    <li>{% translate "Register the application and generate a client secret." %}</li>
+  </ol>
+</section>
+<section class="card">
+  <h2>{% translate "2. Enter it here" %}</h2>
+  {% if error %}<p class="message message-error" role="alert" data-error="invalid">{% translate "Enter the client ID and a client secret as GitHub shows them." %}</p>{% endif %}
+  <form method="post" class="stacked">{% csrf_token %}
+    <p><label for="client_id">{% translate "Client ID" %}</label><input id="client_id" name="client_id" required autocomplete="off" spellcheck="false"></p>
+    <p><label for="secret">{% translate "Client secret" %}</label><input id="secret" name="secret" type="password" required autocomplete="off"></p>
+    <p><button class="button" type="submit">{% translate "Save" %}</button></p>
+  </form>
+  <p class="muted">{% translate "They are kept in the volume of the site (DATA_DIR/.env); settings of the environment take precedence." %}</p>
+</section>
+{% endif %}
+{% endblock %}

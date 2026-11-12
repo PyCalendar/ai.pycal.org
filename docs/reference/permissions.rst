@@ -69,10 +69,13 @@ app; they tell the site about new and removed installations and permissions.
 Signing in
 ==========
 
-People sign in with the GitHub App. Its tokens have no scopes: GitHub tells the
-site the handle and id of the account. For administrators, the site also asks
-GitHub which installations and repositories they can manage; they need the role
-*admin* or *maintain* of a repository to add it.
+People sign in with an OAuth app without scopes (see :ref:`oauth-app`): GitHub
+tells the site only who they are, and does not ask them to let it act on their
+behalf. The site keeps no token of theirs. Whether a person has the role
+*admin* or *maintain* of a repository, the app reads itself with
+``GET /repos/{owner}/{repo}/collaborators/{username}/permission``, which needs
+only ``metadata: read``. Without the OAuth app, the GitHub App signs people in,
+and GitHub shows its usual question to act on their behalf.
 
 Contributors give no other permission to the site.
 

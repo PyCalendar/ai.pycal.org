@@ -5,6 +5,7 @@ from datetime import timedelta
 from math import ceil
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ValidationError
@@ -75,6 +76,9 @@ def setup(request):
             "error": error,
             "required": sorted(permissions.REQUIRED.items()),
             "app_events": app_events(request.user),
+            "oauth_missing": GitHubApp.configured()
+            and not settings.SIGN_IN_WITH_OAUTH_APP
+            and GitHubIdentity.is_site_admin(request.user),
         },
     )
 

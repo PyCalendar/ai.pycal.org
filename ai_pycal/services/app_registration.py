@@ -380,10 +380,11 @@ class AppRegistration:
         settings.GITHUB_APP_SLUG = os.environ["GITHUB_APP_SLUG"]
         settings.GITHUB_WEBHOOK_SECRET = os.environ["GITHUB_WEBHOOK_SECRET"]
         settings.GITHUB_APP_PRIVATE_KEY = key
-        settings.SOCIALACCOUNT_PROVIDERS["github"]["APP"] = {
-            "client_id": os.environ["GITHUB_CLIENT_ID"],
-            "secret": os.environ["GITHUB_SECRET"],
-        }
+        if not settings.SIGN_IN_WITH_OAUTH_APP:  # an OAuth app signs people in otherwise
+            settings.SOCIALACCOUNT_PROVIDERS["github"]["APP"] = {
+                "client_id": os.environ["GITHUB_CLIENT_ID"],
+                "secret": os.environ["GITHUB_SECRET"],
+            }
 
     @staticmethod
     def reload_workers(request) -> bool:

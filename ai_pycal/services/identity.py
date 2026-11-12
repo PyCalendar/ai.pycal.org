@@ -4,8 +4,6 @@ from dataclasses import dataclass
 
 from allauth.socialaccount.models import SocialAccount
 
-from .github_token import GitHubUserToken
-
 
 @dataclass(frozen=True)
 class GitHubIdentity:
@@ -45,15 +43,3 @@ class GitHubIdentity:
         if account is None:
             return None
         return cls(int(account.uid), str(account.extra_data.get("login") or user.username))
-
-    @staticmethod
-    def token(user) -> str:
-        """The token of the sign in with GitHub, for the requests of administrators.
-
-        Args:
-            user: The user.
-
-        Returns:
-            The token; "" if there is none.
-        """
-        return GitHubUserToken.for_user(user)

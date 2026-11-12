@@ -3,6 +3,7 @@
 {% block title %}{% translate "Setup" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{% translate "Set up a repository" %}</h1>
+{% if oauth_missing %}<div class="message message-warning" data-oauth-missing><strong>{% translate "People are asked to let the app act on their behalf when they sign in." %}</strong> {% translate "Sign them in with an OAuth app instead: GitHub then only tells who they are." %} <a href="{% url 'oauth_app' %}">{% translate "Set up the OAuth app" %}</a></div>{% endif %}
 {% if app_events %}<div class="message message-warning" data-missing-events><strong>{% translate "The GitHub App does not receive all events it needs." %}</strong> {% blocktranslate with events=app_events.missing|join:", " %}Missing: <code>{{ events }}</code>. Tick them in the settings of the app on GitHub, under Permissions and events; no new permission is needed.{% endblocktranslate %} {% translate "Settings of the app" as app_settings %}{% github_link app_events.url app_settings app_settings %}</div>{% endif %}
 <ol class="steps card">
   <li>{% blocktranslate %}Add the file <code>.github/agreements.yml</code> to the default branch of the repository.{% endblocktranslate %} {% help_link links.config_file "The configuration file" %}</li>

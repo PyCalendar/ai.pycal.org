@@ -1,8 +1,8 @@
-"""What an administrator may set up: asked of GitHub with the token of their sign in."""
+"""What an administrator may set up: asked of GitHub by the app, with the role of the person."""
 
 from ai_pycal.errors import GitHubLoginExpired, InstallationNotYours, NotRepositoryAdmin
 from ai_pycal.github.app import GitHubApp
-from ai_pycal.github.user_api import UserAPI
+from ai_pycal.github.role_api import RoleAPI
 from ai_pycal.models import Installation, Repository
 
 from .identity import GitHubIdentity
@@ -16,22 +16,23 @@ class AdminAccess:
     repository can be set up by people with the role admin or maintain.
     """
 
-    def __init__(self, user, api: UserAPI | None = None):
+    def __init__(self, user, api: RoleAPI | None = None):
         """The access of *user*.
 
         Args:
             user: The user of the site.
-            api: The requests with the token of the user; made from the token by default.
+            api: The requests of the app with the role of the user; by default for the
+                GitHub account of the user.
 
         Raises:
-            GitHubLoginExpired: There is no token: sign in again.
+            GitHubLoginExpired: The user did not sign in with GitHub.
         """
         self.user = user
         if api is None:
-            token = GitHubIdentity.token(user)
-            if not token:
-                raise GitHubLoginExpired("no token")
-            api = UserAPI(token)
+            identity = GitHubIdentity.of(user)
+            if identity is None:
+                raise GitHubLoginExpired("no GitHub account")
+            api = RoleAPI(identity.login)
         self.api = api
 
     def installations(self) -> list[dict]:
@@ -75,7 +76,7 @@ class AdminAccess:
             for repo in Repository.objects.filter(github_id__in=[r["id"] for r in found])
         }
         for repo in found:
-            repo["can_administer"] = UserAPI.can_administer(repo)
+            repo["can_administer"] = RoleAPI.can_administer(repo)
             repo["stored"] = stored.get(repo["id"])
             if repo["stored"] and any(
                 (repo.get("permissions") or {}).get(role) for role in ("admin", "maintain", "push")
@@ -100,7 +101,7 @@ class AdminAccess:
         installation = self.installation(installation_id)
         for repo in self.api.repositories(installation_id):
             if repo["id"] == repository_id:
-                if not UserAPI.can_administer(repo):
+                if not RoleAPI.can_administer(repo):
                     raise NotRepositoryAdmin(repo["full_name"])
                 stored, _ = Repository.objects.update_or_create(
                     github_id=repository_id,

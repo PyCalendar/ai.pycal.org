@@ -105,6 +105,29 @@ The site reads ``DATA_DIR/.env`` at every start. A variable of the
 environment, such as in the ``.env`` of Docker Compose, takes precedence; an
 empty one counts as unset. Back up the volume and keep both files secret.
 
+.. _oauth-app:
+
+Sign people in without acting on their behalf
+=============================================
+
+When people sign in with a GitHub App, GitHub asks them to let it act on their
+behalf, although the site only reads who they are. An OAuth app without scopes
+signs them in with read access to their public information only; the GitHub
+App keeps writing labels and checks with its own token, and reads whether a
+person has the role *admin* or *maintain* of a repository by itself.
+
+GitHub has no manifest for OAuth apps, so it is created by hand:
+
+#. On GitHub, open *Settings → Developer settings → OAuth apps → New OAuth
+   app*, of your account or of the organization.
+#. Homepage URL: the address of the site. Authorization callback URL: the
+   address of the site plus ``/accounts/github/login/callback/``.
+#. Register it and generate a client secret.
+#. On the page **Setup**, administrators of the site (``SITE_ADMINS``) follow
+   **Set up the OAuth app** and enter the client ID and the secret. They are
+   kept in ``DATA_DIR/.env``. Or set ``GITHUB_OAUTH_CLIENT_ID`` and
+   ``GITHUB_OAUTH_SECRET`` in the environment.
+
 One app per site
 ================
 

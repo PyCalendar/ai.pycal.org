@@ -56,7 +56,7 @@ Use these values for local development:
    * - Callback URL
      - ``http://localhost:5000/accounts/github/login/callback/``
    * - Expire user authorization tokens
-     - Keep selected; the site refreshes expiring tokens.
+     - Either; the site uses no tokens of people.
    * - Request user authorization (OAuth) during installation
      - Leave unchecked for this walkthrough. Sign in on the site before
        installing the app; the separate setup URL then remains available.

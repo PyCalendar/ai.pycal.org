@@ -4,7 +4,17 @@ from allauth.account import views as account_views
 from django.contrib import admin
 from django.urls import include, path
 
-from .views import agreements, logs, pages, policies, profile, registration, setup, webhook
+from .views import (
+    agreements,
+    logs,
+    oauth_app,
+    pages,
+    policies,
+    profile,
+    registration,
+    setup,
+    webhook,
+)
 
 urlpatterns = [
     path("", pages.home, name="home"),
@@ -61,6 +71,7 @@ urlpatterns = [
     path("setup/", setup.setup, name="setup"),
     path("setup/installed/", setup.installed, name="installed"),
     path("setup/github-app/", registration.register_app, name="register_app"),
+    path("setup/oauth-app/", oauth_app.oauth_app, name="oauth_app"),
     path("setup/github-app/registered/", registration.app_registered, name="app_registered"),
     path("setup/<int:installation_id>/email/", setup.notify_email, name="notify_email"),
     path(

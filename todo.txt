@@ -460,3 +460,12 @@
       for administrators, their installations. Decided by the person: no separate OAuth app.
 - [x] The app uses the minimal permissions (metadata, contents read; pull_requests, statuses write):
       each justified in docs/reference/permissions.rst, the set pinned by a test.
+
+## 2026-11-12: no "act on your behalf" for people
+
+- [x] People sign in with an OAuth app without scopes (GITHUB_OAUTH_CLIENT_ID/SECRET, entered by site
+      admins on Setup and kept in DATA_DIR/.env, or set in the environment); decided by the person.
+- [x] The app reads the roles itself (GET /app/installations, /installation/repositories,
+      collaborators/{login}/permission: metadata read); no user tokens are stored or renewed any more.
+- [x] The installed app keeps writing labels and checks with its own token.
+- [ ] The person: create the OAuth app on GitHub and enter it on Setup.

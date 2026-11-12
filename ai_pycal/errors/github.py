@@ -167,29 +167,18 @@ class GitHubNotFound(GitHubError):
 
 
 class GitHubLoginExpired(AgreementError):
-    """Your sign in with GitHub has expired.
+    """You are not signed in with GitHub.
 
-    The site asks GitHub which installations you manage with the token of your
-    sign in. The site renews expiring tokens automatically, but a missing,
-    expired or revoked refresh token requires a new sign in. Sign out and sign
-    in with GitHub again.
+    The site asks GitHub, with its app, which repositories you manage, by your
+    GitHub account. Accounts of the site without GitHub, and sign ins that
+    GitHub no longer accepts, cannot be used for that. Sign out and sign in with
+    GitHub again.
     """
 
     title = _("Your sign in with GitHub has expired")
     status = 401
     guide = "tutorial/admin.html"
     guide_title = _("Set up a repository")
-
-
-class GitHubTokenResponseInvalid(GitHubError):
-    """GitHub did not return valid replacement user tokens.
-
-    The token renewal response is missing an access token, refresh token or
-    positive lifetime. Try again later; if it continues, report a bug. Sign
-    out and sign in again to obtain new credentials.
-    """
-
-    title = _("GitHub returned incomplete token renewal data")
 
 
 class CannotWriteLabels(GitHubError):

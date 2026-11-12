@@ -54,6 +54,8 @@ class FakeGitHub:
         self.installation_repositories: dict[int, list[str]] = {}
         self.user_installations: list[int] = []
         self.user_roles: dict[str, dict] = {}  # full_name: permissions of the user
+        # the people with the roles of user_roles; others can only read
+        self.administrators = {"maintainer"}
         self.labels: dict[tuple[str, int], list[str]] = {}
         self.statuses: list[dict] = []
         self.pulls: dict[str, list[dict]] = {}
@@ -151,6 +153,12 @@ class FakeGitHub:
     ROUTES = [
         ("POST", r"/app-manifests/(?P<code>[^/]+)/conversions", "manifest_conversion"),
         ("GET", r"/app", "app"),
+        ("GET", r"/app/installations", "list_app_installations"),
+        (
+            "GET",
+            r"/repos/(?P<repo>[^/]+/[^/]+)/collaborators/(?P<login>[^/]+)/permission",
+            "collaborator_permission",
+        ),
         ("POST", r"/login/oauth/access_token", "refresh_user_token"),
         ("POST", r"/app/installations/(?P<id>\d+)/access_tokens", "access_token"),
         ("GET", r"/app/installations/(?P<id>\d+)", "installation"),
@@ -252,6 +260,25 @@ class FakeGitHub:
         names = self.installation_repositories.get(self.installation_id_of(request), [])
         repos = [self.repositories[name].as_json() for name in names]
         return httpx.Response(200, json={"total_count": len(repos), "repositories": repos})
+
+    def list_app_installations(self, request):
+        """The installations of the app, as GET /app/installations lists them."""
+        return httpx.Response(200, json=list(self.installations.values()))
+
+    def collaborator_permission(self, request, repo, login):
+        """The role of a person: user_roles, for the installations the person can access."""
+        installation = next(
+            (i for i, names in self.installation_repositories.items() if repo in names), None
+        )
+        if installation not in self.user_installations:
+            return httpx.Response(200, json={"permission": "none", "role_name": "none"})
+        if login.lower() not in self.administrators:
+            return httpx.Response(200, json={"permission": "read", "role_name": "read"})
+        flags = self.user_roles.get(repo, {"admin": True})
+        role = next((r for r in ("admin", "maintain", "push") if flags.get(r)), "read")
+        role = {"push": "write"}.get(role, role)
+        permission = {"maintain": "write"}.get(role, role)
+        return httpx.Response(200, json={"permission": permission, "role_name": role})
 
     def list_user_installations(self, request):
         if self.token(request) != "user-token":
