@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.validators import validate_email
 from django.http import Http404
 from django.shortcuts import redirect, render
@@ -25,6 +25,7 @@ from ai_pycal.models import Installation, Repository
 from ai_pycal.services.admin_access import AdminAccess
 from ai_pycal.services.permission_notice import PermissionNotice
 from ai_pycal.services.repository_setup import RepositorySetup
+from ai_pycal.services.repository_sync import RepositorySync
 
 
 @login_required
@@ -205,6 +206,57 @@ def repository_or_404(full_name: str) -> Repository:
     if repository is None:
         raise RepositoryNotFound(full_name)
     return repository
+
+
+def may_update(user, repository: Repository) -> bool:
+    """Whether a person may read the configuration of a project again.
+
+    Args:
+        user: The user.
+        repository: The project.
+
+    Returns:
+        True for staff and for administrators of the installation of the app.
+    """
+    if not getattr(user, "is_authenticated", False):
+        return False
+    if user.is_staff:
+        return True
+    installation = repository.installation
+    return bool(installation and installation.admins.filter(pk=user.pk).exists())
+
+
+@login_required
+@require_POST
+def update_project(request, owner: str, repo: str):
+    """Read the configuration and the agreements of a project again, and check its pull requests.
+
+    As a push to the default branch does; for administrators of the installation.
+
+    Args:
+        request: The request.
+        owner: The owner of the repository.
+        repo: The name of the repository.
+
+    Returns:
+        Back to the page of the project, with a message.
+    """
+    repository = repository_or_404(f"{owner}/{repo}")
+    if not may_update(request.user, repository):
+        raise PermissionDenied(repository.full_name)
+    setup = RepositorySetup(repository)
+    try:
+        RepositorySync(repository, setup.api).sync()
+    except AgreementError as error:
+        messages.error(request, f"{error.title}: {error}")
+    else:
+        checked = setup.check_open_pulls()
+        messages.success(
+            request,
+            _("The configuration was read again; %(count)d open pull requests were checked.")
+            % {"count": checked},
+        )
+    return redirect(f"/project/{repository.full_name}/")
 
 
 def older_address(request, owner: str, repo: str, number: int | None = None):

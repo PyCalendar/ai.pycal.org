@@ -81,6 +81,9 @@ h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weig
 #view-changes:checked ~ .tab-changes { display: block; }
 #view-changes:checked ~ .tab-agreement { display: none; }
 .version { font-size: .95rem; }
+.card-title { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
+.card-title h3 { margin-top: 0; }
+.card-title .tech-menu dl { left: auto; right: 0; }
 .tech-menu { position: relative; }
 .tech-menu summary { list-style: none; cursor: pointer; display: flex; padding: .25rem; border-radius: .3rem; color: var(--text-muted); }
 .tech-menu summary::-webkit-details-marker { display: none; }

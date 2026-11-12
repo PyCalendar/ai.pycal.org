@@ -32,6 +32,8 @@ from ai_pycal.services.rendering import render as markdown
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.visibility import visible_projects
 
+from .setup import may_update
+
 
 def project_for(request, owner: str, repo: str):
     """Find a visible project or raise its documented not-found error."""
@@ -143,6 +145,7 @@ def project(request, owner: str, repo: str):
             "project": repository,
             "policies": policies,
             "attention": [policy for policy in policies if policy.attention],
+            "can_update": may_update(request.user, repository),
             "choices": choices,
         },
     )
