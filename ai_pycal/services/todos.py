@@ -67,6 +67,18 @@ class Todos:
             )
         )
 
+    def all_pulls(self) -> list[PullRequest]:
+        """All pull requests of the person in active projects, open ones first."""
+        if not self.identity:
+            return []
+        return list(
+            PullRequest.objects.filter(
+                author_github_id=self.identity.github_id, repository__active=True
+            )
+            .select_related("repository")
+            .order_by("-open", "-number")
+        )
+
     def to_sign(self, dismissed: bool = False) -> list[RequiredAgreement]:
         """The agreements to sign, each once: required first, then optional ones.
 

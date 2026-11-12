@@ -9,8 +9,8 @@
   {% include "ai_pycal/_to_sign.html" %}
 </section>{% endif %}
 <section class="card">
-  <h2>{% translate "My open pull requests" %}</h2>
-  {% if pulls %}<ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_repository=True %}{% endfor %}</ul>{% else %}<p>{% translate "The site knows no open pull requests of yours." %}</p>{% endif %}
+  <h2>{% translate "My pull requests" %}</h2>
+  {% if pulls %}<ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_repository=True %}{% endfor %}</ul>{% else %}<p>{% translate "The site knows no pull requests of yours." %}</p>{% endif %}
 </section>
 <section class="card">
   <h2>{% translate "Signed" %}</h2>

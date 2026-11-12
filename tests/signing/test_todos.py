@@ -95,3 +95,14 @@ def test_my_agreements_hide_an_empty_to_sign_and_link_pull_requests(
     page = client.get("/my-agreements/").content.decode()
     item = page.split('data-pull="1"')[1].split("</li>")[0]
     assert f'href="https://github.com/{REPOSITORY}/pull/1"' in item and "github-mark" in item
+
+
+def test_my_pull_requests_lists_all_of_them(client, github, repository, alice):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    closed = pull_payload(github, 2, action="closed")
+    closed["pull_request"]["state"] = "closed"
+    send_webhook(client, "pull_request", closed)
+    client.force_login(alice)
+    page = client.get("/my-agreements/").content.decode()
+    assert "My pull requests" in page and "My open pull requests" not in page
+    assert 'data-pull="1"' in page and 'data-pull="2" data-pull-state="closed"' in page

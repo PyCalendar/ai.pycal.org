@@ -62,7 +62,7 @@ def mine(request):
         "ai_pycal/mine.html",
         {
             "signatures": todos.signatures(),
-            "pulls": PullState.annotate(todos.open_pulls()),
+            "pulls": PullState.annotate(todos.all_pulls()),
             "to_sign": todos.to_sign(),
         },
     )
