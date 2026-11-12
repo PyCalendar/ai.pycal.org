@@ -146,6 +146,8 @@ form.stacked small { display: block; color: var(--text-muted); margin-top: .2rem
 .badge-success { color: var(--success); }
 .badge-warning { color: var(--warning); }
 .badge-error { color: var(--danger); }
+.badge-strong { color: var(--primary); }
+.badges { display: inline-flex; flex-wrap: wrap; gap: .3rem; vertical-align: middle; font-weight: 400; }
 
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }

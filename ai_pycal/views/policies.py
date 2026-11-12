@@ -25,6 +25,7 @@ from ai_pycal.models import (
     RequiredAgreement,
     Signature,
 )
+from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.pull_request_check import PullRequestCheck
 from ai_pycal.services.rendering import render as markdown
@@ -86,20 +87,64 @@ def projects(request, owner: str = ""):
     return render(request, "ai_pycal/projects.html", {"projects": found, "owner": owner})
 
 
+def signing_state(policy, github_id: int | None) -> str:
+    """Whether a person signed the version of an agreement that a project asks for.
+
+    Args:
+        policy: The agreement of the project.
+        github_id: The person; None for visitors.
+
+    Returns:
+        ``signed``, ``outdated`` (an earlier version is signed), ``unsigned``, or "" for
+        visitors.
+    """
+    if github_id is None:
+        return ""
+    if Signature.objects.filter(version=policy.version, github_id=github_id).exists():
+        return "signed"
+    if AgreementDiff.previous_signed(policy.version, github_id):
+        return "outdated"
+    return "unsigned"
+
+
 def project(request, owner: str, repo: str):
-    """Show current policies, choices and the people who signed their exact versions."""
+    """Show current policies, choices and the people who signed their exact versions.
+
+    Each agreement has a badge, mandatory or optional, and for a signed-in person the
+    state of their signature. Mandatory agreements that are unsigned and agreements whose
+    signature is outdated need attention: the page lists them at the top.
+
+    Args:
+        request: The request.
+        owner: The owner of the repository.
+        repo: The name of the repository.
+
+    Returns:
+        The page.
+    """
     repository = project_for(request, owner, repo)
+    identity = GitHubIdentity.of(request.user)
+    github_id = identity.github_id if identity else None
     policies = list(repository.required_agreements.select_related("version"))
     for policy in policies:
         policy.signers = policy.version.signatures.all()
         policy.description_html = markdown(policy.description, "description.md")
+        policy.state = signing_state(policy, github_id)
+        policy.attention = policy.state == "outdated" or (
+            policy.state == "unsigned" and policy.mandatory
+        )
     choices = list(repository.choices.all())
     for choice in choices:
         choice.description_html = markdown(choice.description, "description.md")
     return render(
         request,
         "ai_pycal/project.html",
-        {"project": repository, "policies": policies, "choices": choices},
+        {
+            "project": repository,
+            "policies": policies,
+            "attention": [policy for policy in policies if policy.attention],
+            "choices": choices,
+        },
     )
 
 
