@@ -47,14 +47,17 @@ def test_the_image_is_pushed_after_all_checks_and_deployed():
     jobs = re.findall(r"^  ([\w-]+):\n", text, re.MULTILINE)
     push = text.split("\n  push:\n")[1].split("\n  deploy:\n")[0]
     needed = set(re.search(r"needs: \[(.*)\]", push).group(1).replace(" ", "").split(","))
-    assert needed == set(jobs) - {"push", "deploy", "pages"}
+    assert needed == set(jobs) - {"push", "deploy", "live", "pages"}
     assert "if: github.event_name == 'push'" in push
     assert "platforms: linux/amd64,linux/arm64" in push
     assert "make docker-scan" in text
-    deploy = text.split("\n  deploy:\n")[1]
+    deploy = text.split("\n  deploy:\n")[1].split("\n  live:\n")[0]
     assert "needs: [push]" in deploy
     assert "secrets.SENCHO_TOKEN" in deploy
     assert "/api/stacks/${SENCHO_STACK}/update" in deploy
+    live = text.split("\n  live:\n")[1].split("\n  docs:\n")[0]
+    assert "needs: [deploy]" in live and "make check-live" in live
+    assert "secrets." not in live  # it only visits public pages
 
 
 def test_compose_uses_the_pushed_image():
