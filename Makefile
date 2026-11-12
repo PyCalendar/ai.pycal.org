@@ -47,6 +47,10 @@ lint: .venv  ## Check the code style
 	@uv run ruff check .
 	@uv run ruff format --check .
 
+.PHONY: check-live
+check-live: .venv  ## Check a live site as a visitor: LIVE_URL (default https://sign.pycal.org), waits while it starts
+	@uv run python scripts/check_live.py
+
 .PHONY: browser-test
 browser-test: .venv docs  ## Test the setup docs and manifest form in Chromium without external requests
 	@uv run --group browser pytest -o addopts= tests/browser

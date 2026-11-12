@@ -157,6 +157,24 @@ jobs:
           SENCHO_TOKEN: ${{ secrets.SENCHO_TOKEN }}
           SENCHO_STACK: ${{ vars.SENCHO_STACK || 'ai-pycal' }}
 
+  live:
+    name: Check the live site
+    needs: [deploy]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    # without secrets: it only visits the public pages, as a visitor (scripts/check_live.py)
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          enable-cache: false
+      # waits while the updated container starts, then walks the public pages
+      - run: make check-live
+        env:
+          LIVE_URL: https://sign.pycal.org
+
   docs:
     name: Build the documentation for GitHub Pages
     runs-on: ubuntu-24.04

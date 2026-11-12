@@ -1,0 +1,1 @@
+``make check-live`` checks a running site as a visitor: it waits while the site starts, walks the public pages from a public project and checks the error pages; CI runs it after each deployment. The sign-in page no longer nests its own address in the link to sign in.

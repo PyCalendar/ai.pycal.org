@@ -11,6 +11,7 @@ path = [
     "docker/**",
     "docs/**",
     "news/**",
+    "scripts/**",
     "tests/**",
     "static/style.css",
 ]

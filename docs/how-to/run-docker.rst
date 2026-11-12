@@ -69,6 +69,35 @@ pushed image.
    already, such as by hand, Sencho answers 409, and passing errors of the server
    answer 5xx: the job waits 30 seconds and tries again, up to 10 times. Without ``SENCHO_TOKEN``,
    the job pushes the image and deploys nothing.
+#. The job *Check the live site* then runs ``make check-live``, described
+   below.
+
+Check the live site
+===================
+
+``make check-live`` visits a running site as a visitor who is not signed in:
+
+.. code-block:: shell
+
+   make check-live                                    # https://sign.pycal.org
+   LIVE_URL=https://sign.example.org make check-live  # another site
+
+#. It waits while the site starts or is updated. Then the site answers with
+   503 and a page that says so, or the connection is refused. The check waits
+   up to ``LIVE_WAIT`` seconds, 600 by default.
+#. It takes a project from the page **Projects** and follows every link that
+   leads to a public page: the project, its pull requests, agreements, their
+   versions, the pages of the people, the logs and the licenses. Each must
+   open without signing in. A page is public unless it shows personal
+   information or changes what needs privileges, so that everyone can follow
+   what happens.
+#. Pages that act for a person, such as signing, and pages that need
+   privileges, such as **Setup**, must ask to sign in or answer 403.
+#. Missing pages must answer 404 with the error page of the site, not 500.
+   The webhook must refuse a delivery without a signature.
+
+The check fails if no project is public. ``LIVE_URL`` is separate from
+``SITE_URL``, so the setting of a local site does not change it.
 
 The health check sends the first host of ``ALLOWED_HOSTS``: with only
 ``sign.pycal.org`` allowed, Django would refuse a request for ``127.0.0.1``,
