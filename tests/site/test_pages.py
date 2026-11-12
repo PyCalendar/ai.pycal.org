@@ -15,15 +15,30 @@ def test_the_start_page(client):
     assert "https://docs.ai.pycal.org/" in page
 
 
-def test_sign_in_without_client_explains_the_setup(client, settings):
-    """Without GITHUB_CLIENT_ID, as in a new development setup, the error is explained."""
+def test_sign_in_without_an_app_offers_to_register_it(client, settings):
+    """Without a GitHub App, as on a new site, the sign-in page offers to register it."""
     settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
     response = client.get("/accounts/login/")
+    page = response.content.decode()
+    assert response.status_code == 200
+    assert "This site has no GitHub App yet" in page
+    assert 'href="/setup/github-app/">Register GitHub App</a>' in page
+    assert 'action="/accounts/github/login/' not in page
+
+
+def test_signing_in_without_client_explains_the_setup(client, settings):
+    """A sign-in sent without GITHUB_CLIENT_ID shows the error, its details and the button."""
+    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
+    response = client.post("/accounts/github/login/")
     page = response.content.decode()
     assert response.status_code == 503
     assert "Signing in with GitHub is not configured" in page
     assert "GITHUB_CLIENT_ID" in page
     assert "errors.html#ai_pycal.errors.github.SignInNotConfigured" in page
+    assert 'href="/setup/github-app/">Register GitHub App</a>' in page
+    details = page.split('id="error-details"')[1].split("</textarea>")[0]
+    assert "Error: SignInNotConfigured (HTTP 503)" in details
+    assert "Page: /accounts/github/login/" in details
 
 
 def test_health(client):
@@ -65,7 +80,7 @@ def test_documentation_navigation_and_error_help_share_the_configured_url(client
     assert f'href="{base}"' in page
     assert f'href="{base}changelog.html"' in page
     settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
-    response = client.get("/accounts/login/")
+    response = client.post("/accounts/github/login/")
     assert response.status_code == 503
     page = response.content.decode()
     assert f"{base}reference/errors.html#ai_pycal.errors.github.SignInNotConfigured" in page

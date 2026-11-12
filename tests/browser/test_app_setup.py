@@ -16,6 +16,7 @@ FORM_URL = f"{DOCS_URL}/how-to/create-github-app.html"
 @pytest.mark.parametrize(
     "filename,title",
     [
+        ("github-app-site", "Register the GitHub App on the site"),
         ("create-github-app", "App manifest with the submission form"),
         ("github-app-manifest", "App manifest CLI flow"),
         ("github-app-manual", "Manual app creation"),
@@ -24,12 +25,17 @@ FORM_URL = f"{DOCS_URL}/how-to/create-github-app.html"
 def test_common_page_links_to_each_complete_flow(docs_page, filename, title):
     docs_page.goto(f"{DOCS_URL}/how-to/github-app.html")
     article = docs_page.locator("article")
-    expect(article.locator("table tbody tr").first).to_contain_text("recommended default")
+    expect(article.locator("table tbody tr").first).to_contain_text(
+        "Register the GitHub App on the site (recommended)"
+    )
     article.get_by_role("link", name=title, exact=True).click()
     expect(docs_page).to_have_url(f"{DOCS_URL}/how-to/{filename}.html")
     expect(docs_page.locator("article").get_by_role("heading", level=1)).to_contain_text(title)
     expect(docs_page.locator("article")).to_contain_text("GITHUB_WEBHOOK_SECRET")
-    expect(docs_page.locator("article")).to_contain_text("Install the GitHub App")
+    if filename == "github-app-site":
+        expect(docs_page.locator("article")).to_contain_text("Register GitHub App")
+    else:
+        expect(docs_page.locator("article")).to_contain_text("Install the GitHub App")
     if filename == "create-github-app":
         expect(docs_page.get_by_role("button", name="Create app on GitHub")).to_be_enabled()
 

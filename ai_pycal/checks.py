@@ -85,7 +85,8 @@ def check_github_app(app_configs=None, **kwargs) -> list:
         return [
             Warning(
                 "The GitHub App is not configured: " + ", ".join(missing),
-                hint="docs/how-to/github-app.rst",
+                hint=f"Register it on {settings.SITE_URL}/setup/github-app/ "
+                "(docs/how-to/github-app-site.rst)",
                 id="ai_pycal.W001",
             )
         ]

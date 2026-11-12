@@ -10,15 +10,16 @@ Maintainers using an already configured site can go straight to
 Choose a setup flow
 ====================
 
-**Start with the submission form.** It is the recommended default: enter your
-site details and submit the manifest directly from the documentation.
-Choose the CLI flow if you prefer to generate the registration form locally,
-or create the app manually if you want to fill in GitHub's settings yourself.
+**Register the app on the site.** It is the recommended way: start the site,
+press **Register GitHub App** and confirm on GitHub; the site saves the
+credentials in its volume. The other flows put the credentials into the
+environment yourself, which takes precedence over the volume.
 
 .. toctree::
    :maxdepth: 1
    :hidden:
 
+   github-app-site
    create-github-app
    github-app-manifest
    github-app-manual
@@ -29,7 +30,11 @@ or create the app manually if you want to fill in GitHub's settings yourself.
 
    * - Flow
      - What you do
-   * - :doc:`create-github-app` **(recommended default)**
+   * - :doc:`github-app-site` **(recommended)**
+     - Press **Register GitHub App** on the running site, enter the setup code
+       from its log and confirm on GitHub. The site saves the credentials in
+       its volume and uses them at once.
+   * - :doc:`create-github-app`
      - Fill in the documentation form, confirm on GitHub and exchange the
        return code. Permissions, events and callback URLs are filled in for you.
    * - :doc:`github-app-manifest`
@@ -39,7 +44,7 @@ or create the app manually if you want to fill in GitHub's settings yourself.
      - Fill in GitHub's registration settings, permissions and events yourself,
        then generate a client secret and private key.
 
-Each page is a complete walkthrough, from preparing ``.env`` to signing in
+Each of the other pages is a complete walkthrough, from preparing ``.env`` to signing in
 and installing the app from the site's **Setup** page. All three cover the
 local ``http://localhost:5000`` setup and explain the changes for deployment.
 

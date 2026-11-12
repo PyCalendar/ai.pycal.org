@@ -1,0 +1,51 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Register GitHub App" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<section class="hero">
+  <h1>{% translate "Register GitHub App" %}</h1>
+  <p class="lead">{% blocktranslate %}The site signs people in, reads the agreements and checks the pull requests with its own GitHub App. It can register the app on GitHub itself and keep the credentials in its volume.{% endblocktranslate %}</p>
+</section>
+
+{% if source %}
+<div class="card" data-registered="{{ source }}">
+  <h2>{% translate "This site has a GitHub App" %}</h2>
+  <p>{% if source == "environment" %}{% blocktranslate %}Its credentials come from the environment, such as <code>.env</code>. They take precedence over the volume.{% endblocktranslate %}{% else %}{% blocktranslate %}It was registered on this site; its credentials are in the volume (<code>DATA_DIR/.env</code>).{% endblocktranslate %}{% endif %}</p>
+  <p>{% translate "A site has one GitHub App, so no other can be registered here." %}</p>
+  <p>{% if slug %}<a class="button" href="https://github.com/apps/{{ slug }}">{% translate "The GitHub App" %}</a> {% endif %}<a class="button button-quiet" href="{% url 'setup' %}">{% translate "Set up a repository" %}</a></p>
+</div>
+
+{% elif started %}
+<div class="card" data-step="github">
+  <h2>{% translate "2. Create the app on GitHub" %}</h2>
+  <p>{% if started.organization %}{% blocktranslate with organization=started.organization %}GitHub opens the form for a new app of the organization <strong>{{ organization }}</strong>, filled in with the manifest below.{% endblocktranslate %}{% else %}{% translate "GitHub opens the form for a new app of your account, filled in with the manifest below." %}{% endif %} {% translate "Check the name and press Create GitHub App there. GitHub then returns to this site, which saves the credentials." %}</p>
+  <p>{% translate "If GitHub refuses the app, for example because the name is taken, it says so on its page: come back here and start again with another name." %}</p>
+  <form method="post" action="{{ started.action }}">
+    <input type="hidden" name="manifest" value="{{ manifest_json }}">
+    <button class="button button-accent" type="submit">{% translate "Continue to GitHub" %}</button>
+    <a class="button button-quiet" href="{% url 'register_app' %}">{% translate "Back" %}</a>
+  </form>
+  <details><summary>{% translate "The manifest" %}</summary><pre class="diff">{{ manifest_preview }}</pre></details>
+</div>
+
+{% else %}
+{% if local %}<p class="message message-warning" data-local>{% blocktranslate %}This site runs at <code>{{ site_url }}</code>, which GitHub cannot reach. Signing in works, because GitHub sends your browser back here, but webhooks cannot be delivered: the app is registered without a webhook, so pull requests are not checked. To test everything, give the site a public address first, for example with Tailscale Funnel, and set <code>SITE_URL</code> to it.{% endblocktranslate %} <a href="{{ links.documentation }}how-to/github-app-tunnel.html">{% translate "Test the GitHub App locally with Tailscale" %}</a></p>{% endif %}
+{% if error %}<div class="message message-error" role="alert" data-error="{{ error.code }}"><strong>{{ error.title }}</strong>{% if error.detail %}: <code>{{ error.detail }}</code>{% endif %} · <a href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a></div>{% endif %}
+<div class="card" data-step="details">
+  <h2>{% translate "1. Name the app" %}</h2>
+  <form method="post" class="stacked">{% csrf_token %}
+    <p><label for="name">{% translate "Name on GitHub" %}</label>
+      <input id="name" name="name" value="{{ name }}" maxlength="34" required>
+      <small>{% translate "At most 34 characters, and no other GitHub App may have it." %}</small></p>
+    <p><label for="organization">{% translate "Organization" %} <span class="muted">({% translate "optional" %})</span></label>
+      <input id="organization" name="organization" value="{{ organization }}" maxlength="39" autocomplete="off">
+      <small>{% translate "The login of the organization that owns the app, such as PyCalendar. Empty: your own account." %}</small></p>
+    {% if needs_code %}<p><label for="setup_code">{% translate "Setup code" %}</label>
+      <input id="setup_code" name="setup_code" required autocomplete="off" spellcheck="false">
+      <small>{% blocktranslate %}Only the people who run the site may register its app. The site writes the code into its log at every start, and <code>manage.py github_app_setup_code</code> shows it.{% endblocktranslate %}</small></p>{% endif %}
+    <p><button class="button" type="submit">{% translate "Register GitHub App" %}</button></p>
+  </form>
+  <p class="muted">{% blocktranslate %}The app gets the permissions and events the site needs, and the addresses of this site: <code>{{ site_url }}</code>. The credentials are written into the volume of the site; settings of the environment take precedence.{% endblocktranslate %}</p>
+</div>
+{% endif %}
+{% endblock %}

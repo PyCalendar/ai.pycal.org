@@ -19,3 +19,12 @@ services:
       - ./data:/app/data   # the database, the secret key and the key of the GitHub App
     restart: unless-stopped
     logging: *logging
+    # the same as the HEALTHCHECK of the image: GET /health/ (the database answers) with
+    # the first host of ALLOWED_HOSTS; Sencho waits for "healthy" after each deploy
+    healthcheck:
+      test: ["CMD", "python", "healthcheck.py"]
+      start_period: 60s
+      start_interval: 5s
+      interval: 30s
+      timeout: 10s
+      retries: 3

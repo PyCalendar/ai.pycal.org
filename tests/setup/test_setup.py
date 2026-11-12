@@ -154,10 +154,11 @@ def test_unconfigured_setup_links_to_common_page_and_three_flows(client, setting
     page = client.get("/setup/").content.decode()
     assert "Choose a GitHub App setup flow" in page
     assert 'href="http://localhost:8000/how-to/github-app.html"' in page
-    form = page.index("App manifest with the submission form (recommended)")
+    register = page.index('href="/setup/github-app/">Register GitHub App</a>')
+    form = page.index("App manifest with the submission form")
     cli = page.index("App manifest CLI flow")
     manual = page.index("Manual app creation")
-    assert form < cli < manual
+    assert register < form < cli < manual
     assert 'href="http://localhost:8000/how-to/github-app-manifest.html"' in page
     assert 'href="http://localhost:8000/how-to/github-app-manual.html"' in page
     assert 'href="http://localhost:8000/how-to/create-github-app.html"' in page

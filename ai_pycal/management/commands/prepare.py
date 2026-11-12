@@ -1,4 +1,4 @@
-"""Prepare the site at every start: the database and the domain."""
+"""Prepare the site at every start: the database, the domain and the setup code of the app."""
 
 from urllib.parse import urlparse
 
@@ -6,6 +6,8 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+
+from ai_pycal.services.app_registration import AppRegistration
 
 
 class Command(BaseCommand):
@@ -26,3 +28,9 @@ class Command(BaseCommand):
             pk=settings.SITE_ID, defaults={"domain": domain, "name": settings.SITE_NAME}
         )
         self.stdout.write(f"prepared {domain}")
+        if not AppRegistration.source():
+            self.stdout.write(
+                "This site has no GitHub App. Register it on "
+                f"{settings.SITE_URL}/setup/github-app/ with the setup code "
+                f"{AppRegistration.setup_code()}"
+            )

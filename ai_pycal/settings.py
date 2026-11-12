@@ -9,6 +9,7 @@ from pathlib import Path
 
 import environ
 
+from ai_pycal import registered_settings
 from ai_pycal.footer_links import DEFAULT as DEFAULT_FOOTER_LINKS
 from ai_pycal.footer_links import parse_footer_links
 from ai_pycal.theme import Theme
@@ -17,6 +18,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 DATA_DIR = Path(env("DATA_DIR", default=str(BASE_DIR / "data")))
 TESTING = "pytest" in sys.modules
+# The credentials of a GitHub App registered on the site (/setup/github-app/); the variables of
+# the environment take precedence. The tests use their own settings.
+if not TESTING:
+    registered_settings.load(DATA_DIR / ".env", os.environ)
 
 
 def kept_secret(name: str) -> str:

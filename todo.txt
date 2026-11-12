@@ -294,3 +294,20 @@
 
 - [x] The webhook is always SITE_URL + /github/webhook/ (ai_pycal/urls.py): field removed from the docs
       form, its script and tests; the guides no longer mention forwarding URLs (smee, gh webhook forward).
+
+## 2026-11-12: register the GitHub App on the site
+
+- [x] /setup/github-app/ with "Register GitHub App" on sign-in, Setup and the "no app" errors; manifest for
+      SITE_URL, GitHub returns to /setup/github-app/registered/, the site exchanges the code.
+- [x] Credentials in the volume: DATA_DIR/.env (read at start; the environment takes precedence, empty counts
+      as unset) and the key in GITHUB_APP_PRIVATE_KEY_FILE or DATA_DIR/github-app.pem; never overwritten.
+- [x] One app per site; refused while GITHUB_... settings are set in the environment.
+- [x] Setup code (log at start, manage.py github_app_setup_code; not with DEBUG) so nobody else can
+      register an app for a new site.
+- [x] Local addresses: registered without webhook, explained before and after.
+- [x] Every error page: "Details to copy" (error, HTTP status, detail with the answer of GitHub, page,
+      time, version, documentation). New errors in ai_pycal/errors/registration.py, documented.
+- [x] Running workers use the app at once; gunicorn workers are reloaded with SIGHUP.
+- [x] Checked in the image: setup code in the log and the command, page, sign-in link, healthy.
+- [x] docker-compose.yml declares the health check of the image; a test keeps both the same.
+- [x] Docs domain: pycal.org verified for the organization PyCalendar (protects docs.ai.pycal.org).

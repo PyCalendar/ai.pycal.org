@@ -61,13 +61,16 @@ class GitHubFileHistoryInvalid(GitHubError):
 class GitHubAppNotConfigured(AgreementError):
     """The site has no GitHub App.
 
-    The people who run the site set ``GITHUB_APP_ID``, ``GITHUB_APP_SLUG``,
-    ``GITHUB_APP_PRIVATE_KEY``, ``GITHUB_CLIENT_ID``, ``GITHUB_SECRET`` and
-    ``GITHUB_WEBHOOK_SECRET`` as described in :doc:`/how-to/github-app`.
+    The people who run the site register it on the site with the button
+    *Register GitHub App* (:doc:`/how-to/github-app-site`), or set
+    ``GITHUB_APP_ID``, ``GITHUB_APP_SLUG``, ``GITHUB_APP_PRIVATE_KEY``,
+    ``GITHUB_CLIENT_ID``, ``GITHUB_SECRET`` and ``GITHUB_WEBHOOK_SECRET`` as
+    described in :doc:`/how-to/github-app`.
     """
 
     title = _("The site has no GitHub App")
     status = 503
+    register_app = True  # the page of the error offers to register the app on the site
     guide = "how-to/github-app.html"
     guide_title = _("Create the GitHub App")
 

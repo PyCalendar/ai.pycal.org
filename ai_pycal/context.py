@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from . import build_info
 from .checks import is_url
 from .models import ProjectProblem
 from .services.identity import GitHubIdentity
@@ -12,6 +13,18 @@ from .theme import COOKIE, Theme
 
 # the choices of the menu of the colors: value, title and icon (ai_pycal/_theme_icon.html)
 THEMES = (("auto", _("As the system")), ("light", _("Light")), ("dark", _("Dark")))
+
+
+def version_text() -> str:
+    """The version and commit that run, for the details of errors.
+
+    Returns:
+        Such as ``1.2.3 (4cbfd3e)``.
+    """
+    build = build_info.get(settings.SOURCE_URL)
+    if not build["commit"] or build["commit"] in build["version"]:
+        return build["version"]
+    return f"{build['version']} ({build['commit']})"
 
 
 def site(request) -> dict:
@@ -59,6 +72,11 @@ def site(request) -> dict:
             "issues": f"{settings.SOURCE_URL.rstrip('/')}/issues/new",
         },
         "footer_links": settings.FOOTER_LINKS,
+        "version": version_text(),
+        # without an app, the sign-in page and the errors offer to register one
+        "github_app_configured": bool(
+            settings.GITHUB_APP_ID and settings.SOCIALACCOUNT_PROVIDERS["github"].get("APP")
+        ),
         "github": GitHubIdentity.of(getattr(request, "user", None)),
         "project_problems": problems,
         "focused": "/pulls/" in request.path

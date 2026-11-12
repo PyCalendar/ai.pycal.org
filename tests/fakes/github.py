@@ -61,6 +61,8 @@ class FakeGitHub:
         self.unreachable = False
         self.refresh_tokens = {"refresh-token"}
         self.oauth_response: httpx.Response | None = None
+        # code of a registration: the app that GitHub created from the manifest
+        self.manifest_codes: dict[str, dict] = {}
 
     # --- setting up the state -------------------------------------------------
 
@@ -143,6 +145,7 @@ class FakeGitHub:
         return httpx.MockTransport(self.handle)
 
     ROUTES = [
+        ("POST", r"/app-manifests/(?P<code>[^/]+)/conversions", "manifest_conversion"),
         ("POST", r"/login/oauth/access_token", "refresh_user_token"),
         ("POST", r"/app/installations/(?P<id>\d+)/access_tokens", "access_token"),
         ("GET", r"/app/installations/(?P<id>\d+)", "installation"),
@@ -183,6 +186,12 @@ class FakeGitHub:
     @staticmethod
     def token(request: httpx.Request) -> str:
         return request.headers.get("Authorization", "").removeprefix("Bearer ")
+
+    def manifest_conversion(self, request, code):
+        """Give the credentials of a new app once, as GitHub does; then the code is gone."""
+        if code not in self.manifest_codes:
+            return self.not_found()
+        return httpx.Response(201, json=self.manifest_codes.pop(code))
 
     def access_token(self, request, id):
         if int(id) not in self.installations:

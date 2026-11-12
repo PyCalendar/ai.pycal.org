@@ -67,8 +67,10 @@ the browser. The start page should load.
 4. Register the GitHub App
 ==========================
 
-Follow one of the setup flows of :doc:`github-app` with the public address as
-the site address:
+Open the public address and press **Register GitHub App**
+(:doc:`github-app-site`): the app gets the public address, its webhook
+included. ``make run`` asks for no setup code. Or follow one of the other
+setup flows of :doc:`github-app` with the public address as the site address:
 
 - :doc:`create-github-app`: enter the public address as **Site URL**. The
   webhook becomes ``https://laptop.tail1234.ts.net/github/webhook/``.

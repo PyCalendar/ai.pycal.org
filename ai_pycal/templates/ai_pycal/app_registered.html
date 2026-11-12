@@ -1,0 +1,26 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "GitHub App registered" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<section class="hero" data-registered-app="{{ app.slug }}">
+  <h1>{% translate "The GitHub App is registered" %}</h1>
+  <p class="lead">{% blocktranslate with name=app.name owner=app.owner.login %}<strong>{{ name }}</strong> belongs to <strong>{{ owner }}</strong> on GitHub. The site uses it now.{% endblocktranslate %}</p>
+</section>
+{% if local %}<p class="message message-warning">{% blocktranslate %}The app has no webhook, because GitHub cannot reach this site. When the site has a public address, add the webhook in the settings of the app on GitHub: the address of the site plus <code>/github/webhook/</code>, and a secret that you also set as <code>GITHUB_WEBHOOK_SECRET</code>.{% endblocktranslate %}</p>{% endif %}
+<div class="columns">
+  <section class="card">
+    <h2>{% translate "Next" %}</h2>
+    <ol class="steps">
+      <li><a href="{% url 'account_login' %}">{% translate "Sign in with GitHub" %}</a></li>
+      <li><a href="{{ install_url }}">{% translate "Install the app on a repository" %}</a></li>
+      <li><a href="{% url 'setup' %}">{% translate "Add the repository on the page Setup" %}</a></li>
+    </ol>
+    <p><a class="button button-quiet" href="{{ app.html_url }}">{% translate "The app on GitHub" %}</a></p>
+  </section>
+  <section class="card">
+    <h2>{% translate "Where the credentials are" %}</h2>
+    <p>{% blocktranslate %}The settings are in <code>{{ env_file }}</code>, the private key in <code>{{ key_file }}</code>. Back up the volume; keep both secret.{% endblocktranslate %}</p>
+    <p>{% if reloaded %}{% translate "The processes of the site restart to read them; this takes a few seconds." %}{% else %}{% translate "The site reads them at every start; settings of the environment take precedence." %}{% endif %}</p>
+  </section>
+</div>
+{% endblock %}

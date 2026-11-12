@@ -34,6 +34,13 @@ Signing
    :members:
    :show-inheritance:
 
+Registering the GitHub App
+==========================
+
+.. automodule:: ai_pycal.errors.registration
+   :members:
+   :show-inheritance:
+
 Setting up repositories
 =======================
 

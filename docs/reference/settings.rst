@@ -41,8 +41,12 @@ and GitHub use.
 2. The GitHub App
 =================
 
-Without these, nobody can sign in and no repository can be added. Create the
-app as :doc:`/how-to/github-app` describes; it shows where each value is.
+Without these, nobody can sign in and no repository can be added. Leave them
+empty and register the app on the site (:doc:`/how-to/github-app-site`): it
+writes them into ``DATA_DIR/.env`` and the key into
+``GITHUB_APP_PRIVATE_KEY_FILE`` or ``DATA_DIR/github-app.pem``. The site reads
+``DATA_DIR/.env`` at every start; a variable of the environment takes
+precedence. Or create the app yourself as :doc:`/how-to/github-app` describes.
 
 ``GITHUB_APP_ID``
    The numeric id of the app.
@@ -70,7 +74,8 @@ app as :doc:`/how-to/github-app` describes; it shows where each value is.
 ===================
 
 ``DATA_DIR``
-   The directory of the SQLite database and the generated secret key.
+   The directory of the SQLite database, the generated secret key and the
+   settings of a GitHub App registered on the site (``DATA_DIR/.env``).
    ``/app/data`` in the image, the volume to back up; :file:`data/` in a
    checkout.
 ``SECRET_KEY``

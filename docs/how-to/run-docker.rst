@@ -40,9 +40,11 @@ pushed image.
 
 #. In Sencho, create the stack ``ai-pycal`` from :file:`docker-compose.yml`
    and put the ``.env`` of the site next to it, with ``SITE_URL``,
-   ``ALLOWED_HOSTS``, ``CSRF_TRUSTED_ORIGINS`` and the settings of the GitHub
-   App (:file:`.env.example` lists them). Copy the private key of the app to
-   ``data/github-app.pem``.
+   ``ALLOWED_HOSTS`` and ``CSRF_TRUSTED_ORIGINS`` (:file:`.env.example` lists
+   all settings).
+#. Open the site and register its GitHub App with **Register GitHub App**
+   (:doc:`github-app-site`); the setup code is in the log of the container.
+   The credentials are saved in ``./data``.
 #. The package ``ghcr.io/pycalendar/ai.pycal.org`` must be public, or Sencho
    must sign in to ghcr.io, to pull the image. Check its visibility in the
    package settings on GitHub after the first push.

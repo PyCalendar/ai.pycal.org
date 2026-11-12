@@ -17,7 +17,9 @@
 <section class="card">
   <h2>{% translate "Configure this site" %}</h2>
   <p class="message message-error">{% translate "This site has no GitHub App yet." %}</p>
-  <p>{% blocktranslate %}For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these six values from your GitHub App:{% endblocktranslate %}</p>
+  <p>{% blocktranslate %}The site can register its GitHub App itself and keep the credentials in its volume.{% endblocktranslate %}</p>
+  <p><a class="button button-accent" href="{% url 'register_app' %}">{% translate "Register GitHub App" %}</a></p>
+  <p>{% blocktranslate %}Or set the credentials yourself. For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these six values from your GitHub App:{% endblocktranslate %}</p>
   <pre><code>GITHUB_APP_ID=
 GITHUB_APP_SLUG=
 GITHUB_CLIENT_ID=
@@ -27,7 +29,7 @@ GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
   <p>{% blocktranslate %}<code>GITHUB_SECRET</code> is the app's client secret. Save its private key as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</code> automatically; restart it after editing the file. It supplies localhost defaults for other required settings. Run <code>make livehtml</code> in another terminal for the local documentation.{% endblocktranslate %}</p>
   <p><a href="{{ links.app_setup }}">{% translate "Choose a GitHub App setup flow" %}</a></p>
   <ul>
-    <li><a href="{{ links.app_create }}">{% translate "App manifest with the submission form (recommended)" %}</a></li>
+    <li><a href="{{ links.app_create }}">{% translate "App manifest with the submission form" %}</a></li>
     <li><a href="{{ links.app_manifest_tutorial }}">{% translate "App manifest CLI flow" %}</a></li>
     <li><a href="{{ links.app_manual_tutorial }}">{% translate "Manual app creation" %}</a></li>
   </ul>

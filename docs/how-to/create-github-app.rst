@@ -2,8 +2,9 @@
 App manifest with the submission form
 =====================================
 
-**Recommended default.** Use this form to register an app with the project's
-required permissions and events. You need a GitHub account allowed to register
+Use this form to register an app with the project's required permissions and
+events, when you set the credentials in the environment yourself. Registering
+the app on the running site (:doc:`github-app-site`) is easier. You need a GitHub account allowed to register
 the app, a browser, and a checkout with ``uv`` installed to save credentials.
 For the other setup flows, return to :doc:`github-app`.
 

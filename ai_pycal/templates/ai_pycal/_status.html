@@ -4,12 +4,24 @@
     <h1 id="status-title">{{ title }}</h1>
     {% if explanation %}<p class="lead">{{ explanation }}</p>{% endif %}
     {% if error.detail %}<p class="detail"><code>{{ error.detail }}</code></p>{% endif %}
+    {% if error.register_app and not github_app_configured %}<p><a class="button button-accent" href="{% url 'register_app' %}">{% translate "Register GitHub App" %}</a></p>{% endif %}
     <p class="status-actions">
       {% if error %}<a class="button" href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a>{% if error.guide_url %} <a class="button button-quiet" href="{{ error.guide_url }}">{{ error.guide_title }}</a>{% endif %}
       <a class="button button-quiet" href="{{ home_url|default:'/' }}">{% translate "Back to the start" %}</a>
       {% else %}<a class="button" href="{{ home_url|default:'/' }}">{% translate "Back to the start" %}</a>
       {% if links.documentation %}<a class="button button-quiet" href="{{ links.documentation }}">{% translate "Documentation" %}</a>{% endif %}{% endif %}
     </p>
+    {% if error %}<details class="copy-details" open>
+      <summary>{% translate "Details to copy" %}</summary>
+      <label class="muted" for="error-details">{% translate "Select the text and copy it into a bug report or a question." %}</label>
+      <textarea id="error-details" class="copy" readonly rows="9" spellcheck="false">Error: {{ error.code }} (HTTP {{ status }})
+Title: {{ error.title }}{% if error.detail %}
+Detail: {{ error.detail }}{% endif %}
+Page: {{ request.get_full_path }}
+Time: {% now "Y-m-d H:i:s" %} UTC
+Version: {{ version|default:"unknown" }}
+Documentation: {{ error.docs_url }}</textarea>
+    </details>{% endif %}
     {% if links.issues %}<p class="status-help">{% blocktranslate with issues=links.issues %}Is this wrong? <a href="{{ issues }}">Report a bug</a> and say what you did before.{% endblocktranslate %}</p>{% endif %}
   </div>
 </section>

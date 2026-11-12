@@ -78,3 +78,13 @@ def test_the_documentation_is_published_on_github_pages():
     assert "path: docs/_build/html" in text
     for path in ("ai_pycal/settings.py", "ai_pycal/errors/base.py", "docs/conf.py", ".env.example"):
         assert "https://docs.ai.pycal.org/" in (ROOT / path).read_text(), path
+
+
+def test_compose_and_image_check_the_health_the_same_way():
+    compose = (ROOT / "docker-compose.yml").read_text()
+    dockerfile = (ROOT / "Dockerfile").read_text()
+    assert 'test: ["CMD", "python", "healthcheck.py"]' in compose
+    assert "CMD python healthcheck.py" in dockerfile
+    for option, value in (("start-period", "60s"), ("interval", "30s"), ("timeout", "10s")):
+        assert f"--{option}={value}" in dockerfile
+        assert f"{option.replace('-', '_')}: {value}" in compose
