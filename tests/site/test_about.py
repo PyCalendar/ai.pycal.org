@@ -18,7 +18,7 @@ BUILD = {
     "message": "Add the <b>about</b> page",
     "committed": "2026-11-12T13:30:00+00:00",
     "tag": "v1.2.3",
-    "build_url": "https://github.com/PyCalendar/ai.pycal.org/actions/runs/43245171349",
+    "build_url": "https://github.com/PyCalendar/sign.pycal.org/actions/runs/43245171349",
 }
 
 
@@ -35,7 +35,7 @@ def built(tmp_path, monkeypatch):
 
 def test_the_about_page_shows_the_build(client, built):
     page = client.get("/about/").content.decode()
-    source = "https://github.com/PyCalendar/ai.pycal.org"
+    source = "https://github.com/PyCalendar/sign.pycal.org"
     assert '<code>4cbfd3e</code> <a class="github-link github-link-icon"' in page
     assert (
         f'href="{source}/commit/{BUILD["commit_full"]}" aria-label="This commit on GitHub"' in page

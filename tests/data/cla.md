@@ -1,6 +1,6 @@
 # Contributor License Agreement (example)
 
-This is a test agreement of [ai.pycal.org](https://ai.pycal.org). It is not
+This is a test agreement of [sign.pycal.org](https://sign.pycal.org). It is not
 legal advice and is not meant to be used as a real contributor license
 agreement.
 

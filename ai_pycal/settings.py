@@ -48,9 +48,9 @@ def kept_secret(name: str) -> str:
 DEBUG = env.bool("DEBUG", default=False)
 SECRET_KEY = kept_secret("SECRET_KEY")
 
-SITE_NAME = env("SITE_NAME", default="ai.pycal.org")
+SITE_NAME = env("SITE_NAME", default="sign.pycal.org")
 # the address of the site: the links of the checks on pull requests and of the emails
-SITE_URL = env("SITE_URL", default="https://ai.pycal.org").rstrip("/")
+SITE_URL = env("SITE_URL", default="https://sign.pycal.org").rstrip("/")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
@@ -177,8 +177,8 @@ THEME = Theme.from_environment(dict(os.environ))
 # the icon: an address (https://...) or the path of a file; FAVICON_FILE is its older name
 FAVICON = env("FAVICON", default="") or env("FAVICON_FILE", default="")
 EXTRA_CSS_URL = env("EXTRA_CSS_URL", default="")
-SOURCE_URL = env("SOURCE_URL", default="https://github.com/PyCalendar/ai.pycal.org")
-DOCS_URL = env("DOCS_URL", default="https://docs.ai.pycal.org/")
+SOURCE_URL = env("SOURCE_URL", default="https://github.com/PyCalendar/sign.pycal.org")
+DOCS_URL = env("DOCS_URL", default="https://docs.sign.pycal.org/")
 # the extra links of the footer and the About page: Title=URL, separated by commas
 FOOTER_LINKS = parse_footer_links(env("FOOTER_LINKS", default=DEFAULT_FOOTER_LINKS))
 

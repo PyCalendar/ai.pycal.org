@@ -37,7 +37,7 @@ Use the same URL with ``.svg`` instead of ``.json`` for an SVG badge:
 
 .. code-block:: markdown
 
-   [![AI policy](https://ai.pycal.org/project/collective/icalendar/contributor/alice/ai-policy.svg)](https://ai.pycal.org/contributor/alice/)
+   [![AI policy](https://sign.pycal.org/project/collective/icalendar/contributor/alice/ai-policy.svg)](https://sign.pycal.org/contributor/alice/)
 
 Both representations return ``Cache-Control: no-store``. Unknown projects or
 policy identifiers return a JSON 404 error with ``error``, ``title``, ``detail``

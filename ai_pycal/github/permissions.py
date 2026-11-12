@@ -82,8 +82,8 @@ def manifest(name: str, url: str) -> dict:
         The manifest, as GitHub reads it.
 
     Examples:
-        >>> manifest("ai.pycal.org", "https://ai.pycal.org")["hook_attributes"]["url"]
-        'https://ai.pycal.org/github/webhook/'
+        >>> manifest("sign.pycal.org", "https://sign.pycal.org")["hook_attributes"]["url"]
+        'https://sign.pycal.org/github/webhook/'
     """
     return {
         "name": name,

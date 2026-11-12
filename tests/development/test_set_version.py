@@ -18,7 +18,7 @@ def test_a_release_in_github_actions():
             "GITHUB_REF_TYPE": "tag",
             "GITHUB_REF_NAME": "v1.2.3",
             "GITHUB_RUN_ID": "43245171349",
-            "GITHUB_REPOSITORY": "PyCalendar/ai.pycal.org",
+            "GITHUB_REPOSITORY": "PyCalendar/sign.pycal.org",
             "GITHUB_SERVER_URL": "https://github.com",
         }
     )
@@ -26,7 +26,7 @@ def test_a_release_in_github_actions():
     assert info["tag"] == "v1.2.3"
     assert info["commit"] == "4cbfd3e"
     assert info["build_url"] == (
-        "https://github.com/PyCalendar/ai.pycal.org/actions/runs/43245171349"
+        "https://github.com/PyCalendar/sign.pycal.org/actions/runs/43245171349"
     )
     assert info["built"].endswith("+00:00")
 

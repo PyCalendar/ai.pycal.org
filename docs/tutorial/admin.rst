@@ -106,4 +106,4 @@ Make the checks required
 ========================
 
 To merge only pull requests whose authors signed, make the checks such as
-``ai.pycal.org/ai-policy`` required in a rule of the default branch on GitHub.
+``sign.pycal.org/ai-policy`` required in a rule of the default branch on GitHub.

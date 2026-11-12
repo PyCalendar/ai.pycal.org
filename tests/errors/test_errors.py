@@ -17,7 +17,7 @@ def test_every_error_explains_itself(name):
     assert cls.title and (cls.title != "Something went wrong" or cls is errors.AgreementError)
     assert cls.__doc__ and len(cls.__doc__.split()) >= 10, "say what happened and what to do"
     assert cls.docs_url() == (
-        f"https://docs.ai.pycal.org/reference/errors.html#{cls.__module__}.{name}"
+        f"https://docs.sign.pycal.org/reference/errors.html#{cls.__module__}.{name}"
     )
     assert cls.__module__.startswith("ai_pycal.errors.")
     assert 400 <= cls.status < 600

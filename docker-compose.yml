@@ -1,4 +1,4 @@
-# The setup of https://docs.ai.pycal.org/how-to/run-docker.html
+# The setup of https://docs.sign.pycal.org/how-to/run-docker.html
 #   cp .env.example .env    # then edit .env
 #   docker compose up -d
 
@@ -10,7 +10,7 @@ x-logging: &logging
 
 services:
   ai-pycal:
-    image: ghcr.io/pycalendar/ai.pycal.org:latest
+    image: ghcr.io/pycalendar/sign.pycal.org:latest
     # build: .   # to use the local code instead
     ports:
       - "5000:5000"

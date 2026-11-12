@@ -35,10 +35,10 @@ packages = ["ai_pycal"]
 package = false  # uv sync installs the dependencies only; the code runs from the checkout
 
 [project.urls]
-Homepage = "https://ai.pycal.org"
-Documentation = "https://docs.ai.pycal.org/"
-Source = "https://github.com/PyCalendar/ai.pycal.org"
-Changelog = "https://docs.ai.pycal.org/changelog.html"
+Homepage = "https://sign.pycal.org"
+Documentation = "https://docs.sign.pycal.org/"
+Source = "https://github.com/PyCalendar/sign.pycal.org"
+Changelog = "https://docs.sign.pycal.org/changelog.html"
 
 [project.optional-dependencies]
 docs = [
@@ -90,7 +90,7 @@ convention = "google"
 [tool.towncrier]
 directory = "news/"
 filename = "docs/changelog.rst"
-issue_format = "`#{issue} <https://github.com/PyCalendar/ai.pycal.org/issues/{issue}>`_"
+issue_format = "`#{issue} <https://github.com/PyCalendar/sign.pycal.org/issues/{issue}>`_"
 start_string = ".. towncrier release notes start\n"
 title_format = "{version} ({project_date})"
 underlines = ["-", "~", "`"]

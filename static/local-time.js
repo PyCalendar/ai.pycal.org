@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 ai.pycal.org contributors
+// SPDX-FileCopyrightText: 2026 sign.pycal.org contributors
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
 // Show the times of the page in the local time of the browser, like GitHub: the text says how

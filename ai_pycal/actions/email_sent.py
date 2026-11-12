@@ -28,5 +28,5 @@ class EmailSent(Action):
         self.sent = send_mail(self.subject, self.body, None, self.recipients)
 
     def text(self) -> str:
-        """Such as ``Email to 2 addresses: New permissions for ai.pycal.org``."""
+        """Such as ``Email to 2 addresses: New permissions for sign.pycal.org``."""
         return f"Email to {len(self.recipients)} addresses: {self.subject}"

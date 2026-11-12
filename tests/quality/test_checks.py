@@ -59,7 +59,7 @@ def test_the_image_is_pushed_after_all_checks_and_deployed():
 
 def test_compose_uses_the_pushed_image():
     compose = (ROOT / "docker-compose.yml").read_text()
-    assert "image: ghcr.io/pycalendar/ai.pycal.org:latest" in compose
+    assert "image: ghcr.io/pycalendar/sign.pycal.org:latest" in compose
     assert "./data:/app/data" in compose
 
 
@@ -77,7 +77,7 @@ def test_the_documentation_is_published_on_github_pages():
     assert "actions/deploy-pages@" in pages
     assert "path: docs/_build/html" in text
     for path in ("ai_pycal/settings.py", "ai_pycal/errors/base.py", "docs/conf.py", ".env.example"):
-        assert "https://docs.ai.pycal.org/" in (ROOT / path).read_text(), path
+        assert "https://docs.sign.pycal.org/" in (ROOT / path).read_text(), path
 
 
 def test_compose_and_image_check_the_health_the_same_way():

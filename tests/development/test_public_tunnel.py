@@ -25,7 +25,7 @@ def test_the_tunnel_address_is_allowed_and_trusted():
 
 
 def test_the_manifest_points_github_to_the_tunnel():
-    app = manifest("ai.pycal.org local", TUNNEL)
+    app = manifest("sign.pycal.org local", TUNNEL)
     assert app["hook_attributes"] == {"url": f"{TUNNEL}/github/webhook/", "active": True}
     assert app["callback_urls"] == [f"{TUNNEL}/accounts/github/login/callback/"]
     assert app["setup_url"] == f"{TUNNEL}/setup/installed/"

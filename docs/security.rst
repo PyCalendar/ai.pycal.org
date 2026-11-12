@@ -3,7 +3,7 @@ Security
 ========
 
 Report security issues privately with a `security advisory
-<https://github.com/PyCalendar/ai.pycal.org/security/advisories/new>`_, not in
+<https://github.com/PyCalendar/sign.pycal.org/security/advisories/new>`_, not in
 a public issue.
 
 The site stores the GitHub id and handle of the people who sign in, the

@@ -4,8 +4,8 @@ Run the site with Docker
 
 .. code-block:: shell
 
-   git clone https://github.com/PyCalendar/ai.pycal.org.git
-   cd ai.pycal.org
+   git clone https://github.com/PyCalendar/sign.pycal.org.git
+   cd sign.pycal.org
    cp .env.example .env    # then edit .env
    docker compose up -d
 
@@ -23,7 +23,7 @@ health check of the container reads ``/health/``.
 Images
 ======
 
-The CI pushes the image to ``ghcr.io/pycalendar/ai.pycal.org`` after all
+The CI pushes the image to ``ghcr.io/pycalendar/sign.pycal.org`` after all
 checks passed: ``latest`` for each commit of ``main``; ``stable``, ``1.2.3``
 and ``1.2`` for a tag ``v1.2.3``; for ``linux/amd64`` and ``linux/arm64``.
 Before that, it starts the image until Docker sees it healthy
@@ -33,6 +33,13 @@ the image to a file for Trivy, so Trivy needs no access to the Docker socket.
 
 Deploy with Sencho
 ==================
+
+The example deployment of the Python Calendaring Ecosystem is
+https://sign.pycal.org, deployed this way. Its status:
+
+.. image:: https://kuma.hosted.quelltext.eu/api/badge/48/status
+   :alt: Status of sign.pycal.org
+   :target: https://kuma.hosted.quelltext.eu/status/pycal
 
 Sencho runs the stack of
 :file:`docker-compose.yml` on the server, and the CI updates it after each
@@ -45,7 +52,7 @@ pushed image.
 #. Open the site and register its GitHub App with **Register GitHub App**
    (:doc:`github-app-site`); the setup code is in the log of the container.
    The credentials are saved in ``./data``.
-#. The package ``ghcr.io/pycalendar/ai.pycal.org`` must be public, or Sencho
+#. The package ``ghcr.io/pycalendar/sign.pycal.org`` must be public, or Sencho
    must sign in to ghcr.io, to pull the image. Check its visibility in the
    package settings on GitHub after the first push.
 #. Create an API token in Sencho. In the settings of the repository on
@@ -58,7 +65,7 @@ pushed image.
    the job pushes the image and deploys nothing.
 
 The health check sends the first host of ``ALLOWED_HOSTS``: with only
-``ai.pycal.org`` allowed, Django would refuse a request for ``127.0.0.1``,
+``sign.pycal.org`` allowed, Django would refuse a request for ``127.0.0.1``,
 and Sencho would see the container as unhealthy. Sencho can also scan what it
 deploys; that needs Trivy on the server itself.
 

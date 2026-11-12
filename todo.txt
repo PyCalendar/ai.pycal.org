@@ -431,3 +431,25 @@
       on GitHub, so it is hidden from visitors (make it public on GitHub to show it).
 - [x] CI: pushes to main are never cancelled, so every push deploys (runs after 0ce38a2 were cancelled).
 - [x] The licenses are linked from the About page, not from the footer.
+
+## 2026-11-12: background updates, merged state, minimal pull request page
+
+- [ ] A restart can lose webhooks: a background process at start (and then regularly) updates every
+      repository: configuration, agreements, open pull requests, and the state of closed ones.
+- [ ] Merged pull requests show as merged (purple), also those closed before the site kept "merged":
+      the background update reads their state from GitHub.
+- [ ] Pull request page: no "Read the agreement · Version" and no text of the agreement; a minimal list.
+- [ ] Gear: the configuration shows the id of the agreement (its key) instead of the path; GitHub icon stays.
+- [ ] Mandatory or optional belongs to a version of the configuration: show it per version in the
+      menus of versions (keep it with the version an agreement was asked for).
+- [x] Every prompt is recorded here as a checkbox.
+
+## 2026-11-12: move to sign.pycal.org
+
+- [x] Site https://sign.pycal.org, documentation https://docs.sign.pycal.org (decided by the person),
+      repository PyCalendar/sign.pycal.org (renamed by the person), image ghcr.io/pycalendar/sign.pycal.org;
+      the GitHub environment keeps its name ai.pycal.org (it holds SENCHO_TOKEN); local remote updated.
+- [x] Status badge of the example deployment in the README and the documentation of the deployment.
+- [ ] The person: DNS for sign.pycal.org and docs.sign.pycal.org; GitHub App URLs (homepage, callback,
+      setup, webhook) to sign.pycal.org; Sencho: .env (SITE_URL, ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS) and
+      the image name of the stack.

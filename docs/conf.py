@@ -1,4 +1,4 @@
-"""Sphinx configuration for the documentation of ai.pycal.org."""
+"""Sphinx configuration for the documentation of sign.pycal.org."""
 
 import datetime
 import os
@@ -15,9 +15,9 @@ import django  # noqa: E402
 
 django.setup()
 
-project = "ai.pycal.org"
-copyright = f"{datetime.date.today().year}, ai.pycal.org contributors"  # noqa: A001
-author = "ai.pycal.org contributors"
+project = "sign.pycal.org"
+copyright = f"{datetime.date.today().year}, sign.pycal.org contributors"  # noqa: A001
+author = "sign.pycal.org contributors"
 
 extensions = [
     "github_app_form",
@@ -29,8 +29,8 @@ extensions = [
     "sphinx_issues",
 ]
 
-html_baseurl = "https://docs.ai.pycal.org/"
-issues_github_path = "PyCalendar/ai.pycal.org"
+html_baseurl = "https://docs.sign.pycal.org/"
+issues_github_path = "PyCalendar/sign.pycal.org"
 
 html_theme = "pydata_sphinx_theme"
 html_favicon = "../static/img/favicon.png"
@@ -39,18 +39,18 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/PyCalendar/ai.pycal.org",
+            "url": "https://github.com/PyCalendar/sign.pycal.org",
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
         },
     ],
-    "logo": {"text": "ai.pycal.org"},
+    "logo": {"text": "sign.pycal.org"},
     "show_toc_level": 2,
     "navigation_with_keys": True,
 }
 html_context = {
     "github_user": "PyCalendar",
-    "github_repo": "ai.pycal.org",
+    "github_repo": "sign.pycal.org",
     "github_version": "main",
     "doc_path": "docs",
 }

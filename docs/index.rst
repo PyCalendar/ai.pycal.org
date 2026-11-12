@@ -1,8 +1,8 @@
-============
-ai.pycal.org
-============
+==============
+sign.pycal.org
+==============
 
-`ai.pycal.org <https://ai.pycal.org>`_ lets contributors sign the agreements
+`sign.pycal.org <https://sign.pycal.org>`_ lets contributors sign the agreements
 that a project asks of them, such as an AI policy or a contributor license
 agreement. The pull requests of the contributors show what they signed: the
 GitHub App labels them and adds a check for each agreement.

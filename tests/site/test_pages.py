@@ -12,7 +12,7 @@ def test_the_start_page(client):
     page = client.get("/").content.decode()
     assert "Agreements for pull requests" in page
     assert "Sign in with GitHub" in page
-    assert "https://docs.ai.pycal.org/" in page
+    assert "https://docs.sign.pycal.org/" in page
 
 
 def test_sign_in_without_an_app_offers_to_register_it(client, settings):

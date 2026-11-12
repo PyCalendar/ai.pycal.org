@@ -22,17 +22,17 @@ and GitHub use.
 
 ``SITE_URL``
    The address of the site, without ``/`` at the end, such as
-   ``https://ai.pycal.org``. The checks of the pull requests, the emails and
+   ``https://sign.pycal.org``. The checks of the pull requests, the emails and
    the GitHub App link to it, and the sign-in callback uses its scheme.
-   Default ``https://ai.pycal.org``; ``make run`` uses
+   Default ``https://sign.pycal.org``; ``make run`` uses
    ``http://localhost:5000``.
 ``ALLOWED_HOSTS``
-   The host names of the site, comma separated, such as ``ai.pycal.org``.
+   The host names of the site, comma separated, such as ``sign.pycal.org``.
    Requests for other hosts are refused. The health check of the container
    sends the first one. Default ``*`` (any host); ``make run`` derives it from
    ``SITE_URL``.
 ``CSRF_TRUSTED_ORIGINS``
-   The address of the site with its scheme, such as ``https://ai.pycal.org``,
+   The address of the site with its scheme, such as ``https://sign.pycal.org``,
    comma separated. Forms sent from other origins are refused. Default none;
    ``make run`` derives it from ``SITE_URL``.
 
@@ -119,7 +119,7 @@ emails are written to the log.
 =======================
 
 ``SITE_NAME``
-   The name in the menu, the titles and the emails. Default ``ai.pycal.org``;
+   The name in the menu, the titles and the emails. Default ``sign.pycal.org``;
    ``make run`` uses the host of ``SITE_URL``.
 ``STATUS_CONTEXT``
    The start of the names of the checks on pull requests:
@@ -133,10 +133,10 @@ emails are written to the log.
    start with :class:`~ai_pycal.errors.configuration.InvalidFooterLink`.
 ``SOURCE_URL``
    The repository of the code, for the links of the About page.
-   Default ``https://github.com/PyCalendar/ai.pycal.org``.
+   Default ``https://github.com/PyCalendar/sign.pycal.org``.
 ``DOCS_URL``
    The documentation, for the About page and the links of the errors and emails.
-   Default ``https://docs.ai.pycal.org/``; ``make run``
+   Default ``https://docs.sign.pycal.org/``; ``make run``
    uses the local ``make livehtml`` server at ``http://localhost:8000/``. Set
    ``DOCS_PORT`` on both commands to use a different local port.
 ``COLOR_<NAME>``, ``COLOR_DARK_<NAME>``

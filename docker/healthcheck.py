@@ -17,8 +17,8 @@ def allowed_host(allowed_hosts: str) -> str:
         The host; for ``*`` or nothing, 127.0.0.1.
 
     Examples:
-        >>> allowed_host("ai.pycal.org,www.ai.pycal.org")
-        'ai.pycal.org'
+        >>> allowed_host("sign.pycal.org,www.sign.pycal.org")
+        'sign.pycal.org'
         >>> allowed_host("*")
         '127.0.0.1'
     """

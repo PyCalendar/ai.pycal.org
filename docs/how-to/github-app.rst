@@ -2,7 +2,7 @@
 Set up the GitHub App
 =====================
 
-This guide is for the person running an instance of ai.pycal.org. Create one
+This guide is for the person running an instance of sign.pycal.org. Create one
 GitHub App for the site, then configure the site with that app's credentials.
 Maintainers using an already configured site can go straight to
 :doc:`/tutorial/admin` to install its app on a repository.

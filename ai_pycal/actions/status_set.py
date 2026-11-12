@@ -14,7 +14,7 @@ class StatusSet(Action):
         Args:
             api: The requests to GitHub of the repository.
             pull: The pull request.
-            context: The name of the check, such as ``ai.pycal.org/cla``.
+            context: The name of the check, such as ``sign.pycal.org/cla``.
             state: ``success``, ``pending`` or ``error``.
             description: The text of the check.
             url: Where the check links to.
@@ -35,5 +35,5 @@ class StatusSet(Action):
         )
 
     def text(self) -> str:
-        """Such as ``Check ai.pycal.org/cla of #3: pending, @alice: please sign CLA``."""
+        """Such as ``Check sign.pycal.org/cla of #3: pending, @alice: please sign CLA``."""
         return f"Check {self.context} of #{self.pull.number}: {self.state}, {self.description}"

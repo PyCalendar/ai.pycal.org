@@ -8,7 +8,7 @@ a minute and is done once for each version of an agreement, for all
 repositories that ask for it.
 
 1. Open your pull request on GitHub. In the checks, each agreement has an entry
-   such as ``ai.pycal.org/ai-policy — @you: please sign AI Policy``. Select
+   such as ``sign.pycal.org/ai-policy — @you: please sign AI Policy``. Select
    **Details**.
 2. The page lists the agreements of the pull request. Select the agreement.
 3. Select **Sign in with GitHub**. GitHub asks you to authorize the app. The app

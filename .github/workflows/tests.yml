@@ -1,7 +1,7 @@
 # The checks of every change. The Docker image is pushed to ghcr.io only if all of them pass:
 # "latest" for every commit of main; "stable", "1.2.3" and "1.2" for a tag v1.2.3; each for
 # linux/amd64 and linux/arm64. Then Sencho updates the stack of the site (docs/how-to/run-docker.rst).
-# The documentation of main is published on GitHub Pages: https://docs.ai.pycal.org/
+# The documentation of main is published on GitHub Pages: https://docs.sign.pycal.org/
 name: tests
 
 on:
@@ -123,8 +123,9 @@ jobs:
       cancel-in-progress: false
     # the secret SENCHO_TOKEN belongs to this environment of the repository
     environment:
+      # the environment keeps its first name: it holds the secret SENCHO_TOKEN
       name: ai.pycal.org
-      url: https://ai.pycal.org
+      url: https://sign.pycal.org
     steps:
       - name: Update the stack
         run: |
@@ -155,7 +156,7 @@ jobs:
           path: docs/_build/html
 
   pages:
-    name: Publish the documentation on docs.ai.pycal.org
+    name: Publish the documentation on docs.sign.pycal.org
     needs: [docs, test]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04

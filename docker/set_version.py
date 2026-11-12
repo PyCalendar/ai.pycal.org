@@ -65,7 +65,7 @@ def build_info(environ: dict[str, str]) -> dict[str, str]:
     build_url = ""
     if environ.get("GITHUB_RUN_ID"):
         server = environ.get("GITHUB_SERVER_URL", "https://github.com")
-        repository = environ.get("GITHUB_REPOSITORY", "PyCalendar/ai.pycal.org")
+        repository = environ.get("GITHUB_REPOSITORY", "PyCalendar/sign.pycal.org")
         build_url = f"{server}/{repository}/actions/runs/{environ['GITHUB_RUN_ID']}"
     return {
         "version": version(environ),

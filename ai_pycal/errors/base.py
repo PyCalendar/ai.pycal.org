@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-DOCS = "https://docs.ai.pycal.org/"
+DOCS = "https://docs.sign.pycal.org/"
 DOCS_URL = f"{DOCS}reference/errors.html"
 
 
@@ -48,7 +48,7 @@ class AgreementError(Exception):
 
         Examples:
             >>> UnexpectedError.docs_url()
-            'https://docs.ai.pycal.org/reference/errors.html#ai_pycal.errors.base.UnexpectedError'
+            'https://docs.sign.pycal.org/reference/errors.html#ai_pycal.errors.base.UnexpectedError'
         """
         docs = settings.DOCS_URL.rstrip("/") + "/"
         return f"{docs}reference/errors.html#{cls.__module__}.{cls.__name__}"

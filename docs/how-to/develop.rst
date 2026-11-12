@@ -149,11 +149,11 @@ Publish the documentation
 =========================
 
 The CI builds this documentation with ``make docs`` for every change and
-publishes the build of ``main`` on GitHub Pages at https://docs.ai.pycal.org/
+publishes the build of ``main`` on GitHub Pages at https://docs.sign.pycal.org/
 (the jobs ``docs`` and ``pages`` of :file:`.github/workflows/tests.yml`).
 Pull requests build it without publishing; warnings fail the build.
 
 The repository has GitHub Pages set to *GitHub Actions* with the custom domain
-``docs.ai.pycal.org``. The DNS of ``pycal.org`` needs the record
-``docs.ai.pycal.org. CNAME pycalendar.github.io.``; after GitHub checked it,
+``docs.sign.pycal.org``. The DNS of ``pycal.org`` needs the record
+``docs.sign.pycal.org. CNAME pycalendar.github.io.``; after GitHub checked it,
 enable **Enforce HTTPS** in the Pages settings of the repository.

@@ -1,6 +1,6 @@
 # AI Policy (example)
 
-This is a test agreement of [ai.pycal.org](https://ai.pycal.org). It is modelled
+This is a test agreement of [sign.pycal.org](https://sign.pycal.org). It is modelled
 on the AI policy of the Python Calendaring Ecosystem, but it is not that policy.
 
 By signing, I, the contributor, agree to the following for every pull request I

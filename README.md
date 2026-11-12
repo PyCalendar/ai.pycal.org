@@ -1,11 +1,12 @@
-# ai.pycal.org
+# sign.pycal.org
 
-[![Documentation](https://img.shields.io/badge/docs-docs.ai.pycal.org-3b79aa)](https://docs.ai.pycal.org/)
+[![Documentation](https://img.shields.io/badge/docs-docs.sign.pycal.org-3b79aa)](https://docs.sign.pycal.org/)
 ![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)
+[![Status of sign.pycal.org](https://kuma.hosted.quelltext.eu/api/badge/48/status)](https://kuma.hosted.quelltext.eu/status/pycal)
 
 Contributors sign the agreements a project asks of them, such as an **AI
 policy** or a **contributor license agreement**, at
-[ai.pycal.org](https://ai.pycal.org). Their pull requests show it: the GitHub App
+[sign.pycal.org](https://sign.pycal.org). Their pull requests show it: the GitHub App
 labels them and adds a check for each agreement, with a link to sign.
 
 - **Contributors** sign in with GitHub (the site only reads the handle), read
@@ -46,13 +47,13 @@ See the configuration reference for a full choices example and migration instruc
 
 ## Documentation
 
-- [Set up the GitHub App: submission form (recommended), CLI or manual](https://docs.ai.pycal.org/how-to/github-app.html)
-- [Sign an agreement](https://docs.ai.pycal.org/tutorial/sign.html)
-- [Set up a repository](https://docs.ai.pycal.org/tutorial/admin.html)
-- [The configuration file](https://docs.ai.pycal.org/reference/config-file.html)
-- [Run the site with Docker](https://docs.ai.pycal.org/how-to/run-docker.html)
-- [Change the colors and the icon](https://docs.ai.pycal.org/how-to/brand.html)
-- [Errors](https://docs.ai.pycal.org/reference/errors.html)
+- [Set up the GitHub App: submission form (recommended), CLI or manual](https://docs.sign.pycal.org/how-to/github-app.html)
+- [Sign an agreement](https://docs.sign.pycal.org/tutorial/sign.html)
+- [Set up a repository](https://docs.sign.pycal.org/tutorial/admin.html)
+- [The configuration file](https://docs.sign.pycal.org/reference/config-file.html)
+- [Run the site with Docker](https://docs.sign.pycal.org/how-to/run-docker.html)
+- [Change the colors and the icon](https://docs.sign.pycal.org/how-to/brand.html)
+- [Errors](https://docs.sign.pycal.org/reference/errors.html)
 
 ## Development
 
