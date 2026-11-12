@@ -88,3 +88,10 @@ def test_compose_and_image_check_the_health_the_same_way():
     for option, value in (("start-period", "60s"), ("interval", "30s"), ("timeout", "10s")):
         assert f"--{option}={value}" in dockerfile
         assert f"{option.replace('-', '_')}: {value}" in compose
+
+
+def test_the_backgrounds_of_agreements_are_stronger_than_cards():
+    css = (ROOT / "static" / "style.css").read_text()
+    for state in ("signed", "missing", "optional"):
+        assert f".card.state-{state}" in css
+        assert f"var(--{state}-bg)" in css

@@ -32,6 +32,7 @@ from ai_pycal.services.rendering import render as markdown
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.visibility import visible_projects
 
+from .agreements import handle_pattern
 from .setup import may_update
 
 
@@ -270,8 +271,46 @@ def assert_author(request, pull):
     return identity
 
 
+def my_pulls(request, repository, identity):
+    """The pull requests of the visitor in a project, for the menu of the title.
+
+    Args:
+        request: The request; ``q`` filters by title or number.
+        repository: The project.
+        identity: The GitHub identity of the visitor, or None.
+
+    Returns:
+        The pull requests, the highest number first; none for visitors.
+    """
+    if identity is None:
+        return []
+    found = repository.pull_requests.filter(author_github_id=identity.github_id).order_by("-number")
+    query = request.GET.get("q", "").strip()
+    if query:
+        number = query.lstrip("#")
+        condition = Q(title__icontains=query)
+        if number.isdigit():
+            condition |= Q(number=int(number))
+        found = found.filter(condition)
+    return list(found[:50])
+
+
 def pull(request, owner: str, repo: str, number: int):
-    """A focused page with a public policy summary and author-only signing forms."""
+    """A focused page with a public policy summary and author-only signing forms.
+
+    Every agreement of the project is listed with its color: signed (green), unsigned
+    and needed for this pull request (red), unsigned and optional (yellow). An outdated
+    signature counts as unsigned.
+
+    Args:
+        request: The request.
+        owner: The owner of the repository.
+        repo: The name of the repository.
+        number: The number of the pull request.
+
+    Returns:
+        The page.
+    """
     item = pull_for(request, owner, repo, number)
     check = PullRequestCheck(item)
     identity = GitHubIdentity.of(request.user)
@@ -305,6 +344,9 @@ def pull(request, owner: str, repo: str, number: int):
             "needs_signing": any(state.required and not state.signed for state in states),
             "focused": True,
             "here": here,
+            "my_pulls": my_pulls(request, item.repository, identity),
+            "query": request.GET.get("q", ""),
+            "handle_pattern": handle_pattern(identity.login) if identity else "",
         },
     )
 
@@ -361,7 +403,13 @@ def sign_pull(request, owner: str, repo: str, number: int):
     item = pull_for(request, owner, repo, number)
     identity = assert_author(request, item)
     signer = Signer(request.user, identity)
-    states = [s for s in PullRequestCheck(item).states() if s.required and not s.signed]
+    unsigned = [s for s in PullRequestCheck(item).states() if not s.signed]
+    # the required agreements must all be accepted; optional ones are signed if ticked
+    states = [
+        s
+        for s in unsigned
+        if s.required or request.POST.get(f"accept_{s.agreement.version_id}") == "yes"
+    ]
     for state in states:
         signer.validate(
             state.agreement.version,
@@ -376,7 +424,7 @@ def sign_pull(request, owner: str, repo: str, number: int):
             request.POST.get("handle", ""),
             request.POST.get(f"shown_{state.agreement.version_id}", ""),
         )
-    messages.success(request, "You signed the required agreements.")
+    messages.success(request, "You signed the agreements.")
     return redirect("project_pull", owner=owner, repo=repo, number=number)
 
 

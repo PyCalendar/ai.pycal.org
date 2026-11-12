@@ -29,6 +29,10 @@ LIGHT = {
     "success": "#1d6b33",
     "warning": "#7a5300",
     "danger": "#a3242f",
+    # the backgrounds of agreements for me: signed, missing (mandatory), optional and unsigned
+    "signed_bg": "#e7f4ea",
+    "missing_bg": "#fbe8ea",
+    "optional_bg": "#fdf3d3",
 }
 DARK = {
     "primary": "#8fbbe0",
@@ -40,12 +44,15 @@ DARK = {
     "nav_text": "#ffffff",
     "surface": "#111820",
     "surface_tint": "#1b2733",
-    "text": "#e6edf3",
+    "text": "#d3dae1",  # a little less white than #fff: contrast 12.7 on the surface
     "text_muted": "#a8b5c2",
     "border": "#34475a",
     "success": "#7fd18f",
     "warning": "#f2c55c",
     "danger": "#f1aeb5",
+    "signed_bg": "#14291c",
+    "missing_bg": "#33181c",
+    "optional_bg": "#2e2610",
 }
 
 

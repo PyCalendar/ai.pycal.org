@@ -126,16 +126,16 @@ emails are written to the log.
    ``<STATUS_CONTEXT>/<agreement>``. Default ``SITE_NAME``. Changing it
    creates new checks; update the required checks of the branch protection.
 ``FOOTER_LINKS``
-   The extra links of the footer and the About page: ``Title=URL`` entries,
+   The extra links of the About page: ``Title=URL`` entries,
    comma separated, such as
    ``pycal.org=https://pycal.org,Blog=https://example.org/blog/``. Default
    ``pycal.org=https://pycal.org``; empty for none. A wrong entry stops the
    start with :class:`~ai_pycal.errors.configuration.InvalidFooterLink`.
 ``SOURCE_URL``
-   The repository of the code, for the links of the footer and the About page.
+   The repository of the code, for the links of the About page.
    Default ``https://github.com/PyCalendar/ai.pycal.org``.
 ``DOCS_URL``
-   The documentation, for the footer and the links of the errors and emails.
+   The documentation, for the About page and the links of the errors and emails.
    Default ``https://docs.ai.pycal.org/``; ``make run``
    uses the local ``make livehtml`` server at ``http://localhost:8000/``. Set
    ``DOCS_PORT`` on both commands to use a different local port.

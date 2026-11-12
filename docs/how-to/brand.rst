@@ -64,6 +64,15 @@ is dark or when the visitor chooses them (see :ref:`theme-switch`). The values a
    * - ``COLOR_DANGER``
      - ``#a3242f``
      - errors and removed lines
+   * - ``COLOR_SIGNED_BG``
+     - ``#e7f4ea``
+     - the background of agreements I signed
+   * - ``COLOR_MISSING_BG``
+     - ``#fbe8ea``
+     - the background of agreements I must sign
+   * - ``COLOR_OPTIONAL_BG``
+     - ``#fdf3d3``
+     - the background of optional agreements I did not sign
 
 For example:
 
@@ -72,6 +81,10 @@ For example:
    COLOR_PRIMARY=#7a1f5c
    COLOR_NAV=#4a1238
    COLOR_DARK_PRIMARY=#f0a8d8
+
+The dark colors of the backgrounds are ``#14291c``, ``#33181c`` and
+``#2e2610``. All text on these backgrounds has a contrast of at least 4.5:1
+(WCAG AA); check it again when you change them.
 
 A wrong value stops the start of the site with
 :class:`~ai_pycal.errors.configuration.InvalidColor` or

@@ -81,6 +81,17 @@ h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weig
 #view-changes:checked ~ .tab-changes { display: block; }
 #view-changes:checked ~ .tab-agreement { display: none; }
 .version { font-size: .95rem; }
+/* The state of an agreement for me: signed (green), missing (red), optional and unsigned (yellow). */
+.state-signed, .card.state-signed { background: var(--signed-bg); border-color: color-mix(in srgb, var(--success) 45%, var(--border)); }
+.state-missing, .card.state-missing { background: var(--missing-bg); border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); }
+.state-optional, .card.state-optional { background: var(--optional-bg); border-color: color-mix(in srgb, var(--warning) 45%, var(--border)); }
+li.state-signed, li.state-missing, li.state-optional { border: 1px solid; border-radius: .4rem; padding: .45rem .7rem; margin: .4rem 0; list-style: none; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.pull-menu .menu-panel { position: absolute; z-index: 20; left: 0; top: calc(100% + .3rem); min-width: 20rem; max-width: 90vw; padding: .5rem; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; box-shadow: 0 .4rem 1.2rem rgba(0, 0, 0, .2); }
+.pull-menu .menu-panel ul { position: static; box-shadow: none; border: 0; padding: .3rem 0 0; min-width: 0; }
+.menu-filter { display: flex; gap: .4rem; }
+.menu-filter input { flex: 1; min-width: 0; }
+.crumb-menu a[aria-current="page"] { font-weight: 700; }
 .card-title { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
 .card-title h3 { margin-top: 0; }
 .card-title .tech-menu dl { left: auto; right: 0; }
@@ -157,15 +168,19 @@ form.stacked small { display: block; color: var(--text-muted); margin-top: .2rem
 .badge-success { color: var(--success); }
 .badge-warning { color: var(--warning); }
 .badge-error { color: var(--danger); }
-.badge-strong { color: var(--primary); }
+.badge.muted { color: var(--text-muted); }  /* optional: gray */
+.badge-strong { color: var(--text); }  /* mandatory: black on light backgrounds */
 .badges { display: inline-flex; flex-wrap: wrap; gap: .3rem; vertical-align: middle; font-weight: 400; }
 
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { text-align: left; padding: .4rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
 .list { padding-left: 1.2rem; }
+.list.to-sign { padding-left: 0; }
 .facts th { width: 8rem; white-space: nowrap; color: var(--text-muted); font-weight: 600; }
 .list li { margin: .3rem 0; }
 .steps li { margin: .4rem 0; }
+/* a numbered list that is a card: room for the numbers inside its border */
+ol.card, ul.card { padding-left: 2.75rem; }
 
 .agreement { overflow-wrap: anywhere; }
 .agreement-text { white-space: pre-wrap; }

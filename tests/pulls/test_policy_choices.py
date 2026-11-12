@@ -69,10 +69,11 @@ def page_url(number=1):
 
 def accept_required(client, number=1):
     page = client.get(page_url(number)).content.decode()
-    tokens = re.findall(r'name="shown_(\d+)" value="([^"]+)"', page)
+    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
+    required = re.findall(r'name="accept_(\d+)" value="yes" required', page)
     data = {"handle": "alice"}
-    for pk, token in tokens:
-        data[f"shown_{pk}"] = token
+    for pk in required:  # as a person who ticks only the required agreements
+        data[f"shown_{pk}"] = tokens[pk]
         data[f"accept_{pk}"] = "yes"
     return client.post(page_url(number) + "sign/", data)
 
@@ -136,7 +137,7 @@ def test_public_pr_is_focused_and_never_offers_signing_for_someone_else(
 ):
     open_pull(client, github)
     page = client.get(page_url()).content.decode()
-    assert "Log in to sign agreements" in page
+    assert "Sign in to sign agreements" in page
     assert "AI allowed" in page and "Mandatory" in page
     assert "<footer" not in page and ">Setup<" not in page
     client.force_login(bob)
@@ -243,12 +244,13 @@ def test_bulk_signing_validates_every_agreement_before_saving_any(
     open_pull(client, github)
     client.force_login(alice)
     page = client.get(page_url()).content.decode()
-    tokens = re.findall(r'name="shown_(\d+)" value="([^"]+)"', page)
+    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
+    required = re.findall(r'name="accept_(\d+)" value="yes" required', page)
     data = {"handle": "alice"}
-    for pk, token in tokens:
-        data[f"shown_{pk}"] = token
+    for pk in required:  # as a person who ticks only the required agreements
+        data[f"shown_{pk}"] = tokens[pk]
         data[f"accept_{pk}"] = "yes"
-    data[f"shown_{tokens[-1][0]}"] = "forged"
+    data[f"shown_{required[-1]}"] = "forged"
     response = client.post(page_url() + "sign/", data)
     assert response.status_code == 400
     assert Signature.objects.count() == 0
@@ -263,3 +265,47 @@ def test_selected_choice_is_authorized_but_does_not_sign_agreements(
     assert Signature.objects.count() == 0
     assert "human-choice" in github.labels[(REPOSITORY, 1)]
     assert client.get(page_url() + "sign/").status_code == 405
+
+
+def test_every_agreement_is_listed_with_its_color(client, github, policy_project, alice):
+    open_pull(client, github)
+    client.force_login(alice)
+    page = client.get(page_url()).content.decode()
+    states = dict(re.findall(r'data-agreement="([\w-]+)" data-state="(\w+)"', page))
+    assert set(states) == {a.key for a in policy_project.required_agreements.all()}
+    assert "missing" in states.values() and "optional" in states.values()
+    assert "Other project agreements" not in page and "Project agreements</a>" not in page
+    accept_required(client)
+    page = client.get(page_url()).content.decode()
+    states = dict(re.findall(r'data-agreement="([\w-]+)" data-state="(\w+)"', page))
+    assert "missing" not in states.values() and "signed" in states.values()
+
+
+def test_optional_agreements_can_be_signed_on_the_page(client, github, policy_project, alice):
+    open_pull(client, github)
+    client.force_login(alice)
+    page = client.get(page_url()).content.decode()
+    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
+    data = {"handle": "alice"}
+    for pk, token in tokens.items():
+        data[f"shown_{pk}"] = token
+        data[f"accept_{pk}"] = "yes"
+    assert client.post(page_url() + "sign/", data).status_code == 302
+    assert Signature.objects.count() == len(tokens)
+
+
+def test_the_title_has_the_path_and_a_menu_of_my_pull_requests(
+    client, github, policy_project, alice
+):
+    open_pull(client, github, 1)
+    open_pull(client, github, 2)
+    client.force_login(alice)
+    page = client.get(page_url(1)).content.decode()
+    title = page.split('<h1 class="crumbs-path">')[1].split("</h1>")[0]
+    assert '<a href="/projects/PyCalendar/">PyCalendar</a>' in title and ">#1</a>" in title
+    menu = page.split('class="crumb-menu pull-menu"')[1].split("</details>")[0]
+    assert menu.index("#2</span>") < menu.index("#1</span>")  # the highest number first
+    filtered = client.get(page_url(1) + "?q=%232").content.decode()
+    menu = filtered.split('class="crumb-menu pull-menu"')[1].split("</details>")[0]
+    assert "#2</span>" in menu and "#1</span>" not in menu
+    assert 'pull-menu" open' in filtered

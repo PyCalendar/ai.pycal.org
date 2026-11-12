@@ -40,11 +40,6 @@
   <div class="wrap footer-row">
     <ul class="footer-links">
       <li><a href="{% url 'about' %}">{% translate "About" %}</a></li>
-      <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
-      <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
-      <li>{% translate "Source code" as source %}{% github_link links.source source source %}</li>
-      <li>{% translate "Report a bug" as bug %}{% github_link links.issues bug bug %}</li>
-      {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
     </ul>
     <small>AGPL-3.0-or-later</small>
   </div>

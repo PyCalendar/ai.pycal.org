@@ -76,7 +76,7 @@ def test_pages_can_not_be_framed(client):
 def test_documentation_navigation_and_error_help_share_the_configured_url(client, settings, url):
     settings.DOCS_URL = url
     base = url.rstrip("/") + "/"
-    page = client.get("/").content.decode()
+    page = client.get("/about/").content.decode()
     assert f'href="{base}"' in page
     assert f'href="{base}changelog.html"' in page
     settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}

@@ -81,16 +81,17 @@ def _no_git(*args, **kwargs):
     raise FileNotFoundError("git")
 
 
-def test_the_footer_links_to_about_and_pycal(client):
+def test_the_footer_links_only_to_about(client):
     page = client.get("/").content.decode()
-    footer = page.split('<footer class="footer">')[1]
-    assert 'href="/about/"' in footer
-    assert '<a href="https://pycal.org">pycal.org</a>' in footer
+    footer = page.split('<footer class="footer">')[1].split("</footer>")[0]
+    assert footer.count("<a ") == 1 and 'href="/about/"' in footer
+    about = client.get("/about/").content.decode()
+    assert '<a href="https://pycal.org">pycal.org</a>' in about
 
 
 def test_the_footer_links_can_be_changed(client, settings):
     settings.FOOTER_LINKS = [("Example", "https://example.org/"), ("Blog", "https://b.example/")]
-    for url in ("/", "/about/"):
+    for url in ("/about/",):
         page = client.get(url).content.decode()
         assert '<a href="https://example.org/">Example</a>' in page
         assert '<a href="https://b.example/">Blog</a>' in page

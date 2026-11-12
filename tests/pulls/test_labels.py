@@ -88,11 +88,11 @@ agreements:
 def test_the_page_of_a_pull_request_shows_the_agreements(client, github, repository, alice):
     send_webhook(client, "pull_request", pull_payload(github, 1))
     page = client.get(f"/repository/{REPOSITORY}/pull/1/").content.decode()
-    assert 'data-agreement="ai-policy"' in page and "not signed" in page
+    assert 'data-agreement="ai-policy"' in page and "Unsigned" in page
     client.force_login(alice)
     sign_agreement(client, versions(repository)["ai-policy"], "alice")
     page = client.get(f"/repository/{REPOSITORY}/pull/1/").content.decode()
-    assert page.count("badge-warning") == 1
+    assert page.count('data-state="missing"') == 1
 
 
 def test_an_unknown_pull_request_has_its_error(client, repository):
@@ -162,3 +162,17 @@ def test_an_unsigned_label_shared_by_agreements_stays_until_all_are_signed():
     assert "a" in add and "b" in remove
     add, remove = PullRequestCheck.labels([state(True, ["a"], ["missing"])])
     assert add == {"a"} and remove == {"missing"}
+
+
+def test_a_reopened_pull_request_gets_the_labels_of_the_changed_agreement(
+    client, github, repository, alice
+):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    client.force_login(alice)
+    sign_agreement(client, versions(repository)["cla"], "alice")
+    assert "cla-signed" in github.labels[(REPOSITORY, 1)]
+    send_webhook(client, "pull_request", pull_payload(github, 1, action="closed"))
+    github.push(REPOSITORY, {"agreements/cla.md": "# CLA\n\nChanged while closed."})
+    send_webhook(client, "pull_request", pull_payload(github, 1, action="reopened"))
+    labels = github.labels[(REPOSITORY, 1)]
+    assert "cla-signed" not in labels and "cla-missing" in labels
