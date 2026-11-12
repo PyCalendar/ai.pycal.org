@@ -32,7 +32,8 @@
 - [x] Rename `tag` to `ref` and `pr.tags` to `pr.labels` in version 2; keep version 1 readable.
 - [ ] Name of the Read the Docs project: assumed ai-pycal-org (DOCS in ai_pycal/errors/base.py)
 - [ ] Name of the GitHub App and its slug; who creates it and holds the private key
-- [ ] Image name ghcr.io/pycalendar/ai.pycal.org and a release workflow
+- [ ] Image name ghcr.io/pycalendar/ai.pycal.org and a release workflow: CI pushes it now; is the
+      Sencho stack name ai-pycal and the environment ai.pycal.org with SENCHO_TOKEN right?
 - [ ] Bots (dependabot, pre-commit-ci) can not sign: their pull requests stay pending.
       Ignore bots, or a setting in the configuration file (version 1.1.0)?
 - [ ] Location of the configuration file: .github/agreements.yml — another name?
@@ -44,10 +45,10 @@
 - [x] Docker build and health check verified in CI run 42858732414 (make docker-test passed).
 - [ ] Webhooks are handled synchronously; a queue if repositories with many agreements time out (GitHub waits 10 s)
 - [ ] Translations (texts are marked with gettext, no locale/ yet)
-- [ ] A switch for light/dark theme as in community-insights (now the system decides)
+- [x] A switch for light/dark theme as in community-insights, without JavaScript (form + cookie, 2026-11-12)
 - [x] Browser tests with Playwright for setup-guide navigation, native registration, validation and state download (11 Chromium tests).
 - [x] GitHub App user tokens expire after 8 hours: refresh them with the refresh token
-- [ ] Vale for the prose of the documentation, zizmor for the workflows
+- [x] Vale for the prose of the documentation (make prose), zizmor for the workflows (make workflows), both in CI
 
 ## Library proposals
 
@@ -220,3 +221,37 @@
       All 515 unit tests passed with 95% coverage. Lint and docs passed.
       Single-process REUSE passed; plain make reuse remains blocked by sandbox
       multiprocessing restrictions. Added an independent browser job in CI.
+
+## 2026-11-12: check the todo list and complete work
+
+- [x] Theme switch in the footer (As the system / Light / Dark), no JavaScript: POST /theme/ sets the cookie
+      theme; tests, docs (how-to/brand), news.
+- [x] Vale (spelling, repetition, project vocabulary) and zizmor; actions pinned to commits; CI job checks.
+- [ ] Webhook queue: left open, it is only needed if deliveries time out.
+- [ ] Translations: left open, needs the person to choose the languages.
+
+## 2026-11-12: test the GitHub App locally with Tailscale
+
+- [x] Guide docs/how-to/github-app-tunnel.rst: Tailscale Funnel (not serve), SITE_URL, app registration,
+      deliveries, stopping; linked from the setup guides and develop.
+- [x] Sign-in callback follows the scheme of SITE_URL (ACCOUNT_DEFAULT_HTTP_PROTOCOL), also without
+      X-Forwarded-Proto; tests.
+
+## 2026-11-12: error pages in the design of the site
+
+- [x] 400, 403, 404, 500 and CSRF failure pages in one layout with the site errors; the 500 page works
+      without the database (standalone page, then plain text); tests, docs, news.
+
+## 2026-11-12: use all processors for testing
+
+- [x] pytest-xdist: make test runs -n auto (JOBS=0 serial); 40 s -> 17 s on 13 cores. Docs and browser
+      tests are not faster in parallel and stay serial. Remembered in the memory of the agent.
+
+## 2026-11-12: deploy with Sencho
+
+- [x] CI pushes the image to ghcr.io after all checks (latest / stable / semver, amd64 + arm64) and calls
+      the Sencho update API; skipped without SENCHO_TOKEN. make docker-scan with Trivy (image saved to a file).
+- [x] make docker-test: healthy. make docker-scan could not run locally (the sandbox refused it); it runs in CI.
+- [ ] The person: create the Sencho stack ai-pycal with .env and data/github-app.pem, the environment
+      ai.pycal.org with SENCHO_TOKEN, and make the ghcr.io package public.
+- [ ] Commit, push and check CI.

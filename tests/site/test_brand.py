@@ -4,7 +4,7 @@ import pytest
 from django.core.checks import run_checks
 
 from ai_pycal import errors
-from ai_pycal.theme import LIGHT, Theme
+from ai_pycal.theme import DARK, LIGHT, Theme
 
 pytestmark = pytest.mark.django_db
 
@@ -75,3 +75,55 @@ def test_a_wrong_favicon_stops_the_start(settings, tmp_path, name, check):
     (tmp_path / "icon.gif").write_bytes(b"GIF")
     settings.FAVICON_FILE = str(tmp_path / name)
     assert check in [message.id for message in run_checks()]
+
+
+def test_the_switch_is_in_the_footer_without_javascript(client):
+    page = client.get("/projects/").content.decode()
+    assert 'action="/theme/"' in page
+    assert 'name="next" value="/projects/"' in page
+    assert 'value="auto" aria-pressed="true"' in page
+    assert "<script" not in page
+
+
+@pytest.mark.parametrize("choice", ["light", "dark"])
+def test_a_chosen_theme_is_remembered(client, choice):
+    response = client.post("/theme/", {"theme": choice, "next": "/projects/"})
+    assert response.status_code == 302
+    assert response["Location"] == "/projects/"
+    assert response.cookies["theme"].value == choice
+    assert response.cookies["theme"]["samesite"] == "Lax"
+    page = client.get("/").content.decode()
+    assert f'data-theme="{choice}"' in page
+    assert f'<meta name="color-scheme" content="{choice}">' in page
+    assert f'value="{choice}" aria-pressed="true"' in page
+    assert "prefers-color-scheme" not in page
+    colors = LIGHT if choice == "light" else DARK
+    assert f"--surface: {colors['surface']};" in page
+
+
+def test_auto_lets_the_system_decide_again(client):
+    client.cookies["theme"] = "dark"
+    response = client.post("/theme/", {"theme": "auto", "next": "/"})
+    assert response.cookies["theme"].value == ""
+    assert response.cookies["theme"]["max-age"] == 0
+    page = client.get("/").content.decode()
+    assert "prefers-color-scheme: dark" in page
+    assert '<meta name="color-scheme" content="light dark">' in page
+
+
+@pytest.mark.parametrize("cookie", ["pink", "", "dark; x"])
+def test_an_unknown_cookie_is_auto(client, cookie):
+    client.cookies["theme"] = cookie
+    page = client.get("/").content.decode()
+    assert 'data-theme="auto"' in page
+    assert "prefers-color-scheme: dark" in page
+
+
+@pytest.mark.parametrize("target", ["https://evil.example/", "//evil.example/", ""])
+def test_the_switch_only_returns_to_this_site(client, target):
+    response = client.post("/theme/", {"theme": "dark", "next": target})
+    assert response["Location"] == "/"
+
+
+def test_the_switch_only_accepts_posts(client):
+    assert client.get("/theme/").status_code == 405

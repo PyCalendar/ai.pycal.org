@@ -78,7 +78,8 @@ Generate the development GitHub App manifest with the same defaults:
 Its site, redirect, OAuth callback, setup and webhook URLs use
 ``http://localhost:5000`` by default. Use the same ``PORT`` value for
 ``make run`` and ``make app-manifest`` when choosing another port. Set
-``SITE_URL`` explicitly for a tunnel or another address. These defaults apply
+``SITE_URL`` explicitly for a tunnel or another address; :doc:`github-app-tunnel`
+exposes the local site with Tailscale Funnel so that GitHub can deliver webhooks. These defaults apply
 only to development commands; production settings keep their existing defaults.
 
 .. code-block:: shell
@@ -87,6 +88,23 @@ only to development commands; production settings keep their existing defaults.
    make lint       # ruff
    make docs       # this documentation
    make reuse      # the licenses
+   make prose      # the prose of the documentation (Vale)
+   make workflows  # the security of the GitHub workflows (zizmor)
+
+``make prose`` checks the documentation, :file:`README.md` and
+:file:`CONTRIBUTING.md` with the spelling and repetition rules of Vale
+(:file:`.vale.ini`). Add words of the project that Vale does not know to
+:file:`.vale/styles/config/vocabularies/AiPycal/accept.txt`, one per line.
+``make workflows`` checks :file:`.github/workflows` with zizmor; the actions are
+pinned to the commit of their release, with the version as a comment. Both
+need the network the first time to download the tools.
+
+``make test`` runs the tests on all processors with pytest-xdist
+(``-n auto``); each worker has its own test database. ``make test JOBS=4``
+limits the workers and ``make test JOBS=0`` runs everything in one process,
+which is easier to debug. A single test runs without workers:
+``uv run pytest tests/site/test_brand.py``. The documentation and the browser
+tests stay in one process: they are not faster in parallel.
 
 The tests never use the network: :file:`tests/fakes/github.py` is a fake GitHub
 that answers the requests of the site.
@@ -114,7 +132,7 @@ download. Install the browser once, then run the suite:
 These tests are separate from ``make test`` so the regular suite needs no
 browser installation. Browser and package installation need network access;
 the tests themselves serve built pages through intercepted requests and block
-external requests. GitHub registration POSTs receive fake responses, including
+external requests. Registrations sent to GitHub receive fake responses, including
 those opened in a new tab; no app is created. CI runs the suite in its browser
 job, and its Docker job builds and checks the container with ``make docker-test``.
 

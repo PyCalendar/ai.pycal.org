@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from .models import ProjectProblem
 from .services.identity import GitHubIdentity
+from .theme import COOKIE, Theme
 
 
 def site(request) -> dict:
@@ -14,7 +15,8 @@ def site(request) -> dict:
         request: The request.
 
     Returns:
-        The name, the colors, the links of the site and the GitHub account of the visitor.
+        The name, the colors (as chosen with the switch), the links of the site and the
+        GitHub account of the visitor.
     """
     docs = settings.DOCS_URL.rstrip("/") + "/"
     problems = []
@@ -28,9 +30,12 @@ def site(request) -> dict:
             .select_related("repository")
             .distinct()
         )
+    theme = Theme.choice(request.COOKIES.get(COOKIE))
     return {
         "site_name": settings.SITE_NAME,
-        "theme_css": settings.THEME.stylesheet(),
+        "theme_choice": theme,
+        "color_scheme": "light dark" if theme == "auto" else theme,
+        "theme_css": settings.THEME.stylesheet(theme),
         "extra_css_url": settings.EXTRA_CSS_URL,
         "links": {
             "documentation": docs,

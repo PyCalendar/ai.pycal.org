@@ -1,0 +1,2 @@
+Run the tests on all processors with pytest-xdist; ``make test JOBS=0`` runs
+them in one process.

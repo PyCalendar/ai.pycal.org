@@ -1,16 +1,19 @@
-"""The pages about the site: start, health and the icon."""
+"""The pages about the site: start, health, the icon and the colors."""
 
 from pathlib import Path
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.db import connection
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_POST
 
 from ai_pycal.checks import FAVICON_TYPES
 from ai_pycal.models import Repository, Signature
+from ai_pycal.theme import COOKIE, Theme
 
 
 def home(request):
@@ -65,3 +68,32 @@ def favicon(request):
     return FileResponse(
         path.open("rb"), content_type=FAVICON_TYPES.get(path.suffix.lower(), "image/png")
     )
+
+
+@require_POST
+def theme(request):
+    """Remember the colors chosen with the switch in the footer, without JavaScript.
+
+    The choice is kept for a year in the cookie ``theme``; ``auto`` removes it, so that the
+    system decides again.
+
+    Args:
+        request: The request, with ``theme`` (``auto``, ``light`` or ``dark``) and ``next``.
+
+    Returns:
+        A redirect back to ``next`` on this site, or to the start page.
+    """
+    target = request.POST.get("next", "")
+    if not url_has_allowed_host_and_scheme(
+        target, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        target = "/"
+    response = HttpResponseRedirect(target)
+    choice = Theme.choice(request.POST.get("theme"))
+    if choice == "auto":
+        response.delete_cookie(COOKIE, samesite="Lax")
+    else:
+        response.set_cookie(
+            COOKIE, choice, max_age=365 * 24 * 3600, samesite="Lax", secure=request.is_secure()
+        )
+    return response

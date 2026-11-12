@@ -7,6 +7,11 @@ from ai_pycal.errors import InvalidColor, UnknownColor
 
 HEX = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
+# The choices of the switch in the footer, kept in the cookie ``theme``: the system decides, or
+# the page is always light or always dark.
+CHOICES = ("auto", "light", "dark")
+COOKIE = "theme"
+
 # The pycal colors: the blue and the yellow of the logo of the Python Calendaring Ecosystem.
 LIGHT = {
     "primary": "#2b5b84",  # buttons and links: contrast 7.0 on white
@@ -103,13 +108,43 @@ class Theme:
         """
         return " ".join(f"--{name.replace('_', '-')}: {value};" for name, value in colors.items())
 
-    def stylesheet(self) -> str:
-        """The CSS of the colors: light, and dark when the system asks for it.
+    def stylesheet(self, choice: str = "auto") -> str:
+        """The CSS of the colors for the choice of the visitor.
+
+        Args:
+            choice: ``auto``: light, and dark when the system asks for it;
+                ``light`` or ``dark``: always these colors. Anything else is ``auto``.
 
         Returns:
             The CSS, for a ``<style>`` element.
+
+        Examples:
+            >>> "prefers-color-scheme" in Theme().stylesheet("dark")
+            False
+            >>> "color-scheme: dark;" in Theme().stylesheet("dark")
+            True
         """
+        if choice == "light":
+            return f":root {{ {self.css(self.light)} color-scheme: light; }}"
+        if choice == "dark":
+            return f":root {{ {self.css(self.dark)} color-scheme: dark; }}"
         return (
             f":root {{ {self.css(self.light)} color-scheme: light dark; }}\n"
             f"@media (prefers-color-scheme: dark) {{ :root {{ {self.css(self.dark)} }} }}"
         )
+
+    @staticmethod
+    def choice(value: str | None) -> str:
+        """The choice of the switch, from the cookie.
+
+        Args:
+            value: The value of the cookie ``theme``, or ``None``.
+
+        Returns:
+            ``auto``, ``light`` or ``dark``; ``auto`` for anything unknown.
+
+        Examples:
+            >>> Theme.choice("dark"), Theme.choice("pink"), Theme.choice(None)
+            ('dark', 'auto', 'auto')
+        """
+        return value if value in CHOICES else "auto"

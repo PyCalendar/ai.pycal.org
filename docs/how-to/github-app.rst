@@ -22,6 +22,7 @@ or create the app manually if you want to fill in GitHub's settings yourself.
    create-github-app
    github-app-manifest
    github-app-manual
+   github-app-tunnel
 
 .. list-table:: Setup flows
    :header-rows: 1
@@ -41,6 +42,13 @@ or create the app manually if you want to fill in GitHub's settings yourself.
 Each page is a complete walkthrough, from preparing ``.env`` to signing in
 and installing the app from the site's **Setup** page. All three cover the
 local ``http://localhost:5000`` setup and explain the changes for deployment.
+
+Test locally with webhooks
+==========================
+
+GitHub cannot deliver webhooks to ``localhost``. To test pull requests,
+checks and labels on your computer, make the local site public with Tailscale
+Funnel and register the app for that address: see :doc:`github-app-tunnel`.
 
 New permissions
 ===============

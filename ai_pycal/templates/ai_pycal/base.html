@@ -1,9 +1,9 @@
 {% load static i18n %}<!doctype html>{% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="{{ theme_choice }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="{{ color_scheme }}">
 <title>{% block title %}{{ site_name }}{% endblock %}</title>
 <link rel="icon" href="{% url 'favicon' %}">
 <link rel="stylesheet" href="{% static 'style.css' %}">
@@ -50,6 +50,15 @@
       <li><a href="{{ links.source }}">{% translate "Source code" %}</a></li>
       <li><a href="{{ links.issues }}">{% translate "Report a bug" %}</a></li>
     </ul>
+    <form class="theme-switch" method="post" action="{% url 'theme' %}">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <span id="theme-label">{% translate "Colors" %}</span>
+      <span role="group" aria-labelledby="theme-label">
+        <button class="link-button" name="theme" value="auto" aria-pressed="{% if theme_choice == 'auto' %}true{% else %}false{% endif %}">{% translate "As the system" %}</button>
+        <button class="link-button" name="theme" value="light" aria-pressed="{% if theme_choice == 'light' %}true{% else %}false{% endif %}">{% translate "Light" %}</button>
+        <button class="link-button" name="theme" value="dark" aria-pressed="{% if theme_choice == 'dark' %}true{% else %}false{% endif %}">{% translate "Dark" %}</button>
+      </span>
+    </form>
     <small>AGPL-3.0-or-later</small>
   </div>
 </footer>{% endif %}

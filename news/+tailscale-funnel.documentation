@@ -1,0 +1,2 @@
+Explain how to test the GitHub App locally with webhooks: expose the site
+with Tailscale Funnel and register a development app for its public address.

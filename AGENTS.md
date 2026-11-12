@@ -47,8 +47,8 @@ Calendaring Ecosystem](https://icalendar.readthedocs.io/en/latest/contribute/ind
 ## Tests
 
 - Every change comes with tests, also of the errors people can see.
-- Run `make lint`, `make test`, `make docs`, `make reuse` and report the results
-  as they are.
+- Run `make lint`, `make test`, `make docs`, `make reuse`, `make prose` and
+  `make workflows` and report the results as they are.
 
 ## Licenses and attribution
 

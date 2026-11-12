@@ -3,6 +3,8 @@ SHELL         = bash
 PYTHONVERSION = >=3.13,<3.15
 PORT         ?= 5000
 DOCS_PORT    ?= 8000
+# the tests run on all processors (pytest-xdist); JOBS=0 runs them in one process
+JOBS         ?= auto
 # the settings of .env are used by make run, if it exists
 ENV_FILE      = $(if $(wildcard .env),--env-file .env)
 DEV_COMMAND   = uv run $(ENV_FILE) python -m ai_pycal.development --port "$(PORT)" --docs-port "$(DOCS_PORT)"
@@ -36,9 +38,9 @@ app-manifest: .venv  ## Print the GitHub App manifest with the same local defaul
 	@$(DEV_COMMAND) app_manifest
 
 .PHONY: test
-test: .venv  ## Run the tests with coverage and check that no migration is missing
+test: .venv  ## Run the tests on all processors with coverage and check that no migration is missing
 	@uv run python manage.py makemigrations --check --dry-run
-	@uv run pytest --cov=ai_pycal --cov-branch --cov-report=term --cov-report=xml
+	@uv run pytest -n "$(JOBS)" --cov=ai_pycal --cov-branch --cov-report=term --cov-report=xml
 
 .PHONY: lint
 lint: .venv  ## Check the code style
@@ -64,6 +66,14 @@ linkcheck:  ## Check the links of the documentation (needs the internet)
 .PHONY: changelog
 changelog:  ## Check that there is a news fragment
 	@uv run --extra docs towncrier check --compare-with origin/main
+
+.PHONY: prose
+prose:  ## Check the prose of the documentation with Vale (.vale.ini)
+	@uv run --extra docs --with vale==3.26.0.1 vale docs/*.rst docs/*/*.rst README.md CONTRIBUTING.md
+
+.PHONY: workflows
+workflows:  ## Check the GitHub workflows for security problems with zizmor
+	@uvx zizmor==1.32.0 --offline .github/workflows
 
 .PHONY: reuse
 reuse:  ## Check the licensing (REUSE)

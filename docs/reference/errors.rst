@@ -8,6 +8,18 @@ it. The webhooks answer GitHub with the same name, title and link, shown in the
 recent deliveries of the GitHub App. An error the site does not know is shown
 as :class:`~ai_pycal.errors.base.UnexpectedError`: please report it.
 
+Pages of HTTP errors
+====================
+
+Pages that do not exist (404), pages a visitor may not open (403), requests
+the site cannot understand (400), forms sent without the cookie of the site or
+left open too long (403) and failures of the site (500) have pages in the
+design of the site. Each shows the status, what happened, what to do, a link
+back to the start and one to report a bug. If the page of a failure cannot be
+shown with the menu, for example because the database is down, it is shown
+without the menu in the same colors; if even that fails, as plain text. The
+views are in ``ai_pycal/views/errors.py``.
+
 The configuration file
 ======================
 

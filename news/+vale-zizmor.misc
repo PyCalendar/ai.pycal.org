@@ -1,0 +1,2 @@
+Check the prose of the documentation with Vale (``make prose``) and the GitHub
+workflows with zizmor (``make workflows``) in CI; the actions are pinned to commits.

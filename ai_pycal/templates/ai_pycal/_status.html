@@ -1,0 +1,15 @@
+{% load i18n %}<section class="status-page{% if error %} error{% endif %}"{% if error %} data-error="{{ error.code }}"{% endif %} aria-labelledby="status-title">
+  <p class="status-code" aria-hidden="true">{{ status }}</p>
+  <div class="status-text">
+    <h1 id="status-title">{{ title }}</h1>
+    {% if explanation %}<p class="lead">{{ explanation }}</p>{% endif %}
+    {% if error.detail %}<p class="detail"><code>{{ error.detail }}</code></p>{% endif %}
+    <p class="status-actions">
+      {% if error %}<a class="button" href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a>{% if error.guide_url %} <a class="button button-quiet" href="{{ error.guide_url }}">{{ error.guide_title }}</a>{% endif %}
+      <a class="button button-quiet" href="{{ home_url|default:'/' }}">{% translate "Back to the start" %}</a>
+      {% else %}<a class="button" href="{{ home_url|default:'/' }}">{% translate "Back to the start" %}</a>
+      {% if links.documentation %}<a class="button button-quiet" href="{{ links.documentation }}">{% translate "Documentation" %}</a>{% endif %}{% endif %}
+    </p>
+    {% if links.issues %}<p class="status-help">{% blocktranslate with issues=links.issues %}Is this wrong? <a href="{{ issues }}">Report a bug</a> and say what you did before.{% endblocktranslate %}</p>{% endif %}
+  </div>
+</section>

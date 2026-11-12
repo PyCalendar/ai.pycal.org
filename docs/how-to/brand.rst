@@ -11,7 +11,7 @@ Colors
 
 Each color has a setting ``COLOR_<NAME>`` for the light pages and
 ``COLOR_DARK_<NAME>`` for the dark pages, which browsers show when the system
-is dark. The values are hexadecimal colors such as ``#3b79aa`` or ``#fd0``.
+is dark or when the visitor chooses them (see :ref:`theme-switch`). The values are hexadecimal colors such as ``#3b79aa`` or ``#fd0``.
 
 .. list-table::
    :header-rows: 1
@@ -78,6 +78,17 @@ A wrong value stops the start of the site with
 :class:`~ai_pycal.errors.configuration.UnknownColor`. Check the contrast of
 text and background, for example with the contrast checker of the developer
 tools of the browser.
+
+.. _theme-switch:
+
+Light and dark pages
+====================
+
+The footer of every page has the switch *Colors*: *As the system*, *Light* and
+*Dark*. It works without JavaScript: the buttons send a form to ``/theme/``,
+which keeps *Light* or *Dark* for a year in the cookie ``theme`` and returns to
+the page. *As the system* removes the cookie, so that the browser chooses the
+light or the dark colors again. The site ignores unknown values of the cookie.
 
 More style
 ==========

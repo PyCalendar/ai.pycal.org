@@ -42,7 +42,9 @@ creating the manifest. See :doc:`run-docker` for deployment. GitHub cannot
 deliver webhooks to localhost: for local testing, arrange a webhook forwarding
 URL and use it for the app's webhook URL. The browser-facing redirect and
 OAuth callback can remain on localhost. The form-creation step below lets you
-set a separate forwarded webhook URL.
+set a separate forwarded webhook URL. Simpler: make the whole local site public
+with Tailscale Funnel as in :doc:`github-app-tunnel` and set ``SITE_URL`` to
+that address; then every URL of the manifest points to it.
 
 2. Generate the manifest
 ========================

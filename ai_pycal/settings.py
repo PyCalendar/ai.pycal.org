@@ -47,6 +47,7 @@ SITE_URL = env("SITE_URL", default="https://ai.pycal.org").rstrip("/")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_FAILURE_VIEW = "ai_pycal.views.errors.csrf_failure"  # in the design of the site
 X_FRAME_OPTIONS = "DENY"  # nobody signs in a frame of another site
 
 INSTALLED_APPS = [
@@ -117,6 +118,9 @@ LOGIN_REDIRECT_URL = "/profile/"
 LOGOUT_REDIRECT_URL = "/"
 SOCIALACCOUNT_ONLY = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
+# The scheme of the sign-in callback follows SITE_URL, also behind a proxy or tunnel (such as
+# Tailscale Funnel) that does not send X-Forwarded-Proto: GitHub only accepts the registered one.
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https" if SITE_URL.startswith("https://") else "http"
 ACCOUNT_LOGIN_METHODS = {"username"}
 ACCOUNT_SIGNUP_FIELDS = ["username*"]
 SOCIALACCOUNT_AUTO_SIGNUP = True

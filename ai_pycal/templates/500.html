@@ -1,2 +1,17 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Server error</title></head>
-<body><h1>Server error</h1><p>Something went wrong. Please try again later.</p></body></html>
+{% load i18n %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{ title }} · {{ site_name }}</title>
+<link rel="stylesheet" href="{{ stylesheet }}">
+<style>{{ theme_css }}</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-row"><a class="brand" href="/"><img src="/favicon.ico" alt="" width="28" height="28"> {{ site_name }}</a></div>
+</header>
+<main id="main" class="wrap">{% include "ai_pycal/_status.html" %}</main>
+</body>
+</html>

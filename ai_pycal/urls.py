@@ -10,6 +10,7 @@ urlpatterns = [
     path("", pages.home, name="home"),
     path("health/", pages.health, name="health"),
     path("favicon.ico", pages.favicon, name="favicon"),
+    path("theme/", pages.theme, name="theme"),
     path("projects/", policies.projects, name="projects"),
     path("contributor/<str:handle>/", policies.contributor, name="contributor"),
     path("profile/", profile.profile, name="profile"),
@@ -79,3 +80,8 @@ urlpatterns = [
         name="pull_request",
     ),
 ]
+
+handler400 = "ai_pycal.views.errors.bad_request"
+handler403 = "ai_pycal.views.errors.permission_denied"
+handler404 = "ai_pycal.views.errors.page_not_found"
+handler500 = "ai_pycal.views.errors.server_error"

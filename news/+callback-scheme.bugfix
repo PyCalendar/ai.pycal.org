@@ -1,0 +1,2 @@
+The sign-in callback uses the scheme of ``SITE_URL``, also behind a proxy or
+tunnel that does not send ``X-Forwarded-Proto``.

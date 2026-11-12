@@ -12,3 +12,4 @@ __pycache__/
 /coverage.xml
 /.coverage
 /.claude/settings.local.json
+/build/
