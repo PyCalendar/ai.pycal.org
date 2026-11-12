@@ -39,12 +39,10 @@ commands and in an explicitly configured ``SITE_URL``.
 
 For a deployed site, set ``SITE_URL`` to its public HTTPS address before
 creating the manifest. See :doc:`run-docker` for deployment. GitHub cannot
-deliver webhooks to localhost: for local testing, arrange a webhook forwarding
-URL and use it for the app's webhook URL. The browser-facing redirect and
-OAuth callback can remain on localhost. The form-creation step below lets you
-set a separate forwarded webhook URL. Simpler: make the whole local site public
-with Tailscale Funnel as in :doc:`github-app-tunnel` and set ``SITE_URL`` to
-that address; then every URL of the manifest points to it.
+deliver webhooks to localhost. To test them locally, make the site public with
+Tailscale Funnel as in :doc:`github-app-tunnel` and set ``SITE_URL`` to that
+address; every URL of the manifest points to it, the webhook always to
+``SITE_URL`` plus ``/github/webhook/``.
 
 2. Generate the manifest
 ========================
@@ -79,8 +77,7 @@ step. The running container must already have the intended ``SITE_URL``.
 
 Create a local registration form with the following command. Change
 ``organization`` to your organization's GitHub login to register the app
-there, or leave it empty for your personal account. If you use a forwarding
-service for local webhooks, put its public delivery URL in ``webhook_url``.
+there, or leave it empty for your personal account.
 
 .. code-block:: shell
 
@@ -92,13 +89,10 @@ service for local webhooks, put its public delivery URL in ``webhook_url``.
    from urllib.parse import quote, urlencode
 
    organization = ""
-   webhook_url = ""
    manifest = json.loads(Path("data/github-app-manifest.json").read_text())
    for filename in ("data/github-app-state.txt", "data/github-app-register.html"):
        if Path(filename).exists():
            raise SystemExit("Registration files already exist; choose fresh filenames.")
-   if webhook_url:
-       manifest["hook_attributes"]["url"] = webhook_url
    registration_url = (
        "https://github.com/organizations/" + quote(organization, safe="") + "/settings/apps/new"
        if organization else "https://github.com/settings/apps/new"

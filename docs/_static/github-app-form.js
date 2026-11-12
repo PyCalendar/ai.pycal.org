@@ -7,7 +7,6 @@
   const name = document.getElementById("app-name");
   const site = document.getElementById("app-site-url");
   const organization = document.getElementById("app-organization");
-  const webhook = document.getElementById("app-webhook-url");
   const hidden = document.getElementById("app-manifest");
   const preview = document.getElementById("app-manifest-preview");
   const error = document.getElementById("app-form-error");
@@ -16,36 +15,36 @@
   const baseManifest = JSON.parse(hidden.value);
   let state;
 
-  /** Validate a site or webhook address before deriving the remaining URLs. */
-  function address(input, isSite) {
+  /** Validate the site address before deriving the URLs of the app, the webhook included. */
+  function address(input) {
     let url;
     try {
       url = new URL(input.value.trim());
     } catch {
-      throw new Error("Enter a complete site or webhook URL, including http:// or https://.");
+      throw new Error("Enter a complete site URL, including http:// or https://.");
     }
     if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.hash) {
       throw new Error("Use an HTTP or HTTPS URL without login details or a fragment.");
     }
-    if (isSite && url.search) {
+    if (url.search) {
       throw new Error("The site URL must not contain a query string.");
     }
-    return isSite ? url.href.replace(/\/+$/, "") : url.href;
+    return url.href.replace(/\/+$/, "");
   }
 
   /** Keep the visible preview and the submitted JSON in sync with the form. */
   function update() {
     error.hidden = true;
     try {
-      const base = address(site, true);
+      const base = address(site);
       const specification = JSON.parse(JSON.stringify(baseManifest));
       specification.name = name.value.trim();
       specification.url = base;
       specification.redirect_url = `${base}/`;
       specification.callback_urls = [`${base}/accounts/github/login/callback/`];
       specification.setup_url = `${base}/setup/installed/`;
-      specification.hook_attributes.url = webhook.value.trim()
-        ? address(webhook, false) : `${base}/github/webhook/`;
+      // the platform receives webhooks only at /github/webhook/ (ai_pycal/urls.py)
+      specification.hook_attributes.url = `${base}/github/webhook/`;
       hidden.value = JSON.stringify(specification);
       preview.textContent = JSON.stringify(specification, null, 2);
       create.disabled = false;

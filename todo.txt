@@ -288,3 +288,9 @@
 - [x] Browser test of the script in Europe/Berlin and America/New_York; unit tests of the server rules.
 - [x] FAVICON: an address or a local file (FAVICON_FILE still read as older name); /favicon.ico redirects
       to an address; docs, .env.example, tests.
+- [x] Deploy to Sencho succeeded (run of ba320dd): the auto-deploy works.
+
+## 2026-11-12: no webhook field in the registration form
+
+- [x] The webhook is always SITE_URL + /github/webhook/ (ai_pycal/urls.py): field removed from the docs
+      form, its script and tests; the guides no longer mention forwarding URLs (smee, gh webhook forward).

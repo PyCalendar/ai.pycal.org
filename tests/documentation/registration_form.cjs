@@ -80,21 +80,18 @@ test("personal registration sends JSON and offers matching random state", () => 
   assert.notEqual(new URL(other.form.action).searchParams.get("state"), state);
 });
 
-test("organization, deployed site prefix and exact forwarded webhook are used", () => {
+test("organization and deployed site prefix are used; the webhook follows the site", () => {
   const page = browser();
   page.set("app-name", "Organization app");
   page.set("app-organization", "PyCalendar");
   page.set("app-site-url", "https://ai.example.org/service/");
-  page.set("app-webhook-url", "https://forward.example/webhook/?token=abc");
   assert.equal(page.form.fire("submit").prevented, false);
   assert.equal(new URL(page.form.action).pathname, "/organizations/PyCalendar/settings/apps/new");
   assert.equal(page.payload().url, "https://ai.example.org/service");
   assert.equal(page.payload().redirect_url, "https://ai.example.org/service/");
   assert.equal(page.payload().callback_urls[0], "https://ai.example.org/service/accounts/github/login/callback/");
   assert.equal(page.payload().setup_url, "https://ai.example.org/service/setup/installed/");
-  assert.equal(page.payload().hook_attributes.url, "https://forward.example/webhook/?token=abc");
-  page.set("app-webhook-url", "https://forward.example/github/webhook/");
-  assert.equal(page.payload().hook_attributes.url, "https://forward.example/github/webhook/");
+  assert.equal(page.payload().hook_attributes.url, "https://ai.example.org/service/github/webhook/");
 });
 
 for (const url of ["javascript:alert(1)", "broken", "https://name:secret@example.org", "https://example.org/#part", "https://example.org/?query=1"]) {
@@ -112,11 +109,9 @@ for (const url of ["javascript:alert(1)", "broken", "https://name:secret@example
   });
 }
 
-test("invalid webhook is rejected before submission", () => {
+test("the form has no field for the webhook", () => {
   const page = browser();
-  page.set("app-name", "Test app");
-  page.set("app-webhook-url", "javascript:alert(1)");
-  assert.equal(page.form.fire("submit").prevented, true);
+  assert.equal(page.elements["app-webhook-url"], undefined);
 });
 
 test("blank names, overlong names and invalid organization logins are rejected", () => {

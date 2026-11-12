@@ -70,11 +70,9 @@ the browser. The start page should load.
 Follow one of the setup flows of :doc:`github-app` with the public address as
 the site address:
 
-- :doc:`create-github-app`: enter the public address as **Site URL** and leave
-  **Forwarded webhook URL** empty. It becomes
-  ``https://laptop.tail1234.ts.net/github/webhook/``.
-- :doc:`github-app-manifest`: ``make app-manifest`` already uses ``SITE_URL``;
-  leave ``webhook_url`` empty.
+- :doc:`create-github-app`: enter the public address as **Site URL**. The
+  webhook becomes ``https://laptop.tail1234.ts.net/github/webhook/``.
+- :doc:`github-app-manifest`: ``make app-manifest`` already uses ``SITE_URL``.
 - :doc:`github-app-manual`: use the public address instead of
   ``http://localhost:5000`` in every URL, including the webhook URL
   ``https://laptop.tail1234.ts.net/github/webhook/``.

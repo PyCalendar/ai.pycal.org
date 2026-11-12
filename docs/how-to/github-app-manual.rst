@@ -26,10 +26,10 @@ app for development and for production.
 
 For a deployed site, use its public HTTPS address everywhere below instead of
 ``http://localhost:5000``. The OAuth callback and installation setup must point
-to that same site. For local webhook delivery, use a public forwarding URL
-that delivers requests to ``http://localhost:5000/github/webhook/``; GitHub
-cannot deliver directly to localhost. See :doc:`github-app-tunnel` for a
-public address of the local site with Tailscale Funnel.
+to that same site, and the webhook URL is always the site address plus
+``/github/webhook/``. GitHub cannot deliver webhooks to localhost; see
+:doc:`github-app-tunnel` for a public address of the local site with Tailscale
+Funnel.
 
 Open one of these registration pages while signed in to GitHub:
 

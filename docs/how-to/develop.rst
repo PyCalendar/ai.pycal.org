@@ -143,8 +143,7 @@ Create a second GitHub App for development by following :doc:`github-app`.
 Use the recommended submission form or choose the CLI or manual flow, with
 ``http://localhost:5000`` as address, and put its settings into :file:`.env`.
 GitHub can not send webhooks to
-``localhost``: forward them with `smee.io <https://smee.io>`_ or the ``gh
-webhook forward`` extension of the GitHub CLI.
+``localhost``: make the local site public as :doc:`github-app-tunnel` shows.
 
 Publish the documentation
 =========================

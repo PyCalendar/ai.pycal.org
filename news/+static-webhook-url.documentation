@@ -1,0 +1,2 @@
+The form that registers the GitHub App has no webhook field any more: the
+webhook is always the site URL plus ``/github/webhook/``.

@@ -35,14 +35,11 @@ def test_common_page_links_to_each_complete_flow(docs_page, filename, title):
 
 
 @pytest.mark.parametrize(
-    "owner,site_url,webhook_url",
-    [
-        ("", "http://localhost:5000", ""),
-        ("PyCalendar-test", "https://ai.example.org/service/", "https://forward.example/webhook/"),
-    ],
+    "owner,site_url",
+    [("", "http://localhost:5000"), ("PyCalendar-test", "https://ai.example.org/service/")],
 )
 def test_native_manifest_post_and_downloaded_state(
-    docs_page, browser_context, tmp_path, owner, site_url, webhook_url
+    docs_page, browser_context, tmp_path, owner, site_url
 ):
     submissions = []
 
@@ -56,7 +53,6 @@ def test_native_manifest_post_and_downloaded_state(
     docs_page.get_by_label(re.compile("^GitHub App name")).fill(name)
     docs_page.get_by_label(re.compile("^Site URL")).fill(site_url)
     docs_page.get_by_label(re.compile("^GitHub organization")).fill(owner)
-    docs_page.get_by_label(re.compile("^Forwarded webhook URL")).fill(webhook_url)
     with docs_page.expect_popup() as opened:
         docs_page.get_by_role("button", name="Create app on GitHub").click()
     opened.value.wait_for_load_state("domcontentloaded")
@@ -71,8 +67,7 @@ def test_native_manifest_post_and_downloaded_state(
     fields = parse_qs(request.post_data)
     assert set(fields) == {"manifest"}
     expected = manifest(name, site_url.rstrip("/"))
-    if webhook_url:
-        expected["hook_attributes"]["url"] = webhook_url
+    assert expected["hook_attributes"]["url"] == site_url.rstrip("/") + "/github/webhook/"
     assert json.loads(fields["manifest"][0]) == expected
     state = parse_qs(destination.query)["state"][0]
     assert re.fullmatch(r"[0-9a-f]{64}", state)
@@ -108,7 +103,7 @@ def test_native_validation_prevents_registration(
     [
         ("app-site-url", "javascript:alert(1)", "Use an HTTP or HTTPS URL"),
         ("app-site-url", "https://example.org/?query=1", "must not contain a query string"),
-        ("app-webhook-url", "https://name:secret@example.org/hook/", "without login details"),
+        ("app-site-url", "https://name:secret@example.org/", "without login details"),
     ],
 )
 def test_invalid_address_shows_error_and_recovers(docs_page, field, value, message):

@@ -36,12 +36,11 @@ Fill in the form and press **Create app on GitHub**. GitHub opens in a new
 tab, where you review the name and confirm **Create GitHub App**. Leave the
 organization empty for your personal account, or enter its GitHub login.
 
-Callback, installation and registration-return URLs are derived from your site
-URL. For local testing, supply a public forwarded webhook URL: GitHub cannot
-deliver webhooks directly to localhost. :doc:`github-app-tunnel` makes the
-whole local site public with Tailscale Funnel; then use that address as site
-URL and leave the webhook URL empty. Leave that field empty to use the
-site address plus ``/github/webhook/`` for a deployed site.
+All URLs of the app are derived from your site URL: callback, installation,
+registration return and the webhook, which is always the site URL plus
+``/github/webhook/``. GitHub cannot deliver webhooks to localhost; to test
+them locally, make the site public with Tailscale Funnel as in
+:doc:`github-app-tunnel` and enter that address as site URL.
 
 .. github-app-form::
 
