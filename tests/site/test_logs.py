@@ -22,7 +22,7 @@ def test_a_pull_request_log_shows_why_labels_changed(client, github, repository,
     send_webhook(client, "pull_request", pull_payload(github, 1))
     client.force_login(alice)
     sign_agreement(client, versions(repository)["cla"], "alice")
-    page = client.get(f"/logs/project/{REPOSITORY}/pulls/1/").content.decode()
+    page = client.get(f"/logs/{REPOSITORY}/pulls/1/").content.decode()
     assert "@alice signs an agreement" in triggers(page)
     assert any(t.startswith("Pull request #1 opened") for t in triggers(page))
     assert "Label cla-signed added to #1: Contributor License Agreement (example) is signed" in page
@@ -49,7 +49,7 @@ def test_a_configuration_update_shows_its_actions(client, github, repository):
             "commits": [{"modified": [".github/agreements.yml", "agreements/cla.md"]}],
         },
     )
-    page = client.get(f"/logs/project/{REPOSITORY}/").content.decode()
+    page = client.get(f"/logs/{REPOSITORY}/").content.decode()
     assert "Repository configuration updated" in triggers(page)
     update = page.split("Repository configuration updated")[1].split("</details>")[0]
     assert "Configuration 2.1.0 read: 2 agreements" in update
@@ -60,8 +60,8 @@ def test_a_configuration_update_shows_its_actions(client, github, repository):
 def test_the_page_of_a_pull_request_shows_only_its_actions(client, github, repository):
     send_webhook(client, "pull_request", pull_payload(github, 1))
     send_webhook(client, "pull_request", pull_payload(github, 2))
-    page = client.get(f"/logs/project/{REPOSITORY}/pulls/1/").content.decode()
-    assert "#2" not in page.split("<main")[1].split("Log</h1>")[1]
+    page = client.get(f"/logs/{REPOSITORY}/pulls/1/").content.decode()
+    assert "#2" not in page.split("<main")[1].split("</h1>")[1]
 
 
 def test_triggers_without_actions_are_gray(client, github, repository, settings, maintainer):
@@ -89,7 +89,7 @@ def test_the_global_log_is_for_site_admins(client, repository, alice, maintainer
 def test_sensitive_actions_are_only_in_the_global_log(client, repository, maintainer, settings):
     with _sensitive(repository):
         pass
-    page = client.get(f"/logs/project/{REPOSITORY}/").content.decode()
+    page = client.get(f"/logs/{REPOSITORY}/").content.decode()
     assert "Email to 1 addresses" not in page
     settings.SITE_ADMINS = ["maintainer"]
     client.force_login(maintainer)
@@ -116,7 +116,7 @@ def test_admins_can_open_a_trigger_in_the_global_log(
     send_webhook(client, "pull_request", pull_payload(github, 1))
     settings.SITE_ADMINS = ["maintainer"]
     client.force_login(maintainer)
-    page = client.get(f"/logs/project/{REPOSITORY}/").content.decode()
+    page = client.get(f"/logs/{REPOSITORY}/").content.decode()
     trigger = LogTrigger.objects.filter(kind="webhook").first()
     link = f'href="/logs/all/?trigger={trigger.pk}#trigger-{trigger.pk}"'
     assert link in page
@@ -160,3 +160,15 @@ def test_contributor_log(client, github, repository, alice):
     page = client.get("/logs/contributor/alice/").content.decode()
     assert "@alice signed Contributor License Agreement (example)" in page
     assert 'href="/logs/contributor/alice/"' in client.get("/contributor/alice/").content.decode()
+
+
+def test_the_path_of_a_log_navigates_the_logs_and_back(client, github, repository):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    page = client.get(f"/logs/{REPOSITORY}/pulls/1/").content.decode()
+    title = page.split('<h1 class="crumbs-path">')[1].split("</h1>")[0]
+    assert 'href="/logs/PyCalendar/"' in title
+    assert f'href="/logs/{REPOSITORY}/"' in title
+    assert f'href="/logs/{REPOSITORY}/pulls/1/"' in title
+    assert f'href="/project/{REPOSITORY}/pulls/1/">← Back to the pull request' in page
+    owner = client.get("/logs/PyCalendar/").content.decode()
+    assert "Pull request #1 opened" in owner

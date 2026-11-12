@@ -22,13 +22,10 @@ urlpatterns = [
     path("my-agreements/", agreements.mine, name="mine"),
     path("todos/", agreements.todos, name="todos"),
     path("logs/all/", logs.all_logs, name="all_logs"),
-    path("logs/project/<str:owner>/<str:repo>/", logs.project_log, name="project_log"),
-    path(
-        "logs/project/<str:owner>/<str:repo>/pulls/<int:number>/",
-        logs.pull_log,
-        name="pull_log",
-    ),
     path("logs/contributor/<str:handle>/", logs.contributor_log, name="contributor_log"),
+    path("logs/<str:owner>/", logs.owner_log, name="owner_log"),
+    path("logs/<str:owner>/<str:repo>/", logs.project_log, name="project_log"),
+    path("logs/<str:owner>/<str:repo>/pulls/<int:number>/", logs.pull_log, name="pull_log"),
     path("todos/<int:pk>/dismiss/", agreements.dismiss, name="dismiss"),
     path(
         "agreements/history/<str:owner>/<str:repo>/<path:agreement_path>/",

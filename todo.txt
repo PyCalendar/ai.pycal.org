@@ -403,7 +403,7 @@
 - [ ] Watch a repository for its problems: needs a verified email (else an error); emails go to the
       primary verified address, also if the primary is switched to an unverified one; explain it
       better than "Email for new permissions".
-- [ ] Logs at /logs/<owner>/<repo>/ (and /logs/<owner>/<repo>/pulls/<n>/, /logs/contributor/<handle>/),
+- [x] Logs at /logs/<owner>/<repo>/ (and /logs/<owner>/<repo>/pulls/<n>/, /logs/contributor/<handle>/),
       paths in the title navigate the logs; a way back to the page.
 - [ ] Update only for signed-in administrators, at most once every 5 minutes per person.
 - [ ] Signing: "Sign" and "Sign and open next agreement" buttons.
@@ -422,3 +422,4 @@
 - [x] /projects/ lists organizations that open to their projects and these to their agreements; empty
       only without added repositories (production: the example repository must be added on Setup).
 - [x] My agreements: no empty "To sign"; pull requests colored with the GitHub mark.
+- [x] My agreements: the heading is only for screen readers; the subheadings say it.

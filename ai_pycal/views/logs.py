@@ -1,7 +1,8 @@
 """The logs: what triggered the site and which actions followed, for each page.
 
-The addresses mirror the pages they log: ``/logs/project/<owner>/<repo>/`` for a project,
-``/logs/project/<owner>/<repo>/pulls/<number>/`` for a pull request,
+The addresses mirror the pages they log: ``/logs/<owner>/`` for the projects of an owner,
+``/logs/<owner>/<repo>/`` for a project, ``/logs/<owner>/<repo>/pulls/<number>/`` for a pull
+request,
 ``/logs/contributor/<handle>/`` for a person, and ``/logs/all/`` for the administrators.
 Each shows only the triggers and actions that concern it.
 """
@@ -76,6 +77,26 @@ def all_logs(request):
     return log_page(request, LogTrigger.objects.all(), Q(), {"scope": "all"})
 
 
+def owner_log(request, owner: str):
+    """The combined log of the projects of an organization or person.
+
+    Args:
+        request: The request.
+        owner: The GitHub login.
+
+    Returns:
+        The page.
+    """
+    projects = visible_projects(request.user).filter(
+        active=True, full_name__istartswith=f"{owner}/"
+    )
+    concerns = Q(repository__in=projects, public=True)
+    triggers = LogTrigger.objects.filter(public=True).filter(
+        Q(repository__in=projects) | Q(actions__repository__in=projects, actions__public=True)
+    )
+    return log_page(request, triggers, concerns, {"scope": "owner", "owner": owner})
+
+
 def project_log(request, owner: str, repo: str):
     """The log of a project.
 
@@ -92,7 +113,12 @@ def project_log(request, owner: str, repo: str):
     triggers = LogTrigger.objects.filter(public=True).filter(
         Q(repository=repository) | Q(actions__repository=repository, actions__public=True)
     )
-    return log_page(request, triggers, concerns, {"scope": "project", "project": repository})
+    return log_page(
+        request,
+        triggers,
+        concerns,
+        {"scope": "project", "project": repository, "owner": repository.owner},
+    )
 
 
 def pull_log(request, owner: str, repo: str, number: int):
@@ -113,7 +139,15 @@ def pull_log(request, owner: str, repo: str, number: int):
         Q(pull=pull) | Q(actions__pull=pull, actions__public=True)
     )
     return log_page(
-        request, triggers, concerns, {"scope": "pull", "pull": pull, "project": pull.repository}
+        request,
+        triggers,
+        concerns,
+        {
+            "scope": "pull",
+            "pull": pull,
+            "project": pull.repository,
+            "owner": pull.repository.owner,
+        },
     )
 
 

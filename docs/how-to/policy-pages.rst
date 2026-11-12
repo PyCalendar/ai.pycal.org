@@ -85,11 +85,16 @@ as signing or **Update**, is a *trigger*. What follows from it is recorded as
 *actions*, each with its reason: labels added to or removed from pull
 requests, checks, the configuration read, new versions of agreements, emails.
 A page only shows the triggers and actions that concern it, newest first; a
-trigger opens to its actions, and triggers without actions are gray.
+trigger opens to its actions, and triggers without actions are gray. The title
+of a log is its path: each part leads to the combined log of that level, and a
+link leads back to the page of the project, pull request or person.
 
-``/logs/project/<owner>/<repo>/``
-   The log of a project, linked from the page of the project.
-``/logs/project/<owner>/<repo>/pulls/<number>/``
+``/logs/<owner>/``
+   The combined log of the projects of an organization or person.
+``/logs/<owner>/<repo>/``
+   The log of a project, linked with the log icon next to the title of the
+   project.
+``/logs/<owner>/<repo>/pulls/<number>/``
    The log of a pull request, linked from its page.
 ``/logs/contributor/<handle>/``
    The log of a person: their signatures and their pull requests.

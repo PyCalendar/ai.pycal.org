@@ -2,7 +2,7 @@
 {% load github times i18n %}
 {% block title %}{% translate "My agreements" %} · {{ site_name }}{% endblock %}
 {% block main %}
-<h1>{% translate "My agreements" %}</h1>
+<h1 class="visually-hidden">{% translate "My agreements" %}</h1>
 {% if not github %}<p class="message message-warning">{% translate "Your account is not connected to GitHub. Sign out and sign in with GitHub." %}</p>{% endif %}
 {% if to_sign %}<section class="card" data-to-sign-section>
   <h2>{% translate "To sign" %}</h2>
