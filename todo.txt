@@ -453,3 +453,8 @@
 - [ ] The person: DNS for sign.pycal.org and docs.sign.pycal.org; GitHub App URLs (homepage, callback,
       setup, webhook) to sign.pycal.org; Sencho: .env (SITE_URL, ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS) and
       the image name of the stack.
+
+## 2026-11-12: "act on your behalf" when signing in
+
+- [x] Explained: GitHub shows it for every GitHub App sign-in; the site only reads the identity and,
+      for administrators, their installations. Decided by the person: no separate OAuth app.
