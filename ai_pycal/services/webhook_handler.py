@@ -146,6 +146,7 @@ class WebhookHandler:
                     "author_login": data["user"]["login"],
                     "head_sha": data["head"]["sha"],
                     "open": data.get("state", "open") == "open",
+                    "merged": bool(data.get("merged")),
                 },
             )
         if action not in PULL_ACTIONS or not pull.open:

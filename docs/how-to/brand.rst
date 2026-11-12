@@ -73,6 +73,12 @@ is dark or when the visitor chooses them (see :ref:`theme-switch`). The values a
    * - ``COLOR_OPTIONAL_BG``
      - ``#fdf3d3``
      - the background of optional agreements I did not sign
+   * - ``COLOR_MERGED``
+     - ``#6639a6``
+     - merged pull requests
+   * - ``COLOR_MERGED_BG``
+     - ``#f1e9fb``
+     - the background of merged pull requests
 
 For example:
 
@@ -82,8 +88,8 @@ For example:
    COLOR_NAV=#4a1238
    COLOR_DARK_PRIMARY=#f0a8d8
 
-The dark colors of the backgrounds are ``#14291c``, ``#33181c`` and
-``#2e2610``. All text on these backgrounds has a contrast of at least 4.5:1
+The dark colors of the backgrounds are ``#14291c``, ``#33181c``, ``#2e2610``
+and ``#271c38``. All text on these backgrounds has a contrast of at least 4.5:1
 (WCAG AA); check it again when you change them.
 
 A wrong value stops the start of the site with

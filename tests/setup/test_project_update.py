@@ -12,9 +12,12 @@ URL = f"/project/{REPOSITORY}/"
 def test_labels_are_behind_the_gear(client, repository):
     page = client.get(URL).content.decode()
     cla = page.split('data-policy="cla"')[1].split("</section>")[0]
-    settings = cla.split("data-settings")[1].split("</details>")[0]
+    settings = cla.split("data-technical")[1].split("</details>")[0]
     assert "<code>cla-signed</code>" in settings
     assert "<code>cla-missing</code>" in settings
+    # labels link to the pull requests with the label; the configuration on the default branch
+    assert f"https://github.com/{REPOSITORY}/pulls?q=is%3Apr+label%3Acla-signed" in settings
+    assert f"https://github.com/{REPOSITORY}/blob/HEAD/.github/agreements.yml" in settings
     outside = cla.replace(settings, "")
     assert "cla-signed" not in outside and "PR labels" not in page
 

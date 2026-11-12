@@ -5,12 +5,5 @@
     <ul>{% for other in crumbs.others %}<li><a href="{% url 'agreement' other.version_id %}">{{ other.title }}</a>{% if not other.mandatory %} <span class="muted">({% translate "optional" %})</span>{% endif %}</li>{% endfor %}</ul>
   </details>{% endif %}
   {% if version %}<span class="version muted" data-version>{% translate "Version" %} {% version version %}</span>
-  <details class="tech-menu" data-technical>
-    <summary title="{% translate "Technical details" %}" aria-label="{% translate "Technical details" %}">{% include "ai_pycal/_gear.html" %}</summary>
-    <dl>
-      <dt>{% translate "File" %}</dt><dd>{% github_link version.url version.path|add:" on GitHub" version.path %}</dd>
-      <dt>{% translate "Commit" %}</dt><dd><code>{{ version.commit }}</code></dd>
-      <dt>{% translate "Repository" %}</dt><dd>{% github_link "https://github.com/"|add:version.source version.source|add:" on GitHub" version.source %}</dd>
-    </dl>
-  </details>{% endif %}
+  {% include "ai_pycal/_agreement_gear.html" with agreement=crumbs.agreement %}{% endif %}
 </div>

@@ -1,0 +1,14 @@
+{% load i18n github times %}<details class="tech-menu" data-technical>
+  <summary title="{% translate "Details of the agreement" %}" aria-label="{% translate "Details of the agreement" %}{% if agreement %}: {{ agreement.title }}{% endif %}">{% include "ai_pycal/_gear.html" %}</summary>
+  <dl>
+    <dt>{% translate "Version" %}</dt><dd>{% version version %} · <a href="/agreements/history/{{ version.source }}/{{ version.path }}/">{% translate "Earlier versions" %}</a></dd>
+    <dt>{% translate "File" %}</dt><dd>{% github_link version.url version.path|add:" on GitHub" version.path %}</dd>
+    <dt>{% translate "Commit" %}</dt><dd><code>{{ version.commit }}</code></dd>
+    <dt>{% translate "Repository" %}</dt><dd>{% github_link "https://github.com/"|add:version.source version.source|add:" on GitHub" version.source %}</dd>
+    {% if agreement %}
+    {% if agreement.labels %}<dt>{% translate "Labels when signed" %}</dt><dd>{% for label in agreement.labels %}<a class="label-link" href="{{ agreement.repository.url }}/pulls?q=is%3Apr+label%3A{{ label|urlencode }}"><code>{{ label }}</code></a> {% endfor %}</dd>{% endif %}
+    {% if agreement.unsigned_labels %}<dt>{% translate "Labels while not signed" %}</dt><dd>{% for label in agreement.unsigned_labels %}<a class="label-link" href="{{ agreement.repository.url }}/pulls?q=is%3Apr+label%3A{{ label|urlencode }}"><code>{{ label }}</code></a> {% endfor %}</dd>{% endif %}
+    <dt>{% translate "Configuration" %}</dt><dd>{% github_link agreement.repository.url|add:"/blob/HEAD/.github/agreements.yml" ".github/agreements.yml on the default branch" ".github/agreements.yml" %}</dd>
+    {% endif %}
+  </dl>
+</details>

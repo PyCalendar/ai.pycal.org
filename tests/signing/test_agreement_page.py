@@ -45,7 +45,7 @@ def test_the_technical_details_are_behind_the_gear(client, cla):
     page = client.get(f"/agreements/{cla.version_id}/").content.decode()
     version = cla.version
     technical = page.split("data-technical")[1].split("</details>")[0]
-    assert 'aria-label="Technical details"' in technical
+    assert 'aria-label="Details of the agreement' in technical
     assert (
         f"https://github.com/{version.source}/blob/{version.commit}/agreements/cla.md" in technical
     )

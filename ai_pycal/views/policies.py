@@ -29,6 +29,7 @@ from ai_pycal.models import (
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.pull_request_check import PullRequestCheck
+from ai_pycal.services.pull_state import PullState
 from ai_pycal.services.rendering import render as markdown
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.visibility import visible_projects
@@ -148,6 +149,15 @@ def project(request, owner: str, repo: str):
             "policies": policies,
             "attention": [policy for policy in policies if policy.attention],
             "can_update": may_update(request.user, repository),
+            "show_all": request.GET.get("pulls") == "all",
+            "pulls": PullState.annotate(
+                repository.pull_requests.select_related("repository").order_by("-number")
+                if request.GET.get("pulls") == "all"
+                else repository.pull_requests.filter(open=True)
+                .select_related("repository")
+                .order_by("-number")
+            ),
+            "log_url": reverse("project_log", args=[repository.owner, repository.name]),
             "choices": choices,
         },
     )
@@ -184,10 +194,10 @@ def contributor(request, handle: str):
         if github_id
         else visible.none()
     )
-    pulls = (
-        PullRequest.objects.filter(
-            repository__in=visible, author_github_id=github_id
-        ).select_related("repository", "choice")
+    pulls = PullState.annotate(
+        PullRequest.objects.filter(repository__in=visible, author_github_id=github_id)
+        .select_related("repository", "choice")
+        .order_by("-open", "-number")
         if github_id
         else PullRequest.objects.none()
     )

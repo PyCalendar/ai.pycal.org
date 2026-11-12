@@ -13,8 +13,15 @@ of the other agreements of the project. Its source and version are at the
 bottom. The history of an agreement, ``/agreements/history/<source>/<path>/``,
 shows each visible version and the projects using it.
 
-A project page such as ``/project/collective/icalendar/`` lists policies,
-choices and dated signatures. Contributors can set their default for future
+A project page such as ``/project/collective/icalendar/`` lists the
+agreements with their badges, the choices and the open pull requests (**All
+pull requests** shows the closed ones too). A pull request is green when all its
+agreements are signed, yellow when only optional ones are missing, red when a
+needed agreement is missing or it was closed without merge, and purple when it
+was merged. The gear of an agreement shows its version, file, commit and
+repository, the labels it sets (each a link to the pull requests with the label)
+and the configuration file on the default branch. The log icon next to the title
+leads to the log of the project. Contributors can set their default for future
 PRs there. Defaults do not change existing PR choices.
 
 The public contributor page ``/contributor/<github-handle>/`` shows signed

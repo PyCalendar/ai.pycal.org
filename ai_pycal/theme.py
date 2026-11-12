@@ -33,6 +33,8 @@ LIGHT = {
     "signed_bg": "#e7f4ea",
     "missing_bg": "#fbe8ea",
     "optional_bg": "#fdf3d3",
+    "merged": "#6639a6",  # merged pull requests: purple, as on GitHub
+    "merged_bg": "#f1e9fb",
 }
 DARK = {
     "primary": "#8fbbe0",
@@ -53,6 +55,8 @@ DARK = {
     "signed_bg": "#14291c",
     "missing_bg": "#33181c",
     "optional_bg": "#2e2610",
+    "merged": "#c9a6f2",
+    "merged_bg": "#271c38",
 }
 
 

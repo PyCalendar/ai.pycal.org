@@ -1,7 +1,6 @@
 """Public policy records, agreement histories, badges and private project visibility."""
 
 import pytest
-from django.utils import timezone
 
 from ai_pycal.models import AgreementVersion
 from ai_pycal.services.repository_sync import RepositorySync
@@ -31,7 +30,9 @@ def test_public_records_status_and_badge(client, github, policy_project, alice):
     assert b"ai: signed" in badge.content
     assert badge["Cache-Control"] == "no-store"
     page = client.get(f"/project/{REPOSITORY}/").content.decode()
-    assert "@alice" in page and timezone.now().strftime("%Y-%m-%d") in page
+    # the open pull request with its author and state, no list of signers
+    assert 'href="/contributor/alice/">@alice</a>' in page and "data-pull-state=" in page
+    assert "No signatures yet" not in page
     contributor = client.get("/contributor/alice/").content.decode()
     assert REPOSITORY in contributor and "Valid for" in contributor
     assert "<details><summary>Other projects" in contributor

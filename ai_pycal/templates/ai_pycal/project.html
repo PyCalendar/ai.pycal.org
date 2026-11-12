@@ -1,25 +1,19 @@
 {% extends "ai_pycal/base.html" %}
 {% load help github times i18n %}
 {% block title %}{{ project.full_name }} · {{ site_name }}{% endblock %}
-{% block main %}<div class="crumbs"><h1 class="crumbs-path"><a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a></h1> {% github_link project.url project.full_name|add:" on GitHub" %}</div>
+{% block main %}<div class="crumbs"><h1 class="crumbs-path"><a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a></h1> {% github_link project.url project.full_name|add:" on GitHub" %} {% include "ai_pycal/_log_link.html" with url=log_url %}</div>
 {% if attention %}<section class="message message-warning" data-attention><p><strong>{% blocktranslate count counter=attention|length %}This agreement needs your attention:{% plural %}These agreements need your attention:{% endblocktranslate %}</strong></p>
 <ul class="list">{% for policy in attention %}<li><a href="{% url 'agreement' policy.version_id %}">{{ policy.title }}</a> · {% if policy.state == "outdated" %}{% translate "It changed since you signed it." %}{% else %}{% translate "It is mandatory and you have not signed it." %}{% endif %}</li>{% endfor %}</ul></section>{% endif %}
 {% if project.error %}<section class="message message-error" data-error="{{ project.error_code }}"><h2>{{ project.error.title }}</h2><p>{{ project.error_detail }}</p>{% help_link project.error.docs_url project.error.title %}</section>{% endif %}
-<h2>Agreements and signatures</h2>
+<h2>{% translate "Agreements" %}</h2>
 {% for policy in policies %}<section class="card{% if policy.state == "signed" %} state-signed{% elif policy.state and policy.mandatory %} state-missing{% elif policy.state %} state-optional{% endif %}" data-policy="{{ policy.key }}"><div class="card-title"><h3><a href="{% url 'agreement' policy.version_id %}">{{ policy.title }}</a> {% include "ai_pycal/_agreement_badges.html" %}</h3>
-{% if policy.labels or policy.unsigned_labels %}<details class="tech-menu" data-settings>
-  <summary title="{% translate "Settings" %}" aria-label="{% translate "Settings of" %} {{ policy.title }}">{% include "ai_pycal/_gear.html" %}</summary>
-  <dl>
-    {% if policy.labels %}<dt>{% translate "Labels when signed" %}</dt><dd>{% for label in policy.labels %}<code>{{ label }}</code> {% endfor %}</dd>{% endif %}
-    {% if policy.unsigned_labels %}<dt>{% translate "Labels while not signed" %}</dt><dd>{% for label in policy.unsigned_labels %}<code>{{ label }}</code> {% endfor %}</dd>{% endif %}
-  </dl>
-</details>{% endif %}</div>{{ policy.description_html }}
-<p>{% translate "Version" %} {% version policy.version %} · <a href="/agreements/history/{{ policy.version.source }}/{{ policy.version.path }}/">{% translate "Earlier versions" %}</a></p>
-<ul>{% for signature in policy.signers %}<li><a href="{% url 'contributor' signature.login %}">@{{ signature.login }}</a> · {% when signature.signed %}</li>{% empty %}<li>No signatures yet for this version.</li>{% endfor %}</ul></section>{% endfor %}
+{% include "ai_pycal/_agreement_gear.html" with version=policy.version agreement=policy %}</div>{{ policy.description_html }}
+</section>{% endfor %}
 {% if choices %}<h2>Policy choices</h2>{% if github %}<form method="post" action="/project/{{ project.full_name }}/default/">{% csrf_token %}{% endif %}
 {% for choice in choices %}<section class="card"><h3>{% if github %}<label><input type="radio" name="choice" value="{{ choice.key }}" required> {{ choice.name }}</label>{% else %}{{ choice.name }}{% endif %}{% if choice.default %} · Project default{% endif %}</h3>{{ choice.description_html }}<ul>{% for agreement in choice.agreements.all %}<li>{{ agreement.title }}</li>{% endfor %}</ul></section>{% endfor %}
 {% if github %}<button class="button">Set my default for future PRs</button><p>Existing PRs keep their choices.</p></form>{% endif %}{% endif %}
-<h2>Pull requests</h2><ul>{% for pull in project.pull_requests.all %}<li><a href="/project/{{ project.full_name }}/pulls/{{ pull.number }}/">#{{ pull.number }} · {{ pull.title }}</a> · @{{ pull.author_login }} · {% if pull.all_signed %}agreements signed{% else %}agreements pending{% endif %}</li>{% empty %}<li>No pull requests recorded.</li>{% endfor %}</ul>
-<p><a href="{% url 'project_log' project.owner project.name %}" data-log>{% translate "Log of this project" %}</a></p>
+<h2>{% translate "Pull requests" %}</h2>
+<ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_author=True %}{% empty %}<li class="muted">{% if show_all %}{% translate "No pull requests recorded." %}{% else %}{% translate "No open pull requests." %}{% endif %}</li>{% endfor %}</ul>
+<p class="muted">{% if show_all %}<a href="?">{% translate "Only open pull requests" %}</a>{% else %}<a href="?pulls=all" data-all-pulls>{% translate "All pull requests" %}</a>{% endif %}</p>
 {% if can_update %}<form method="post" action="{% url 'update_project' project.owner project.name %}" class="inline-form" data-update>{% csrf_token %}<button class="button button-quiet" type="submit">{% translate "Update" %}</button> <span class="muted">{% translate "Read the configuration and the agreements again and check the open pull requests." %}</span></form>{% endif %}
 {% endblock %}

@@ -385,18 +385,24 @@
 - [ ] Project status: "Up to date" / "Updating" / "Error" linking to /project/<owner>/<repo>/status
       with the problem and the documentation (instead of "Checks pull requests").
 - [ ] Agreement page: badges (Mandatory/Optional, Signed/Outdated/Unsigned) next to the title.
-- [ ] One gear include for agreements, the same on the project and the agreement page: file, commit,
+- [x] One gear include for agreements, the same on the project and the agreement page: file, commit,
       repository, labels (each linking to the pull requests filtered by it), configuration file on the
       default branch, and the version.
 - [ ] Dropdowns in titles stand between the static part and the part they change (left of the
       agreement name); "(optional)" in dropdowns as a badge without line break.
-- [ ] /licenses/ page like community-insights (reuse and pip-licenses installed): the license of the
+- [x] /licenses/ page like community-insights (reuse and pip-licenses installed): the license of the
       project, the licenses in LICENSES/, code from other projects in REUSE.toml, the Python packages;
       AGPL-3.0-or-later in the footer links there.
 - [ ] Admins can remove their own signatures (to test); logged, labels updated.
-- [ ] Project page: less space between agreement name and description; no list of signers; only open
+- [x] Project page: less space between agreement name and description; no list of signers; only open
       pull requests, a switch to show all; pull requests colored: green all signed, yellow mandatory
       signed, red mandatory missing; handles link to contributor pages; log icon next to the title.
+- [x] Pull request states everywhere: green open and signed, red open and missing, yellow only optional
+      missing, purple merged (merged kept from webhooks), red closed without merge; no "no policy choice".
+- [x] Agreements named by the title of their Markdown file (stored with the version, required).
+- [ ] Watch a repository for its problems: needs a verified email (else an error); emails go to the
+      primary verified address, also if the primary is switched to an unverified one; explain it
+      better than "Email for new permissions".
 - [ ] Logs at /logs/<owner>/<repo>/ (and /logs/<owner>/<repo>/pulls/<n>/, /logs/contributor/<handle>/),
       paths in the title navigate the logs; a way back to the page.
 - [ ] Update only for signed-in administrators, at most once every 5 minutes per person.
@@ -404,7 +410,7 @@
 - [ ] Signing flow /project/<owner>/<repo>/pulls/<n>/sign: sign in, then each agreement of the pull
       request in turn (optional ones can be skipped), progress shown, no links in the title bar, only
       About in the footer (new tab); at the end: back to the pull request on GitHub, or its page. Tests.
-- [ ] Django admin for SITE_ADMINS: the configured handle was misspelled (nicokunzmann); warn at start
+- [x] Django admin for SITE_ADMINS: the configured handle was misspelled (nicokunzmann); warn at start
       about SITE_ADMINS that never signed in.
 - [ ] Contributor page: GitHub icon in the heading; no "Profile and email preferences"; signed
       agreements by their title (from the Markdown, stored with the version; an agreement without a

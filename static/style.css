@@ -103,7 +103,13 @@ h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weig
 .state-signed, .card.state-signed { background: var(--signed-bg); border-color: color-mix(in srgb, var(--success) 45%, var(--border)); }
 .state-missing, .card.state-missing { background: var(--missing-bg); border-color: color-mix(in srgb, var(--danger) 45%, var(--border)); }
 .state-optional, .card.state-optional { background: var(--optional-bg); border-color: color-mix(in srgb, var(--warning) 45%, var(--border)); }
-li.state-signed, li.state-missing, li.state-optional { border: 1px solid; border-radius: .4rem; padding: .45rem .7rem; margin: .4rem 0; list-style: none; }
+.state-merged, .card.state-merged { background: var(--merged-bg); border-color: color-mix(in srgb, var(--merged) 45%, var(--border)); }
+.pull-badge-signed { color: var(--success); }
+.pull-badge-missing, .pull-badge-closed { color: var(--danger); }
+.pull-badge-optional { color: var(--warning); }
+.pull-badge-merged { color: var(--merged); }
+.pulls { list-style: none; padding: 0; }
+li.state-signed, li.state-missing, li.state-optional, li.state-merged { border: 1px solid; border-radius: .4rem; padding: .45rem .7rem; margin: .4rem 0; list-style: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .pull-menu .menu-panel { position: absolute; z-index: 20; left: 0; top: calc(100% + .3rem); min-width: 20rem; max-width: 90vw; padding: .5rem; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; box-shadow: 0 .4rem 1.2rem rgba(0, 0, 0, .2); }
 .pull-menu .menu-panel ul { position: static; box-shadow: none; border: 0; padding: .3rem 0 0; min-width: 0; }
@@ -111,7 +117,11 @@ li.state-signed, li.state-missing, li.state-optional { border: 1px solid; border
 .menu-filter input { flex: 1; min-width: 0; }
 .crumb-menu a[aria-current="page"] { font-weight: 700; }
 .card-title { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
-.card-title h3 { margin-top: 0; }
+.card-title h3 { margin: 0; }
+.card-title + p, .card-title + * { margin-top: .4rem; }
+.log-link { color: var(--text-muted); display: inline-flex; padding: .2rem; border-radius: .3rem; }
+.log-link:hover { color: var(--primary); background: var(--surface-tint); }
+.label-link { text-decoration: none; }
 .card-title .tech-menu dl { left: auto; right: 0; }
 .tech-menu { position: relative; }
 .tech-menu summary { list-style: none; cursor: pointer; display: flex; padding: .25rem; border-radius: .3rem; color: var(--text-muted); }
