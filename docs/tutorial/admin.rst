@@ -9,7 +9,7 @@ the right to install GitHub Apps on its account or organization.
 The site must already have its GitHub App configured. If you run the site,
 first go to :doc:`/how-to/github-app` and choose the recommended submission
 form, manifest CLI flow or manual creation. Then return here to install
-that app and activate repositories.
+that app on repositories.
 
 1. Write the agreements
 =======================
@@ -52,23 +52,32 @@ agreements.
 3. Install the GitHub App
 =========================
 
-Sign in on the site with GitHub and open **Setup**. Select **Install the GitHub
-App**. GitHub asks you to choose the repositories and to accept the permissions
-listed in :doc:`/reference/permissions`. Afterwards GitHub sends you back to the
-page **Setup**.
+Install the app from its page on GitHub, or open **Setup** on the site and
+select **Install the GitHub App**. GitHub asks you to choose the repositories
+and to accept the permissions listed in :doc:`/reference/permissions`.
 
-The site does not act on your behalf on GitHub: its app reads, with its own
-token, whether you have the role *admin* or *maintain* of a repository.
+That is the only step. GitHub only lets people who administer a repository
+install an app on it, and tells the site with a signed webhook which
+repositories you chose. You do not need to sign in on the site: each chosen
+repository with the configuration file is set up, and its open pull requests
+get a check for each agreement. Those of people who signed get the labels of
+``pr.labels``. A repository without the file is set up when the file is pushed
+to its default branch.
 
-4. Add the repository
-=====================
+If the configuration file is wrong, the repository is not set up. Its error,
+with a link to how to solve it, is shown on **Setup** and on the page of the
+project; push a corrected file.
 
-On the page **Setup**, select **Add** next to the repository. The site reads the
-configuration file and the agreements. If something is wrong, it shows the
-error with a link to how to solve it, and the repository is not added.
+4. Remove or add a repository on Setup
+======================================
 
-Once added, the open pull requests get a check for each agreement, and those of
-people who signed get the labels of ``pr.labels``.
+On **Setup**, signed in, you see the repositories of your installations. The
+site's app reads, with its own token, whether you have the role *admin* or
+*maintain* of a repository; it does not act on your behalf on GitHub.
+
+**Remove** stops checking the pull requests of a repository; the signatures
+stay. A removed repository is not set up again by a push or a new installation,
+only by **Add**.
 
 .. _permission-email:
 

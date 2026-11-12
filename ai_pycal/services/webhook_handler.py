@@ -96,17 +96,80 @@ class WebhookHandler:
             return "removed"
         installation = self.store_installation(self.payload["installation"])
         PermissionNotice(installation).send_if_needed()
-        return f"installation {action}"
+        added = self.set_up(installation, self.payload.get("repositories") or [])
+        return f"installation {action}" + (f": {added} set up" if added else "")
 
     def on_installation_repositories(self) -> str:
-        """Repositories were removed from an installation.
+        """Repositories were added to an installation or removed from it.
 
         Returns:
             What was done.
         """
         removed = [repo["id"] for repo in self.payload.get("repositories_removed", [])]
         Repository.objects.filter(github_id__in=removed).update(active=False)
-        return f"{len(removed)} removed"
+        installation = self.store_installation(self.payload["installation"])
+        added = self.set_up(installation, self.payload.get("repositories_added") or [])
+        return f"{added} set up, {len(removed)} removed"
+
+    def sender(self):
+        """The user of the site who caused the webhook, if they have an account.
+
+        Returns:
+            The user, or None.
+        """
+        from allauth.socialaccount.models import SocialAccount
+
+        sender = self.payload.get("sender") or {}
+        account = (
+            SocialAccount.objects.filter(provider="github", uid=str(sender.get("id", "")))
+            .select_related("user")
+            .first()
+            if sender.get("id")
+            else None
+        )
+        return account.user if account else None
+
+    def set_up(self, installation: Installation, repositories: list[dict]) -> int:
+        """Set up the repositories that GitHub gave the app: installing it is enough.
+
+        GitHub only lets people who administer a repository install an app on it, and
+        signs the webhook: the site needs no sign-in to trust the choice. Repositories
+        with a usable configuration file are checked from now on; the others wait for
+        a push of the file. Repositories removed on Setup stay removed.
+
+        Args:
+            installation: The installation.
+            repositories: The repositories of the payload, with ``id`` and ``full_name``.
+
+        Returns:
+            How many repositories were set up.
+        """
+        from .repository_setup import RepositorySetup
+
+        sender = self.sender()
+        if sender is not None:
+            installation.admins.add(sender)
+        added = 0
+        for data in repositories:
+            repository, _ = Repository.objects.update_or_create(
+                github_id=data["id"],
+                defaults={
+                    "installation": installation,
+                    "full_name": data["full_name"],
+                    "private": bool(data.get("private")),
+                },
+            )
+            if repository.active or repository.paused:
+                continue
+            if sender is not None:
+                repository.watchers.add(sender)
+            try:
+                RepositorySetup(repository).add()
+            except AgreementError as error:
+                log.info("%s is not set up: %s", repository, error.code)
+                continue
+            added += 1
+        return added
 
     def repository(self) -> Repository | None:
         """The active repository of the webhook.
@@ -190,9 +253,6 @@ class WebhookHandler:
         Returns:
             What was done.
         """
-        repository = self.repository()
-        if repository is None:
-            return "repository not added"
         default = self.payload["repository"].get("default_branch", "")
         if self.payload.get("ref") != f"refs/heads/{default}":
             return "not the default branch"
@@ -202,6 +262,15 @@ class WebhookHandler:
             for key in ("added", "modified", "removed")
             for path in commit.get(key, [])
         }
+        repository = self.repository()
+        if repository is None:
+            # the configuration was pushed to a repository of the app: set it up
+            installation = (self.payload.get("installation") or {}).get("id")
+            stored = Installation.objects.filter(github_id=installation, removed=False).first()
+            if CONFIG_PATH in changed and stored is not None:
+                added = self.set_up(stored, [self.payload["repository"]])
+                return "set up" if added else "not set up"
+            return "repository not added"
         # an agreement of this repository changed: its tag may point to the new commit
         agreement_changed = repository.required_agreements.filter(
             version__source=repository.full_name, version__path__in=changed

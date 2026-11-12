@@ -480,3 +480,14 @@
 - [ ] Translations of agreements: `<file>.<lang>.md` next to the original file.
 - [ ] Queue the webhooks, so that GitHub's time limit does not affect them.
 - [ ] "pending" or "failure" for unsigned checks: explain the difference to the person.
+- [x] Each agreement sets its reading time with sign-min-seconds (format 2.2.0).
+- [x] "When I sign in, the platform still wants to act on my behalf": explained — the OAuth app is
+      not entered on Setup yet, so sign-in still uses the GitHub App.
+
+## 2026-11-12: setup with the installation only; languages
+
+- [x] Setting up a repository must need nothing but installing the GitHub App: the installation
+      webhook sets up the chosen repositories with a configuration file; no sign-in needed.
+- [ ] Language: a small icon menu next to the light/dark menu; the first language comes from the
+      browser (Accept-Language); language names in their own language (Django name_local).
+- [ ] The contributing section of the documentation explains how to translate.

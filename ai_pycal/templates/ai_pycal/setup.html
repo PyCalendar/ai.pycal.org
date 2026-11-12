@@ -10,7 +10,7 @@
   <li>{% translate "Install the GitHub App on the account or organization and choose the repository. GitHub asks you to accept these permissions:" %}
     <ul>{% for name, level in required %}<li><code>{{ name }}: {{ level }}</code></li>{% endfor %}</ul>
     {% if install_url %}<p>{% translate "Install the GitHub App" as install %}{% github_link install_url install install "button" %}</p>{% endif %}</li>
-  <li>{% translate "Add the repository below. Its open pull requests are checked and labelled." %}</li>
+  <li>{% translate "That is all: the repositories you chose that have the file are set up, and their open pull requests are checked and labelled. Below, you can remove a repository or add it again." %}</li>
   <li>{% translate "Enter an email address: when a new version of this site needs more permissions, you are asked there to accept them." %}</li>
 </ol>
 <p><a href="{{ links.admin_tutorial }}">{% translate "The whole tutorial" %}</a></p>

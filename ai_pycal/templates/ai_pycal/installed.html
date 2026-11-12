@@ -1,0 +1,12 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "The GitHub App is installed" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "The GitHub App is installed" %}</h1>
+<section class="card" data-installed>
+  <p>{% blocktranslate %}Nothing else is needed: every repository you chose that has the file <code>.github/agreements.yml</code> on its default branch is set up now, and its open pull requests are checked. A repository without the file is set up when the file is pushed.{% endblocktranslate %}</p>
+  {% if projects %}<p>{% translate "Set up:" %}</p>
+  <ul>{% for project in projects %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% endfor %}</ul>{% endif %}
+  <p><a href="{% url 'projects' %}">{% translate "All projects" %}</a> · <a href="{{ links.config_file }}">{% translate "The configuration file" %}</a> · <a href="{% url 'setup' %}">{% translate "Setup" %}</a></p>
+</section>
+{% endblock %}

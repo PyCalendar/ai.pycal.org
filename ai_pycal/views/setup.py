@@ -133,20 +133,33 @@ def github_callback(request):
     return oauth2_callback(request)
 
 
-@login_required
 def installed(request):
     """GitHub sends administrators here after they installed or changed the app.
+
+    Installing the app is enough: the webhook of the installation sets up the
+    repositories. People who are not signed in see what happens next, without being
+    asked to sign in.
 
     Args:
         request: The request, with ``installation_id``.
 
     Returns:
-        To the page Setup.
+        To the page Setup, or the page that says what happens next.
     """
     try:
         installation_id = int(request.GET.get("installation_id", ""))
     except ValueError:
         return redirect("setup")
+    if not request.user.is_authenticated:
+        installation = Installation.objects.filter(github_id=installation_id).first()
+        return render(
+            request,
+            "ai_pycal/installed.html",
+            {
+                "installation": installation,
+                "projects": installation.repositories.filter(active=True) if installation else [],
+            },
+        )
     installation = AdminAccess(request.user).installation(installation_id)
     PermissionNotice(installation).send_if_needed()
     messages.success(request, _("The GitHub App is installed on %s.") % installation)
@@ -168,6 +181,8 @@ def add_repository(request, installation_id: int, repository_id: int):
         To the page Setup, or the page of the error.
     """
     repository = AdminAccess(request.user).repository(installation_id, repository_id)
+    repository.paused = False
+    repository.save(update_fields=["paused"])
     try:
         checked = RepositorySetup(repository).add()
     except ConfigFileError as error:
@@ -196,7 +211,8 @@ def remove_repository(request, installation_id: int, repository_id: int):
     """
     repository = AdminAccess(request.user).repository(installation_id, repository_id)
     repository.active = False
-    repository.save(update_fields=["active"])
+    repository.paused = True
+    repository.save(update_fields=["active", "paused"])
     messages.info(request, _("%s is no longer checked.") % repository)
     return redirect("setup")
 

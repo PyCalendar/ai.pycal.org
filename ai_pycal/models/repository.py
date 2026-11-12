@@ -11,9 +11,10 @@ from .installation import Installation
 class Repository(models.Model):
     """A repository of an installation.
 
-    It is ``active`` when an administrator added it: then its pull requests are
-    checked. The error of its last reading of the configuration file is kept, so that
-    the administrators see it on the page Setup.
+    It is ``active`` when it was set up, by installing the app on it with a
+    configuration file or with the button Add: then its pull requests are checked.
+    The error of its last reading of the configuration file is kept, so that the
+    administrators see it on the page Setup.
     """
 
     installation = models.ForeignKey(
@@ -23,6 +24,9 @@ class Repository(models.Model):
     full_name = models.CharField(max_length=200, db_index=True)
     private = models.BooleanField(default=False)
     active = models.BooleanField(default=False)
+    # removed on Setup by an administrator: installing the app or pushing the configuration
+    # does not set it up again, only the button Add
+    paused = models.BooleanField(default=False)
     config_version = models.CharField(max_length=20, blank=True)
     config_commit = models.CharField(max_length=40, blank=True)
     error_code = models.CharField(max_length=100, blank=True)
