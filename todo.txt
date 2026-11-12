@@ -382,7 +382,7 @@
 - [x] repository event: a new default branch reads the configuration again; missing events of the app
       shown on Setup and by check_permissions (the registered app must tick "Repository" on GitHub).
 - [x] FOOTER_LINKS in the footer again, not on the About page.
-- [ ] Project status: "Up to date" / "Updating" / "Error" linking to /project/<owner>/<repo>/status
+- [x] Project status: "Up to date" / "Error" ("Updating" left out: an update runs within the request) linking to /project/<owner>/<repo>/status
       with the problem and the documentation (instead of "Checks pull requests").
 - [x] Agreement page: badges (Mandatory/Optional, Signed/Outdated/Unsigned) next to the title.
 - [x] One gear include for agreements, the same on the project and the agreement page: file, commit,

@@ -172,7 +172,7 @@ def test_a_project_with_an_error_shows_it(client, policy_project):
     page = client.get("/projects/").content.decode()
     project = page.split(f'data-project="{REPOSITORY}"')[1].split("</details>")[0]
     assert 'data-status="error"' in project
-    assert "The configuration file was not found" in project or "Error:" in project
+    assert "The repository has no configuration file" in project  # the title, on hover
 
 
 def test_projects_are_grouped_by_organization(client, policy_project):

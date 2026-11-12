@@ -1,0 +1,30 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n times help %}
+{% block title %}{% translate "Status" %} · {{ project.full_name }} · {{ site_name }}{% endblock %}
+{% block main %}
+<div class="crumbs" data-title>
+  <nav class="crumbs-start" aria-label="{% translate "Path" %}"><a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a><span class="crumbs-sep">/</span></nav>
+  <h1 class="crumbs-current">{% translate "Status" %}</h1> {% include "ai_pycal/_log_link.html" with url=log_url %}
+</div>
+{% if project.error_code %}
+<section class="card state-missing" data-project-state="error">
+  <h2>{{ project.error.title }} {% help_link project.error.docs_url project.error.title %}</h2>
+  <p><code>{{ project.error_detail }}</code></p>
+  <p>{% translate "Until it is fixed, the pull requests are checked with the agreements of the last configuration that could be read." %}</p>
+  <p><a class="button" href="{{ project.error.docs_url }}" target="_blank" rel="noopener">{% translate "How to fix it" %}</a></p>
+</section>
+{% else %}
+<section class="card state-signed" data-project-state="working">
+  <h2>{% translate "Up to date" %}</h2>
+  <p>{% translate "The configuration and the agreements were read; the pull requests are checked." %}</p>
+</section>
+{% endif %}
+<dl class="facts-list">
+  <dt>{% translate "Last checked" %}</dt><dd>{% if project.checked %}{% when project.checked %}{% else %}{% translate "not yet" %}{% endif %}</dd>
+  <dt>{% translate "Configuration" %}</dt><dd>{% if project.config_version %}{% blocktranslate with version=project.config_version %}format {{ version }}{% endblocktranslate %}{% else %}{% translate "not read" %}{% endif %}</dd>
+</dl>
+{% if problems %}<section class="card" data-problems>
+  <h2>{% translate "Other problems" %}</h2>
+  <ul class="list">{% for problem in problems %}<li>{{ problem.error.title }} · {{ problem.detail }} {% help_link problem.error.docs_url problem.error.title %}</li>{% endfor %}</ul>
+</section>{% endif %}
+{% endblock %}

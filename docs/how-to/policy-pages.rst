@@ -25,7 +25,9 @@ needed agreement is missing or it was closed without merge, and purple when it
 was merged. The gear of an agreement shows its version, file, commit and
 repository, the labels it sets (each a link to the pull requests with the label)
 and the configuration file on the default branch. The log icon next to the title
-leads to the log of the project. Contributors can set their default for future
+leads to the log of the project, and the badge *Up to date* or *Error* to
+``/project/<owner>/<repo>/status/``: the time of the last check, the format of
+the configuration, and on an error what failed and how to fix it. Contributors can set their default for future
 PRs there. Defaults do not change existing PR choices.
 
 The public contributor page ``/contributor/<github-handle>/`` lists the newest

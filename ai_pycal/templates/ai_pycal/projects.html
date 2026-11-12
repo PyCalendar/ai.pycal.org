@@ -14,7 +14,7 @@
         <summary>
           <span class="project-name"><a href="/project/{{ project.full_name }}/">{{ project.name }}</a></span>
           {% github_link project.url project.full_name|add:" on GitHub" %}
-          {% if project.error_code %}<span class="badge badge-error" data-status="error" title="{{ project.error_detail }}">{% translate "Error" %}: {{ project.error.title }}</span>{% else %}<span class="badge badge-success" data-status="working">{% translate "Up to date" %}</span>{% endif %}
+          {% include "ai_pycal/_project_status.html" %}
           <span class="muted">{% blocktranslate count counter=project.required_agreements.all|length %}{{ counter }} agreement{% plural %}{{ counter }} agreements{% endblocktranslate %}</span>
         </summary>
         <ul class="list">{% for agreement in project.required_agreements.all %}

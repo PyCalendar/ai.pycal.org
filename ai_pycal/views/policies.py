@@ -103,6 +103,29 @@ def projects(request, owner: str = ""):
     )
 
 
+def project_status(request, owner: str, repo: str):
+    """The status of a project: up to date, or the error of its configuration and how to fix it.
+
+    Args:
+        request: The request.
+        owner: The owner of the repository.
+        repo: The name of the repository.
+
+    Returns:
+        The page.
+    """
+    repository = project_for(request, owner, repo)
+    return render(
+        request,
+        "ai_pycal/project_status.html",
+        {
+            "project": repository,
+            "problems": list(repository.problems.filter(active=True)),
+            "log_url": reverse("project_log", args=[repository.owner, repository.name]),
+        },
+    )
+
+
 def signing_state(policy, github_id: int | None) -> str:
     """Whether a person signed the version of an agreement that a project asks for.
 

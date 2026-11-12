@@ -1,7 +1,7 @@
 {% extends "ai_pycal/base.html" %}
 {% load help github times i18n %}
 {% block title %}{{ project.full_name }} · {{ site_name }}{% endblock %}
-{% block main %}<div class="crumbs"><h1 class="crumbs-path"><a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a></h1> {% github_link project.url project.full_name|add:" on GitHub" %} {% include "ai_pycal/_log_link.html" with url=log_url %}</div>
+{% block main %}<div class="crumbs"><h1 class="crumbs-path"><a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a></h1> {% github_link project.url project.full_name|add:" on GitHub" %} {% include "ai_pycal/_log_link.html" with url=log_url %} {% include "ai_pycal/_project_status.html" %}</div>
 {% if attention %}<section class="message message-warning" data-attention><p><strong>{% blocktranslate count counter=attention|length %}This agreement needs your attention:{% plural %}These agreements need your attention:{% endblocktranslate %}</strong></p>
 <ul class="list">{% for policy in attention %}<li><a href="{% url 'agreement' policy.version_id %}">{{ policy.title }}</a> · {% if policy.state == "outdated" %}{% translate "It changed since you signed it." %}{% else %}{% translate "It is mandatory and you have not signed it." %}{% endif %}</li>{% endfor %}</ul></section>{% endif %}
 {% if project.error %}<section class="message message-error" data-error="{{ project.error_code }}"><h2>{{ project.error.title }}</h2><p>{{ project.error_detail }}</p>{% help_link project.error.docs_url project.error.title %}</section>{% endif %}

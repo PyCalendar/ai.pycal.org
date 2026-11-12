@@ -135,6 +135,10 @@ li.state-signed, li.state-missing, li.state-optional, li.state-merged { border: 
 .log-link { color: var(--text-muted); display: inline-flex; padding: .2rem; border-radius: .3rem; }
 .log-link:hover { color: var(--primary); background: var(--surface-tint); }
 .label-link { text-decoration: none; }
+.status-badge { text-decoration: none; }
+.facts-list { display: grid; grid-template-columns: max-content 1fr; gap: .3rem 1rem; }
+.facts-list dt { color: var(--text-muted); font-weight: 600; }
+.facts-list dd { margin: 0; }
 .valid-check { color: var(--success); font-weight: 700; }
 .card-title .tech-menu dl { left: auto; right: 0; }
 .tech-menu { position: relative; }
