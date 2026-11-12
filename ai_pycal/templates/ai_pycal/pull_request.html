@@ -16,7 +16,7 @@
   {% github_link pull.url "The pull request on GitHub" %}
 </div>
 <p class="lead">{{ pull.title }} <span class="muted">#{{ pull.number }}</span> · {% translate "by" %} <a href="{% url 'contributor' pull.author_login %}">@{{ pull.author_login }}</a></p>
-{% if not user.is_authenticated %}<p><a class="button" href="{% url 'account_login' %}?next={{ here|urlencode }}">{% translate "Sign in to sign agreements" %}</a></p>{% elif not is_author %}<p>{% blocktranslate with author=pull.author_login %}This is the public agreement record for @{{ author }}. Only the author of the pull request can change its choice.{% endblocktranslate %}</p>{% endif %}
+{% if user.is_authenticated and not is_author %}<p>{% blocktranslate with author=pull.author_login %}This is the public agreement record for @{{ author }}. Only the author of the pull request can change its choice.{% endblocktranslate %}</p>{% endif %}
 {% if choices %}
 <section class="card"><h2>{% translate "Policy choice" %}</h2>
 {% if choice %}<p>{% translate "Current choice:" %} <strong>{{ choice.name }}</strong></p>{% else %}<p>{% translate "No choice selected. The author of the pull request must choose one." %}</p>{% endif %}
@@ -27,16 +27,11 @@
 {% else %}{% for offered in choices %}<details><summary>{{ offered.name }}</summary>{{ offered.description_html }}</details>{% endfor %}{% endif %}
 </section>{% endif %}
 <h2>{% translate "Agreements for this pull request" %}</h2>
-{% if is_author and needs_signing %}<form method="post" action="{{ here }}sign/">{% csrf_token %}{% endif %}
-{% for row in rows %}
-<section class="card agreement-state {% if row.state.signed %}state-signed{% elif row.state.required %}state-missing{% else %}state-optional{% endif %}" data-agreement="{{ row.state.agreement.key }}" data-state="{% if row.state.signed %}signed{% elif row.state.required %}missing{% else %}optional{% endif %}">
-<h3><a href="{% url 'agreement' row.state.agreement.version_id %}?next={{ here|urlencode }}">{{ row.state.agreement.title }}</a>
+<ul class="pulls agreements-of-pull">{% for row in rows %}
+<li class="agreement-row {% if row.state.signed %}state-signed{% elif row.state.required %}state-missing{% else %}state-optional{% endif %}" data-agreement="{{ row.state.agreement.key }}" data-state="{% if row.state.signed %}signed{% elif row.state.required %}missing{% else %}optional{% endif %}"><a href="{% url 'agreement' row.state.agreement.version_id %}?next={{ here|urlencode }}">{{ row.state.agreement.title }}</a>
   <span class="badges">{% if row.state.agreement.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% elif row.state.required %}<span class="badge badge-strong">{% translate "Required by your choice" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}
-  {% if row.state.signed %}<span class="badge badge-success">{% translate "Signed" %}</span>{% else %}<span class="badge {% if row.state.required %}badge-error{% else %}badge-warning{% endif %}">{% translate "Unsigned" %}</span>{% endif %}</span></h3>
-{{ row.description }}
-<details><summary>{% translate "Read the agreement" %} · {% translate "Version" %} {% version row.state.agreement.version %}</summary><article class="agreement">{{ row.html }}</article></details>
-{% if is_author and not row.state.signed %}<input type="hidden" name="shown_{{ row.state.agreement.version_id }}" value="{{ row.token }}"><p><label><input type="checkbox" name="accept_{{ row.state.agreement.version_id }}" value="yes"{% if row.state.required %} required{% endif %}> {% translate "I have read and accept this agreement." %}{% if not row.state.required %} <span class="muted">({% translate "optional" %})</span>{% endif %}</label></p>{% endif %}
-</section>{% endfor %}
-{% if is_author and needs_signing %}<p><label for="handle">{% translate "Type your GitHub handle to sign:" %}</label> <input id="handle" name="handle" required autocomplete="off" spellcheck="false" placeholder="{{ github.login }}" pattern="{{ handle_pattern }}" title="{% blocktranslate with login=github.login %}Your GitHub handle: {{ login }}{% endblocktranslate %}"></p><button class="button">{% translate "Sign the ticked agreements" %}</button></form>{% endif %}
+  {% if row.state.signed %}<span class="badge badge-success">{% translate "Signed" %}</span>{% else %}<span class="badge {% if row.state.required %}badge-error{% else %}badge-warning{% endif %}">{% translate "Unsigned" %}</span>{% endif %}</span></li>
+{% endfor %}</ul>
+{% if is_author and needs_signing %}<p><a class="button" href="{{ here }}sign/" data-sign-flow>{% translate "Sign the agreements" %}</a></p>{% elif not user.is_authenticated and needs_signing %}<p><a class="button" href="{{ here }}sign/" data-sign-flow>{% translate "Sign in to sign agreements" %}</a></p>{% endif %}
 <p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
 {% endblock %}

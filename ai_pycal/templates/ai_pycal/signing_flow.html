@@ -1,0 +1,48 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n times help github %}
+{% block title %}{% translate "Sign the agreements" %} · #{{ pull.number }} · {{ site_name }}{% endblock %}
+{% block main %}
+<div class="flow">
+<p class="flow-context muted">{{ pull.repository.full_name }} #{{ pull.number }} · {{ pull.title }}</p>
+{% if not_author %}
+<section class="card" data-step="not-author">
+  <h1>{% translate "Sign the agreements" %}</h1>
+  <p>{% blocktranslate with author=pull.author_login %}This pull request is by @{{ author }}: only its author signs its agreements here.{% endblocktranslate %}</p>
+  <p><a class="button button-quiet" href="{{ page }}">{% translate "View the pull request page" %}</a></p>
+</section>
+{% elif choose %}
+<section class="card" data-step="choose">
+  <h1>{% translate "Choose the policy of this pull request" %}</h1>
+  <form method="post" action="{{ page }}choice/">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ here }}">
+    {% for offered in choices %}<p><label><input type="radio" name="choice" value="{{ offered.key }}" required> {{ offered.name }}</label></p>{% endfor %}
+    <p><button class="button" type="submit">{% translate "Continue" %}</button></p>
+  </form>
+</section>
+{% elif done %}
+<section class="card state-{% if missing %}missing{% else %}signed{% endif %}" data-step="done">
+  <h1>{% if missing %}{% translate "Agreements are still missing" %}{% else %}{% translate "All done" %}{% endif %}</h1>
+  <p>{% if missing %}{% translate "Some required agreements of this pull request are not signed." %}{% elif skipped_count %}{% blocktranslate count counter=skipped_count %}The required agreements are signed. You skipped {{ counter }} optional agreement.{% plural %}The required agreements are signed. You skipped {{ counter }} optional agreements.{% endblocktranslate %}{% else %}{% translate "You signed every agreement of this pull request. Its checks are updated." %}{% endif %}</p>
+  {% if not pull.open %}<p class="muted">{% translate "The pull request is closed." %}</p>{% endif %}
+  <p class="flow-actions">{% translate "Return to the pull request on GitHub" as back %}{% github_link pull.url back back "button" %} <a class="button button-quiet" href="{{ page }}">{% translate "View the pull request page" %}</a></p>
+</section>
+{% else %}
+<p class="flow-progress"><progress value="{{ position }}" max="{{ total }}">{{ position }} / {{ total }}</progress> <span data-progress>{% blocktranslate %}Agreement {{ position }} of {{ total }}{% endblocktranslate %}</span></p>
+{% if not pull.open %}<p class="message message-warning">{% translate "The pull request is closed; your signature still counts for later pull requests." %}</p>{% endif %}
+<section class="card agreement-step {% if state.required %}state-missing{% else %}state-optional{% endif %}" data-step="agreement" data-version="{{ state.agreement.version_id }}">
+  <h1>{{ state.agreement.title }} <span class="badges">{% if state.agreement.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% elif state.required %}<span class="badge badge-strong">{% translate "Required by your choice" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}</span></h1>
+  <article class="agreement">{{ html }}</article>
+  {% if sign_error %}<div class="message message-error" role="alert" data-error="{{ sign_error.code }}"><strong>{{ sign_error.title }}</strong>{% if sign_error.detail %}: <code>{{ sign_error.detail }}</code>{% endif %}</div>{% endif %}
+  <form method="post" action="{{ here }}">{% csrf_token %}
+    <input type="hidden" name="version" value="{{ state.agreement.version_id }}">
+    <input type="hidden" name="shown" value="{{ shown_token }}">
+    <p><label><input type="checkbox" name="accept" value="yes" required> {% translate "I have read and accept this agreement." %}</label></p>
+    <p><label for="handle">{% translate "Type your GitHub handle to sign:" %}</label>
+      <input id="handle" name="handle" value="{{ handle }}" required autocomplete="off" spellcheck="false" placeholder="{{ github.login }}" pattern="{{ handle_pattern }}" title="{% blocktranslate with login=github.login %}Your GitHub handle: {{ login }}{% endblocktranslate %}"></p>
+    <p class="flow-actions"><button class="button" type="submit" name="action" value="sign">{% if more %}{% translate "Sign and continue" %}{% else %}{% translate "Sign" %}{% endif %}</button>
+      {% if not state.required %}<button class="button button-quiet" type="submit" name="action" value="skip" formnovalidate data-skip>{% translate "Skip" %}</button>{% endif %}</p>
+  </form>
+</section>
+{% endif %}
+</div>
+{% endblock %}

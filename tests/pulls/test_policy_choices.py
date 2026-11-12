@@ -67,15 +67,38 @@ def page_url(number=1):
     return f"/project/{REPOSITORY}/pulls/{number}/"
 
 
-def accept_required(client, number=1):
-    page = client.get(page_url(number)).content.decode()
-    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
-    required = re.findall(r'name="accept_(\d+)" value="yes" required', page)
-    data = {"handle": "alice"}
-    for pk in required:  # as a person who ticks only the required agreements
-        data[f"shown_{pk}"] = tokens[pk]
-        data[f"accept_{pk}"] = "yes"
-    return client.post(page_url(number) + "sign/", data)
+def flow_step(client, number=1):
+    """The current step of the signing flow: its version and token, or None at the end."""
+    page = client.get(page_url(number) + "sign/").content.decode()
+    found = re.search(r'name="version" value="(\d+)"', page)
+    if not found:
+        return None, None, page
+    token = re.search(r'name="shown" value="([^"]+)"', page).group(1)
+    return found.group(1), token, page
+
+
+def accept_required(client, number=1, optional=False):
+    """Sign through the flow as a person: the required agreements, optional ones skipped."""
+    response = None
+    for _ in range(20):
+        version, token, page = flow_step(client, number)
+        if version is None:  # the end of the flow: the last signature, or nothing to sign
+            return response or client.get(page_url(number) + "sign/", follow=False)
+        if "data-skip" in page and not optional:
+            client.post(page_url(number) + "sign/", {"version": version, "action": "skip"})
+            continue
+        response = client.post(
+            page_url(number) + "sign/",
+            {
+                "version": version,
+                "shown": token,
+                "accept": "yes",
+                "handle": "alice",
+                "action": "sign",
+            },
+        )
+        assert response.status_code == 302, response.content.decode()[:500]
+    raise AssertionError("the flow did not end")
 
 
 def test_default_changes_only_future_prs(client, github, policy_project, alice):
@@ -101,7 +124,7 @@ def test_default_changes_only_future_prs(client, github, policy_project, alice):
 def test_signing_requires_mandatory_and_only_selected_bundle(client, github, policy_project, alice):
     item = open_pull(client, github)
     client.force_login(alice)
-    assert accept_required(client).status_code == 302
+    assert accept_required(client).status_code in (200, 302)
     item.refresh_from_db()
     assert item.all_signed
     assert set(Signature.objects.values_list("version__path", flat=True)) == {
@@ -114,7 +137,7 @@ def test_signing_requires_mandatory_and_only_selected_bundle(client, github, pol
     assert not item.all_signed
     assert set(github.labels[(REPOSITORY, 1)]) == {"cla-signed", "human-choice"}
     assert ContributorPreference.objects.get(github_id=ALICE[0]).choice.key == "human-only"
-    assert accept_required(client).status_code == 302
+    assert accept_required(client).status_code in (200, 302)
     item.refresh_from_db()
     assert item.all_signed
     assert set(github.labels[(REPOSITORY, 1)]) == {"cla-signed", "human-signed", "human-choice"}
@@ -238,21 +261,22 @@ def test_removed_labels_and_checks_are_reconciled_without_touching_other_labels(
     assert github.status(REPOSITORY, item.head_sha, "ai.example.org/human")["state"] == "success"
 
 
-def test_bulk_signing_validates_every_agreement_before_saving_any(
-    client, github, policy_project, alice
-):
+def test_a_forged_token_signs_nothing(client, github, policy_project, alice):
     open_pull(client, github)
     client.force_login(alice)
-    page = client.get(page_url()).content.decode()
-    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
-    required = re.findall(r'name="accept_(\d+)" value="yes" required', page)
-    data = {"handle": "alice"}
-    for pk in required:  # as a person who ticks only the required agreements
-        data[f"shown_{pk}"] = tokens[pk]
-        data[f"accept_{pk}"] = "yes"
-    data[f"shown_{required[-1]}"] = "forged"
-    response = client.post(page_url() + "sign/", data)
+    version, _token, _page = flow_step(client)
+    response = client.post(
+        page_url() + "sign/",
+        {
+            "version": version,
+            "shown": "forged",
+            "accept": "yes",
+            "handle": "alice",
+            "action": "sign",
+        },
+    )
     assert response.status_code == 400
+    assert 'data-error="AgreementNotShown"' in response.content.decode()
     assert Signature.objects.count() == 0
 
 
@@ -264,7 +288,8 @@ def test_selected_choice_is_authorized_but_does_not_sign_agreements(
     assert client.post(page_url() + "choice/", {"choice": "human-only"}).status_code == 302
     assert Signature.objects.count() == 0
     assert "human-choice" in github.labels[(REPOSITORY, 1)]
-    assert client.get(page_url() + "sign/").status_code == 405
+    assert 'data-step="agreement"' in client.get(page_url() + "sign/").content.decode()
+    assert Signature.objects.count() == 0  # the flow shows the agreements, signs nothing
 
 
 def test_every_agreement_is_listed_with_its_color(client, github, policy_project, alice):
@@ -281,17 +306,11 @@ def test_every_agreement_is_listed_with_its_color(client, github, policy_project
     assert "missing" not in states.values() and "signed" in states.values()
 
 
-def test_optional_agreements_can_be_signed_on_the_page(client, github, policy_project, alice):
+def test_optional_agreements_can_be_signed_in_the_flow(client, github, policy_project, alice):
     open_pull(client, github)
     client.force_login(alice)
-    page = client.get(page_url()).content.decode()
-    tokens = dict(re.findall(r'name="shown_(\d+)" value="([^"]+)"', page))
-    data = {"handle": "alice"}
-    for pk, token in tokens.items():
-        data[f"shown_{pk}"] = token
-        data[f"accept_{pk}"] = "yes"
-    assert client.post(page_url() + "sign/", data).status_code == 302
-    assert Signature.objects.count() == len(tokens)
+    accept_required(client, optional=True)
+    assert Signature.objects.count() == policy_project.required_agreements.count()
 
 
 def test_the_title_has_the_path_and_a_menu_of_my_pull_requests(

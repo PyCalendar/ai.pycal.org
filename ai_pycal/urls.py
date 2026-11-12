@@ -13,6 +13,7 @@ from .views import (
     profile,
     registration,
     setup,
+    signing_flow,
     webhook,
 )
 
@@ -51,7 +52,7 @@ urlpatterns = [
     ),
     path(
         "project/<str:owner>/<str:repo>/pulls/<int:number>/sign/",
-        policies.sign_pull,
+        signing_flow.flow,
         name="sign_pull",
     ),
     path(

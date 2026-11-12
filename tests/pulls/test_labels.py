@@ -29,7 +29,8 @@ def test_a_new_pull_request_asks_for_the_agreements(client, github, repository):
         status = github.status(REPOSITORY, sha, f"ai.example.org/{key}")
         assert status["state"] == "pending"
         assert "@alice: please sign" in status["description"]
-        assert status["target_url"] == f"https://ai.example.org/project/{REPOSITORY}/pulls/1/"
+        # a check that waits for a signature leads into the signing flow
+        assert status["target_url"] == f"https://ai.example.org/project/{REPOSITORY}/pulls/1/sign/"
     # the CLA is not signed yet: pr.unsigned-labels of the configuration
     assert github.labels.get((REPOSITORY, 1), []) == ["cla-missing"]
 

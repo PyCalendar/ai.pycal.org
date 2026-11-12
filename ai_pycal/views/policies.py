@@ -395,6 +395,9 @@ def choose(request, owner: str, repo: str, number: int):
             )
     PullRequestCheck(item).run()
     messages.success(request, "Your PR choice is saved. Defaults apply only to future PRs.")
+    flow = reverse("sign_pull", kwargs={"owner": owner, "repo": repo, "number": number})
+    if request.POST.get("next") == flow:  # the choice was a step of the signing flow
+        return redirect(flow)
     return redirect("project_pull", owner=owner, repo=repo, number=number)
 
 
@@ -418,39 +421,6 @@ def default_choice(request, owner: str, repo: str):
         "Default saved for future PRs. Review existing PRs below to change them individually.",
     )
     return redirect("contributor", handle=identity.login)
-
-
-@login_required
-@require_POST
-@Trigger.view("signed", "@{login} signs the agreements of #{number}")
-def sign_pull(request, owner: str, repo: str, number: int):
-    """Accept the displayed required agreements after validating every form token."""
-    item = pull_for(request, owner, repo, number)
-    identity = assert_author(request, item)
-    signer = Signer(request.user, identity)
-    unsigned = [s for s in PullRequestCheck(item).states() if not s.signed]
-    # the required agreements must all be accepted; optional ones are signed if ticked
-    states = [
-        s
-        for s in unsigned
-        if s.required or request.POST.get(f"accept_{s.agreement.version_id}") == "yes"
-    ]
-    for state in states:
-        signer.validate(
-            state.agreement.version,
-            request.POST.get(f"accept_{state.agreement.version_id}") == "yes",
-            request.POST.get("handle", ""),
-            request.POST.get(f"shown_{state.agreement.version_id}", ""),
-        )
-    for state in states:
-        signer.sign(
-            state.agreement.version,
-            request.POST.get(f"accept_{state.agreement.version_id}") == "yes",
-            request.POST.get("handle", ""),
-            request.POST.get(f"shown_{state.agreement.version_id}", ""),
-        )
-    messages.success(request, "You signed the agreements.")
-    return redirect("project_pull", owner=owner, repo=repo, number=number)
 
 
 def policy_status(request, owner: str, repo: str, handle: str, policy: str, badge: bool = False):

@@ -150,3 +150,21 @@ def test_two_versions_of_a_day_show_their_time(cla):
     )
     html = Template("{% load times %}{% version v %}").render(Context({"v": version}))
     assert "data-date-only" not in html and " UTC</time>" in html
+
+
+def test_sign_and_open_the_next_agreement(client, cla, repository, alice):
+    ai = repository.required_agreements.get(key="ai-policy")
+    client.force_login(alice)
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    assert f'name="open_next" value="{ai.version_id}"' in page
+    response = sign_agreement(client, cla.version_id, "alice", open_next=str(ai.version_id))
+    assert response["Location"] == f"/agreements/{ai.version_id}/"
+    page = client.get(f"/agreements/{ai.version_id}/").content.decode()
+    assert "data-sign-next" not in page  # the CLA is signed: nothing next
+    assert ">Sign</button>" in page
+
+
+def test_sign_alone_goes_back(client, cla, alice):
+    client.force_login(alice)
+    response = sign_agreement(client, cla.version_id, "alice", next="/project/x/y/pulls/1/")
+    assert response["Location"] == "/project/x/y/pulls/1/"

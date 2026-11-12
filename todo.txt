@@ -406,8 +406,8 @@
 - [x] Logs at /logs/<owner>/<repo>/ (and /logs/<owner>/<repo>/pulls/<n>/, /logs/contributor/<handle>/),
       paths in the title navigate the logs; a way back to the page.
 - [x] Update only for signed-in administrators, at most once every 5 minutes per person.
-- [ ] Signing: "Sign" and "Sign and open next agreement" buttons.
-- [ ] Signing flow /project/<owner>/<repo>/pulls/<n>/sign: sign in, then each agreement of the pull
+- [x] Signing: "Sign" and "Sign and open next agreement" buttons.
+- [x] Signing flow /project/<owner>/<repo>/pulls/<n>/sign: sign in, then each agreement of the pull
       request in turn (optional ones can be skipped), progress shown, no links in the title bar, only
       About in the footer (new tab); at the end: back to the pull request on GitHub, or its page. Tests.
 - [x] Django admin for SITE_ADMINS: the configured handle was misspelled (nicokunzmann); warn at start
@@ -438,8 +438,8 @@
       repository: configuration, agreements, open pull requests, and the state of closed ones.
 - [x] Merged pull requests show as merged (purple), also those closed before the site kept "merged":
       the background update reads their state from GitHub.
-- [ ] Pull request page: no "Read the agreement · Version" and no text of the agreement; a minimal list.
-- [ ] Gear: the configuration shows the id of the agreement (its key) instead of the path; GitHub icon stays.
+- [x] Pull request page: no "Read the agreement · Version" and no text of the agreement; a minimal list.
+- [x] Gear: the configuration shows the id of the agreement (its key) instead of the path; GitHub icon stays.
 - [ ] Mandatory or optional belongs to a version of the configuration: show it per version in the
       menus of versions (keep it with the version an agreement was asked for).
 - [x] Every prompt is recorded here as a checkbox.
@@ -469,3 +469,4 @@
       collaborators/{login}/permission: metadata read); no user tokens are stored or renewed any more.
 - [x] The installed app keeps writing labels and checks with its own token.
 - [ ] The person: create the OAuth app on GitHub and enter it on Setup.
+- [x] Edge case found: a skipped optional agreement that became required (other choice) is asked again.

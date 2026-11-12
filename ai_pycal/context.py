@@ -17,6 +17,22 @@ from .theme import COOKIE, Theme
 THEMES = (("auto", _("As the system")), ("light", _("Light")), ("dark", _("Dark")))
 
 
+def is_flow(path: str) -> bool:
+    """Whether an address is the signing flow of a pull request.
+
+    Args:
+        path: The path, such as ``/project/o/r/pulls/3/sign/``.
+
+    Returns:
+        True for the flow.
+
+    Examples:
+        >>> is_flow("/project/o/r/pulls/3/sign/"), is_flow("/project/o/r/pulls/3/")
+        (True, False)
+    """
+    return "/pulls/" in path and path.rstrip("/").endswith("/sign")
+
+
 def version_text() -> str:
     """The version and commit that run, for the details of errors.
 
@@ -92,4 +108,7 @@ def site(request) -> dict:
         "site_admin": GitHubIdentity.is_site_admin(request.user),
         "focused": "/pulls/" in request.path
         or "/pulls/" in request.GET.get("next", request.POST.get("next", "")),
+        # the signing flow and the sign-in into it: nothing in the title bar leads away
+        "flow": is_flow(request.path)
+        or is_flow(request.GET.get("next", request.POST.get("next", ""))),
     }

@@ -36,7 +36,8 @@
     <p><label><input type="checkbox" name="accept" value="yes" required> {% translate "I have read and accept this agreement." %}</label></p>
     <p><label for="handle">{% translate "Type your GitHub handle to sign:" %}</label>
       <input id="handle" name="handle" value="{{ handle }}" required autocomplete="off" spellcheck="false" placeholder="{{ github.login }}" pattern="{{ handle_pattern }}" title="{% blocktranslate with login=github.login %}Your GitHub handle: {{ login }}{% endblocktranslate %}"></p>
-    <p><button class="button" type="submit">{% translate "Sign the agreement" %}</button></p>
+    <p class="flow-actions"><button class="button" type="submit">{% translate "Sign" %}</button>
+      {% if next_agreement %}<button class="button button-quiet" type="submit" name="open_next" value="{{ next_agreement.version_id }}" data-sign-next>{% translate "Sign and open next agreement" %}</button>{% endif %}</p>
   </form>
   {% else %}
   <p><a class="button" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">{% translate "Sign in with GitHub to sign" %}</a></p>

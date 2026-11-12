@@ -185,9 +185,10 @@ class PullRequestCheck:
             raise failure from error
         notice.resolve("CannotWriteLabels")
         owner, repo = name.split("/")
-        details = settings.SITE_URL + reverse(
-            "project_pull", kwargs={"owner": owner, "repo": repo, "number": pull.number}
-        )
+        page = {"owner": owner, "repo": repo, "number": pull.number}
+        details = settings.SITE_URL + reverse("project_pull", kwargs=page)
+        # a check that waits for signatures leads into the signing flow
+        sign_here = settings.SITE_URL + reverse("sign_pull", kwargs=page)
         checks = set()
         StatusSet(
             self.api,
@@ -214,7 +215,7 @@ class PullRequestCheck:
                 f"{settings.STATUS_CONTEXT}/{agreement.key}",
                 status,
                 text,
-                details,
+                sign_here if status == "pending" else details,
             ).run()
         if has_choices:
             checks.add("choices/selection")
@@ -224,7 +225,7 @@ class PullRequestCheck:
                 f"{settings.STATUS_CONTEXT}/choices/selection",
                 "success" if all_signed else "pending",
                 f"Choice: {choice.name}" if choice else "Please select a policy choice",
-                details,
+                details if all_signed else sign_here,
             ).run()
         for obsolete in set(pull.repository.managed_checks) - checks:
             StatusSet(

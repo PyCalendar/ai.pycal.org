@@ -8,7 +8,7 @@
     {% if agreement %}
     {% if agreement.labels %}<dt>{% translate "Labels when signed" %}</dt><dd>{% for label in agreement.labels %}<a class="label-link" href="{{ agreement.repository.url }}/pulls?q=is%3Apr+label%3A{{ label|urlencode }}"><code>{{ label }}</code></a> {% endfor %}</dd>{% endif %}
     {% if agreement.unsigned_labels %}<dt>{% translate "Labels while not signed" %}</dt><dd>{% for label in agreement.unsigned_labels %}<a class="label-link" href="{{ agreement.repository.url }}/pulls?q=is%3Apr+label%3A{{ label|urlencode }}"><code>{{ label }}</code></a> {% endfor %}</dd>{% endif %}
-    <dt>{% translate "Configuration" %}</dt><dd>{% github_link agreement.repository.url|add:"/blob/HEAD/.github/agreements.yml" ".github/agreements.yml on the default branch" ".github/agreements.yml" %}</dd>
+    <dt>{% translate "Configuration" %}</dt><dd>{% github_link agreement.repository.url|add:"/blob/HEAD/.github/agreements.yml" ".github/agreements.yml on the default branch" agreement.key %}</dd>
     {% endif %}
   </dl>
 </details>

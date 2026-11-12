@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
@@ -185,9 +186,19 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
     )
     here = request.POST.get("next", request.GET.get("next", ""))
     crumbs = breadcrumb(names, here)
+    next_agreement = None
     if crumbs and identity:
         crumbs["agreement"].state = (
             "signed" if signature else "outdated" if previous else "unsigned"
+        )
+        signed = set(
+            Signature.objects.filter(
+                github_id=identity.github_id,
+                version_id__in=[other.version_id for other in crumbs["others"]],
+            ).values_list("version_id", flat=True)
+        )
+        next_agreement = next(
+            (other for other in crumbs["others"] if other.version_id not in signed), None
         )
     return render(
         request,
@@ -196,6 +207,7 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
             "version": version,
             "required_by": names,
             "crumbs": crumbs,
+            "next_agreement": next_agreement,
             "title": names[0].name if names else version.path,
             "html": render_agreement(version.text, version.path),
             "signature": signature,
@@ -255,6 +267,11 @@ def sign(request, pk: int):
         messages.success(request, _("You signed the agreement. Your pull requests are updated."))
     else:
         messages.info(request, _("You had already signed this agreement."))
+    following = request.POST.get("open_next", "")
+    if following.isdigit():  # "Sign and open next agreement"
+        target = reverse("agreement", args=[int(following)])
+        back = request.POST.get("next", "")
+        return redirect(f"{target}?next={back}" if back.startswith("/") else target)
     target = request.POST.get("next", "")
     if target.startswith("/") and url_has_allowed_host_and_scheme(
         target, {request.get_host()}, require_https=request.is_secure()
