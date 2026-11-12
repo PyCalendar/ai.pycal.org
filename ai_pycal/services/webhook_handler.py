@@ -2,12 +2,14 @@
 
 import logging
 
+from django.conf import settings
 from django.db import transaction
 
 from ai_pycal.config import CONFIG_PATH
 from ai_pycal.errors import AgreementError, WebhookPayloadInvalid
 from ai_pycal.models import Installation, PullRequest, Repository
 
+from .agreement_fetcher import AgreementFetcher
 from .permission_notice import PermissionNotice
 from .pull_request_check import PullRequestCheck
 from .repository_sync import RepositorySync
@@ -282,10 +284,19 @@ class WebhookHandler:
                 added = self.set_up(stored, [self.payload["repository"]])
                 return "set up" if added else "not set up"
             return "repository not added"
-        # an agreement of this repository changed: its tag may point to the new commit
-        agreement_changed = repository.required_agreements.filter(
-            version__source=repository.full_name, version__path__in=changed
-        ).exists()
+        # an agreement of this repository or its translation changed: its tag may point to
+        # the new commit, and translations are read at the commit of the reference
+        paths = set(
+            repository.required_agreements.filter(version__source=repository.full_name).values_list(
+                "version__path", flat=True
+            )
+        )
+        translations = {
+            AgreementFetcher.translation_path(path, language)
+            for path in paths
+            for language, _ in settings.LANGUAGES
+        }
+        agreement_changed = bool(changed & (paths | translations))
         if CONFIG_PATH not in changed and not agreement_changed:
             return "nothing to read again"
         RepositorySync(repository).sync()

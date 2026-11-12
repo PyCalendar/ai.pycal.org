@@ -75,3 +75,24 @@ def test_the_signing_flow_shows_the_translation(client, cla, repository, github,
     client.force_login(alice)
     page = client.get(f"/project/{REPOSITORY}/pulls/1/sign/", **GERMAN).content.decode()
     assert "Auf Deutsch." in page and 'data-translation="de"' in page
+
+
+def test_a_push_of_a_translation_reads_it(client, repository, github):
+    from tests.conftest import send_webhook
+
+    github.push(REPOSITORY, {"agreements/cla.es.md": "# Acuerdo\n\nEn español.\n"})
+    response = send_webhook(
+        client,
+        "push",
+        {
+            "ref": "refs/heads/main",
+            "repository": {
+                "id": repository.github_id,
+                "full_name": REPOSITORY,
+                "default_branch": "main",
+            },
+            "commits": [{"added": ["agreements/cla.es.md"]}],
+        },
+    )
+    assert response.json() == {"done": "read again"}
+    assert AgreementTranslation.objects.get(language="es").title == "Acuerdo"
