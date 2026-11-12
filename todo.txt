@@ -272,4 +272,8 @@
 - [x] CI jobs docs (build, upload) and pages (deploy for main); actions pinned; the image waits for the docs.
 - [x] All links (settings, errors, docs, README, example) point to https://docs.ai.pycal.org/; .readthedocs.yml removed.
 - [x] GitHub Pages enabled in the repository: source GitHub Actions, custom domain docs.ai.pycal.org.
-- [ ] The person: DNS record docs.ai.pycal.org CNAME pycalendar.github.io, then Enforce HTTPS.
+- [x] Published by run of 74beaf7; GitHub Pages serves the docs for the host docs.ai.pycal.org (HTTP 200,
+      checked against the Pages servers); pycalendar.github.io/ai.pycal.org redirects there.
+- [ ] The person: DNS record docs.ai.pycal.org CNAME pycalendar.github.io (does not resolve yet), then Enforce HTTPS.
+- [ ] Sencho: SENCHO_TOKEN works, but the stack ai-pycal does not exist ("Stack not found", 404): create it,
+      or set the repository variable SENCHO_STACK to its name.
