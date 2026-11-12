@@ -55,7 +55,11 @@ def test_the_changes_since_the_signature_are_shown(client, github, repository, a
     new = version_of(repository)
 
     page = client.get(f"/agreements/{new.pk}/").content.decode()
-    assert "data-changes" in page
+    assert "data-changes" in page and "data-signed-before" in page
+    # the whole agreement first, the colored changes in the second tab
+    assert '<input type="radio" name="view" id="view-agreement" checked>' in page
+    assert page.index('id="agreement"') < page.index("data-changes")
+    assert 'for="view-changes">Changes since you signed</label>' in page
     assert '<span class="diff-added">+ 3. **Patents.** I grant a patent license.</span>' in page
     assert '<span class="diff-removed">- 3. **No warranty.**' in page
     assert f"/agreements/{new.pk}/changes/{old.pk}/" in page

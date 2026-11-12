@@ -6,16 +6,23 @@
 
 {% if signature %}
 <p class="message message-success" data-signed>{% when signature.signed as signed %}{% blocktranslate %}You signed this agreement {{ signed }}.{% endblocktranslate %}</p>
-{% elif previous %}
-<section class="card changes" data-changes>
-  <h2>{% translate "Changed since you signed it" %}</h2>
-  <p>{% blocktranslate with commit=previous.short_commit %}You signed the version of commit {{ commit }}. This version needs a new signature. The changes:{% endblocktranslate %}
-    <a href="{% url 'changes' version.pk previous.pk %}">{% translate "Show on its own page" %}</a></p>
-  {% include "ai_pycal/_diff.html" %}
-</section>
-{% endif %}
-
 <article class="card agreement" id="agreement">{{ html }}</article>
+{% elif previous %}
+<p class="message message-warning" data-signed-before>{% blocktranslate with commit=previous.short_commit %}You signed an earlier version of this agreement ({{ commit }}). It changed, so it needs a new signature. Read it, or look at the changes.{% endblocktranslate %}</p>
+<div class="tabs">
+  <input type="radio" name="view" id="view-agreement" checked>
+  <label for="view-agreement">{% translate "Agreement" %}</label>
+  <input type="radio" name="view" id="view-changes">
+  <label for="view-changes">{% translate "Changes since you signed" %}</label>
+  <article class="card agreement tab-agreement" id="agreement">{{ html }}</article>
+  <section class="card changes tab-changes" data-changes>
+    {% include "ai_pycal/_diff.html" %}
+    <p class="muted"><a href="{% url 'changes' version.pk previous.pk %}">{% translate "The changes on their own page" %}</a></p>
+  </section>
+</div>
+{% else %}
+<article class="card agreement" id="agreement">{{ html }}</article>
+{% endif %}
 
 {% if not signature %}
 <section class="card sign" id="sign">
