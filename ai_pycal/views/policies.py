@@ -60,13 +60,20 @@ def contributor_id(handle: str):
     )
 
 
-def projects(request):
-    """The directory of projects visible to this visitor."""
-    return render(
-        request,
-        "ai_pycal/projects.html",
-        {"projects": visible_projects(request.user).filter(active=True)},
-    )
+def projects(request, owner: str = ""):
+    """The directory of projects visible to this visitor, or those of one owner.
+
+    Args:
+        request: The request.
+        owner: The GitHub login of an organization or person; "" for all.
+
+    Returns:
+        The page.
+    """
+    found = visible_projects(request.user).filter(active=True)
+    if owner:
+        found = found.filter(full_name__istartswith=f"{owner}/")
+    return render(request, "ai_pycal/projects.html", {"projects": found, "owner": owner})
 
 
 def project(request, owner: str, repo: str):

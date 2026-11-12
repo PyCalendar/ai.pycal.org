@@ -9,7 +9,6 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from ai_pycal.errors import AgreementNotFound, SigningError
-from ai_pycal.middleware import error_page
 from ai_pycal.models import AgreementVersion, PullRequest, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.identity import GitHubIdentity
@@ -87,6 +86,107 @@ def mine(request):
     )
 
 
+def handle_pattern(login: str) -> str:
+    r"""The pattern of the field for the handle: the login in any case, ``@`` optional.
+
+    The browser checks it before sending the form; the site checks it again.
+
+    Args:
+        login: The GitHub login, of letters, digits and ``-``.
+
+    Returns:
+        The pattern of HTML, such as ``\s*@?[aA][bB]-1\s*``.
+
+    Examples:
+        >>> handle_pattern("Ab-1")
+        '\\s*@?[aA][bB]-1\\s*'
+    """
+    letters = "".join(f"[{c.lower()}{c.upper()}]" if c.isalpha() else c for c in login)
+    return rf"\s*@?{letters}\s*"
+
+
+def breadcrumb(required_by: list, here: str) -> dict | None:
+    """The path of the agreement in the site: owner / repository / agreement.
+
+    Args:
+        required_by: The agreements of repositories that ask for this version.
+        here: The page people come from, such as the pull request; its repository is
+            chosen when several ask for the agreement.
+
+    Returns:
+        ``owner``, ``repo``, ``full_name``, ``agreement`` and ``others`` (the other
+        agreements of the repository, mandatory first); None if no repository asks.
+    """
+    if not required_by:
+        return None
+    chosen = next(
+        (a for a in required_by if f"/{a.repository.full_name}/".lower() in here.lower()),
+        required_by[0],
+    )
+    owner, repo = chosen.repository.full_name.split("/", 1)
+    others = [
+        agreement
+        for agreement in chosen.repository.required_agreements.all()
+        if agreement.pk != chosen.pk
+    ]
+    return {
+        "owner": owner,
+        "repo": repo,
+        "full_name": chosen.repository.full_name,
+        "agreement": chosen,
+        "others": others,
+    }
+
+
+def agreement_page(request, version: AgreementVersion, sign_error=None, status: int = 200):
+    """The page of an agreement: its text, the form to sign it and what changed.
+
+    Args:
+        request: The request.
+        version: The version of the agreement.
+        sign_error: Why signing failed, shown next to the form; None.
+        status: The HTTP status.
+
+    Returns:
+        The page.
+    """
+    identity = GitHubIdentity.of(request.user)
+    signature = previous = None
+    token = ""
+    if identity:
+        signature = Signature.objects.filter(version=version, github_id=identity.github_id).first()
+        previous = AgreementDiff.previous_signed(version, identity.github_id)
+        token = Signer(request.user, identity).shown_token(version)
+    names = list(
+        RequiredAgreement.objects.filter(
+            version=version, repository__active=True, repository__in=visible_projects(request.user)
+        )
+        .select_related("repository")
+        .order_by("repository__full_name")
+    )
+    here = request.POST.get("next", request.GET.get("next", ""))
+    return render(
+        request,
+        "ai_pycal/agreement.html",
+        {
+            "version": version,
+            "required_by": names,
+            "crumbs": breadcrumb(names, here),
+            "title": names[0].name if names else version.path,
+            "html": render_agreement(version.text, version.path),
+            "signature": signature,
+            "previous": previous,
+            "changes": AgreementDiff(previous, version).changes() if previous else [],
+            "shown_token": token,
+            "handle_pattern": handle_pattern(identity.login) if identity else "",
+            "sign_error": sign_error,
+            "handle": request.POST.get("handle", ""),
+            "next": here,
+        },
+        status=status,
+    )
+
+
 def show(request, pk: int):
     """An agreement, with the form to sign it and what changed since I signed it.
 
@@ -97,36 +197,7 @@ def show(request, pk: int):
     Returns:
         The page.
     """
-    version = version_or_404(pk, request.user)
-    identity = GitHubIdentity.of(request.user)
-    signature = previous = None
-    token = ""
-    if identity:
-        signature = Signature.objects.filter(version=version, github_id=identity.github_id).first()
-        previous = AgreementDiff.previous_signed(version, identity.github_id)
-        token = Signer(request.user, identity).shown_token(version)
-    names = (
-        RequiredAgreement.objects.filter(
-            version=version, repository__active=True, repository__in=visible_projects(request.user)
-        )
-        .select_related("repository")
-        .order_by("repository__full_name")
-    )
-    return render(
-        request,
-        "ai_pycal/agreement.html",
-        {
-            "version": version,
-            "required_by": names,
-            "title": names[0].name if names else version.path,
-            "html": render_agreement(version.text, version.path),
-            "signature": signature,
-            "previous": previous,
-            "changes": AgreementDiff(previous, version).changes() if previous else [],
-            "shown_token": token,
-            "next": request.GET.get("next", ""),
-        },
-    )
+    return agreement_page(request, version_or_404(pk, request.user))
 
 
 @login_required
@@ -139,7 +210,8 @@ def sign(request, pk: int):
         pk: The number of the version.
 
     Returns:
-        Back to the pull request or the agreement; the page of the error if it fails.
+        Back to the pull request or the agreement; the page of the agreement with the
+        reason next to the form if signing failed.
     """
     version = version_or_404(pk, request.user)
     identity = GitHubIdentity.of(request.user)
@@ -153,7 +225,7 @@ def sign(request, pk: int):
             token=request.POST.get("shown", ""),
         )
     except SigningError as error:
-        return error_page(request, error)
+        return agreement_page(request, version, sign_error=error, status=error.status)
     if created:
         messages.success(request, _("You signed the agreement. Your pull requests are updated."))
     else:

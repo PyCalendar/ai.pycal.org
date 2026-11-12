@@ -37,6 +37,21 @@ main.wrap { padding-top: 1.5rem; padding-bottom: 2rem; min-height: 60vh; }
 .icon { display: inline-block; vertical-align: -.2em; flex: none; }
 .theme-menu { position: relative; }
 /* Links to GitHub: the mark of GitHub, alone where it is clear what it links to. */
+/* The path of a page in the site: owner / repository / agreement, with a menu of the others. */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; margin: 0 0 1rem; }
+.crumbs-path { margin: 0; overflow-wrap: anywhere; }
+.crumbs-path a { text-decoration: none; }
+.crumbs-path a:hover { text-decoration: underline; }
+.crumbs-path a:last-child { color: var(--text); }
+h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weight: 400; color: var(--primary); }
+.crumbs-sep { color: var(--text-muted); font-weight: 400; margin: 0 .2em; }
+.crumb-menu { position: relative; }
+.crumb-menu summary { list-style: none; cursor: pointer; padding: .1rem .5rem; border: 1px solid var(--border); border-radius: .4rem; color: var(--primary); }
+.crumb-menu summary::-webkit-details-marker { display: none; }
+.crumb-menu ul { position: absolute; z-index: 20; left: 0; top: calc(100% + .3rem); min-width: 16rem; list-style: none; margin: 0; padding: .3rem; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; box-shadow: 0 .4rem 1.2rem rgba(0, 0, 0, .2); }
+.crumb-menu li a { display: block; padding: .4rem .6rem; border-radius: .3rem; }
+.crumb-menu li a:hover { background: var(--surface-tint); }
+.agreement-details { border-top: 1px solid var(--border); margin-top: 2rem; padding-top: .75rem; font-size: .9rem; }
 .github-link { display: inline-flex; align-items: center; gap: .35em; }
 .github-link .github-mark { width: 1em; height: 1em; }
 .github-link-icon { color: var(--text-muted); text-decoration: none; padding: .1em; border-radius: .25em; vertical-align: middle; }

@@ -13,6 +13,7 @@ urlpatterns = [
     path("favicon.ico", pages.favicon, name="favicon"),
     path("theme/", pages.theme, name="theme"),
     path("projects/", policies.projects, name="projects"),
+    path("projects/<str:owner>/", policies.projects, name="owner_projects"),
     path("contributor/<str:handle>/", policies.contributor, name="contributor"),
     path("profile/", profile.profile, name="profile"),
     path("agreements/", policies.histories, name="histories"),
