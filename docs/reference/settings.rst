@@ -164,7 +164,8 @@ emails are written to the log.
 
 ``SIGN_MIN_SECONDS``
    Seconds between showing an agreement and signing it, at least. Default
-   ``3``.
+   ``3``. A project can set its own time for each agreement with
+   ``sign-min-seconds`` in its configuration file.
 ``SIGN_MAX_HOURS``
    Hours in which a shown agreement can be signed; after that the page must be
    loaded again. Default ``24``.

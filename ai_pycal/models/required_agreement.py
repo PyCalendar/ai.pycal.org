@@ -28,12 +28,19 @@ class RequiredAgreement(models.Model):
     # the labels of a pull request while this agreement is required and not signed
     unsigned_labels = models.JSONField(default=list, blank=True)
     position = models.PositiveIntegerField(default=0)
+    # seconds between opening and signing it, at least; null: the site's SIGN_MIN_SECONDS
+    sign_min_seconds = models.FloatField(null=True, blank=True)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["repository", "key"], name="one_agreement_per_key")
         ]
         ordering = ["repository", "-mandatory", "position"]  # mandatory first
+
+    @property
+    def reading_seconds(self) -> int | None:
+        """The reading time of the configuration in whole seconds, None if it sets none."""
+        return None if self.sign_min_seconds is None else round(self.sign_min_seconds)
 
     @property
     def title(self) -> str:

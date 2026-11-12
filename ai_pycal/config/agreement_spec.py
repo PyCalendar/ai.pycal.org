@@ -9,6 +9,7 @@ from ai_pycal.errors import (
     InvalidAgreementId,
     InvalidAgreementPath,
     InvalidLabel,
+    InvalidSignMinSeconds,
     MissingAgreementField,
     UnknownConfigKey,
 )
@@ -16,7 +17,8 @@ from ai_pycal.errors import (
 from .remote import GitHubRemote
 
 AGREEMENT_ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,49}$")
-KEYS = {"name", "ref", "description", "mandatory", "repository", "path", "pr"}
+KEYS = {"name", "ref", "description", "mandatory", "repository", "path", "pr", "sign-min-seconds"}
+MAX_READING = 3600  # the longest reading time an agreement can ask for, in seconds
 MAX_LABEL = 50  # the longest label GitHub allows
 
 
@@ -38,6 +40,8 @@ class AgreementSpec:
     mandatory: bool = True
     description: str = ""
     unsigned_labels: tuple[str, ...] = ()
+    # seconds between opening and signing it, at least; None: the site's SIGN_MIN_SECONDS
+    sign_min_seconds: float | None = None
 
     @property
     def tag(self) -> str:
@@ -73,6 +77,7 @@ class AgreementSpec:
             InvalidAgreementField: A field has a value of the wrong kind.
             InvalidAgreementPath: The path is not relative or leaves the repository.
             InvalidLabel: A label is too long or empty.
+            InvalidSignMinSeconds: The reading time is not a number from 0 to 3600.
             UnsupportedRemote: The repository is not on GitHub.
 
         Examples:
@@ -90,7 +95,9 @@ class AgreementSpec:
         if strict:
             for key in data:
                 if key not in (
-                    KEYS - {"ref", "description", "mandatory"} | {"tag"} if legacy else KEYS
+                    KEYS - {"ref", "description", "mandatory", "sign-min-seconds"} | {"tag"}
+                    if legacy
+                    else KEYS
                 ):
                     raise UnknownConfigKey(f"{where}.{key}")
         name = cls._text(data, "name", where, required=True)
@@ -117,7 +124,45 @@ class AgreementSpec:
             ),
             mandatory=mandatory,
             description=description,
+            sign_min_seconds=None if legacy else cls._seconds(data, where),
         )
+
+    @staticmethod
+    def _seconds(data: dict, where: str) -> float | None:
+        """The reading time ``sign-min-seconds`` of an agreement.
+
+        Args:
+            data: The agreement.
+            where: The agreement, for the errors.
+
+        Returns:
+            The seconds, None if the key is missing.
+
+        Raises:
+            InvalidSignMinSeconds: It is no number from 0 to 3600.
+
+        Examples:
+            >>> AgreementSpec._seconds({"sign-min-seconds": 30}, "x")
+            30.0
+            >>> AgreementSpec._seconds({}, "x") is None
+            True
+            >>> AgreementSpec._seconds({"sign-min-seconds": "30"}, "x")
+            Traceback (most recent call last):
+            ...
+            ai_pycal.errors.config_file.InvalidSignMinSeconds: x.sign-min-seconds: '30', ...
+        """
+        value = data.get("sign-min-seconds")
+        if value is None:
+            return None
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, int | float)
+            or not (0 <= value <= MAX_READING)
+        ):
+            raise InvalidSignMinSeconds(
+                f"{where}.sign-min-seconds: {value!r}, expected 0 to {MAX_READING}"
+            )
+        return float(value)
 
     @staticmethod
     def _text(data: dict, key: str, where: str, required: bool) -> str:

@@ -172,6 +172,17 @@ class InvalidLabel(ConfigFileError):
     title = _("A label of the pull requests is invalid")
 
 
+class InvalidSignMinSeconds(ConfigFileError):
+    """The reading time ``sign-min-seconds`` of an agreement is not a number of seconds.
+
+    ``sign-min-seconds`` is the time between opening an agreement and signing it,
+    at least: a number from 0 to 3600, such as ``30``. Without it, the site uses
+    its own setting ``SIGN_MIN_SECONDS``.
+    """
+
+    title = _("The reading time of an agreement is invalid")
+
+
 class UnsupportedRemote(ConfigFileError):
     """The repository of an agreement is not on GitHub.
 

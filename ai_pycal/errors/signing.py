@@ -90,7 +90,8 @@ class SignedTooFast(SigningError):
     """The agreement was signed faster than it can be read.
 
     Signing is for people who read the agreement. Read it, then sign it again.
-    The time is set by ``SIGN_MIN_SECONDS``.
+    The time is set by the project with ``sign-min-seconds`` in its configuration
+    file, else by the site with ``SIGN_MIN_SECONDS``.
     """
 
     title = _("The agreement was signed too fast")

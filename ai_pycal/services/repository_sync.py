@@ -95,6 +95,7 @@ class RepositorySync:
                         "labels": list(spec.labels),
                         "unsigned_labels": list(spec.unsigned_labels),
                         "position": position,
+                        "sign_min_seconds": spec.sign_min_seconds,
                     },
                 )
                 required.append(agreement)

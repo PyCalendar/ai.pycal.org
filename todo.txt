@@ -34,11 +34,11 @@
 - [ ] Name of the GitHub App and its slug; who creates it and holds the private key
 - [ ] Image name ghcr.io/pycalendar/ai.pycal.org and a release workflow: CI pushes it now; is the
       Sencho stack name ai-pycal and the environment ai.pycal.org with SENCHO_TOKEN right?
-- [ ] Bots (dependabot, pre-commit-ci) can not sign: their pull requests stay pending.
+- [x] Bots (dependabot, pre-commit-ci) can not sign: their pull requests stay pending (decided: not exempt for now).
       Ignore bots, or a setting in the configuration file (version 1.1.0)?
 - [ ] Location of the configuration file: .github/agreements.yml — another name?
 - [ ] Should the checks be "pending" or "failure" when not signed?
-- [ ] Is the SIGN_MIN_SECONDS default of 3 seconds wanted?
+- [x] Is the SIGN_MIN_SECONDS default of 3 seconds wanted? (decided: yes, and per repository in the configuration)
 
 ## Open: work
 
@@ -470,3 +470,13 @@
 - [x] The installed app keeps writing labels and checks with its own token.
 - [ ] The person: create the OAuth app on GitHub and enter it on Setup.
 - [x] Edge case found: a skipped optional agreement that became required (other choice) is asked again.
+
+## 2026-11-12: decisions of the person
+
+- [x] Bots are not exempt for now: their pull requests stay pending like everyone's.
+- [x] SIGN_MIN_SECONDS default of 3 seconds stays; each repository can set its own time in the
+      configuration file.
+- [ ] Translate the site to German and Spanish.
+- [ ] Translations of agreements: `<file>.<lang>.md` next to the original file.
+- [ ] Queue the webhooks, so that GitHub's time limit does not affect them.
+- [ ] "pending" or "failure" for unsigned checks: explain the difference to the person.

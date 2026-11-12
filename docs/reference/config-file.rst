@@ -4,15 +4,17 @@ The configuration file
 
 Projects define policies in ``.github/agreements.yml`` on their default branch.
 The site reads the file on setup, on relevant pushes and with **Update** on the
-page of the project. Version ``2.1.0`` uses ``ref``, ``pr.labels`` and
-``pr.unsigned-labels`` and supports mandatory agreements and choices.
+page of the project. Version ``2.2.0`` uses ``ref``, ``pr.labels``,
+``pr.unsigned-labels`` and ``sign-min-seconds`` and supports mandatory
+agreements and choices.
 
 .. code-block:: yaml
 
-   version: 2.1.0
+   version: 2.2.0
    agreements:
      cla:
        name: Contributor agreement
+       sign-min-seconds: 30
        description: Everyone accepts the contributor agreement.
        path: agreements/cla.md
        ref: main
@@ -57,8 +59,9 @@ agreement as mandatory. Existing configurations continue to work. To migrate,
 set ``version: 2.0.0``, rename ``tag`` to ``ref`` and ``pr.tags`` to
 ``pr.labels``. Version 2 rejects the old names to expose typing errors.
 
-Version ``2.1.0`` adds ``pr.unsigned-labels``. Files of version ``2.0.0`` keep
-working unchanged.
+Version ``2.1.0`` adds ``pr.unsigned-labels`` and version ``2.2.0`` adds
+``sign-min-seconds``. Files of versions ``2.0.0`` and ``2.1.0`` keep working
+unchanged.
 
 Agreements
 ==========
@@ -99,6 +102,14 @@ GitHub check names and the contributor JSON and badge endpoints.
    Agreements with ``mandatory: false`` apply when a selected choice lists them.
    Other optional agreements can be read and signed independently without
    blocking a PR.
+
+``sign-min-seconds``
+   Optional, since version ``2.2.0``. The time in seconds between opening the
+   agreement and signing it, at least: a number from 0 to 3600. Without it,
+   the site's setting ``SIGN_MIN_SECONDS`` applies, 3 seconds by default.
+   If projects ask for the same agreement with different times, the longest
+   time applies. Signing faster shows
+   :class:`~ai_pycal.errors.signing.SignedTooFast`.
 
 ``pr.labels``
    Optional label or list of labels, each nonempty and at most 50 characters.

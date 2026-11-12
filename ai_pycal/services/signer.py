@@ -77,8 +77,26 @@ class Signer:
         age = time.time() - float(data.get("t", 0))
         if age > settings.SIGN_MAX_HOURS * 3600:
             raise SigningExpired()
-        if age < settings.SIGN_MIN_SECONDS:
-            raise SignedTooFast(f"{age:.0f} s")
+        needed = self.reading_time(version)
+        if age < needed:
+            raise SignedTooFast(f"{age:.0f} s of {needed:g} s")
+
+    @staticmethod
+    def reading_time(version: AgreementVersion) -> float:
+        """The seconds between showing an agreement and signing it, at least.
+
+        Args:
+            version: The agreement.
+
+        Returns:
+            The longest ``sign-min-seconds`` of the projects that ask for this version;
+            ``SIGN_MIN_SECONDS`` for a project that sets none.
+        """
+        times = [
+            settings.SIGN_MIN_SECONDS if seconds is None else seconds
+            for seconds in version.required_by.values_list("sign_min_seconds", flat=True)
+        ]
+        return max(times, default=settings.SIGN_MIN_SECONDS)
 
     def sign(
         self, version: AgreementVersion, accepted: bool, handle: str, token: str
