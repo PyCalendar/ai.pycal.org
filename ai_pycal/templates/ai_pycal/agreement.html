@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load github i18n times %}
+{% load help github i18n times %}
 {% block title %}{{ title }} · {{ site_name }}{% endblock %}
 {% block main %}
 {% if crumbs %}{% include "ai_pycal/_crumbs.html" %}{% else %}<h1>{{ title }}</h1>{% endif %}
@@ -28,7 +28,7 @@
 <section class="card sign" id="sign">
   <h2>{% translate "Sign" %}</h2>
   {% if user.is_authenticated and shown_token %}
-  {% if sign_error %}<div class="message message-error" role="alert" data-error="{{ sign_error.code }}"><strong>{{ sign_error.title }}</strong>{% if sign_error.detail %}: <code>{{ sign_error.detail }}</code>{% endif %} · <a href="{{ sign_error.docs_url }}">{% translate "What this error means and how to solve it" %}</a></div>{% endif %}
+  {% if sign_error %}<div class="message message-error" role="alert" data-error="{{ sign_error.code }}"><strong>{{ sign_error.title }}</strong>{% if sign_error.detail %}: <code>{{ sign_error.detail }}</code>{% endif %} {% help_link sign_error.docs_url sign_error.title %}</div>{% endif %}
   <form method="post" action="{% url 'sign' version.pk %}">
     {% csrf_token %}
     <input type="hidden" name="shown" value="{{ shown_token }}">

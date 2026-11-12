@@ -1,10 +1,10 @@
 {% extends "ai_pycal/base.html" %}
-{% load github i18n %}
+{% load help github i18n %}
 {% block title %}{% translate "Setup" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{% translate "Set up a repository" %}</h1>
 <ol class="steps card">
-  <li>{% blocktranslate with docs=links.config_file %}Add the file <code>.github/agreements.yml</code> to the default branch of the repository, as described in <a href="{{ docs }}">the configuration file</a>.{% endblocktranslate %}</li>
+  <li>{% blocktranslate %}Add the file <code>.github/agreements.yml</code> to the default branch of the repository.{% endblocktranslate %} {% help_link links.config_file "The configuration file" %}</li>
   <li>{% translate "Install the GitHub App on the account or organization and choose the repository. GitHub asks you to accept these permissions:" %}
     <ul>{% for name, level in required %}<li><code>{{ name }}: {{ level }}</code></li>{% endfor %}</ul>
     {% if install_url %}<p>{% translate "Install the GitHub App" as install %}{% github_link install_url install install "button" %}</p>{% endif %}</li>
@@ -35,14 +35,14 @@ GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
   </ul>
 </section>
 {% endif %}
-{% if error %}<div class="message message-error" data-error="{{ error.code }}"><strong>{{ error.title }}</strong> <a href="{{ error.docs_url }}">{% translate "How to solve it" %}</a></div>{% endif %}
+{% if error %}<div class="message message-error" data-error="{{ error.code }}"><strong>{{ error.title }}</strong> {% help_link error.docs_url error.title %}</div>{% endif %}
 
 {% for item in installations %}
 <section class="card installation">
   <h2>{{ item.github.account.login }}</h2>
   {% if item.missing %}<p class="message message-warning" data-missing-permissions>{% blocktranslate with missing=item.missing %}The app needs new permissions: {{ missing }}.{% endblocktranslate %} {% translate "Accept them on GitHub" as accept %}{% github_link item.github.html_url accept accept %}</p>{% endif %}
   <form method="post" action="{% url 'notify_email' item.github.id %}" class="inline-form">{% csrf_token %}
-    <label for="email-{{ item.github.id }}">{% translate "Email for new permissions" %}</label>
+    <label for="email-{{ item.github.id }}">{% translate "Email for new permissions" %}</label> {% help_link links.permission_email "Email for new permissions" %}
     <input id="email-{{ item.github.id }}" type="email" name="email" value="{{ item.stored.notify_email|default:'' }}">
     <button class="button button-small">{% translate "Save" %}</button>
   </form>

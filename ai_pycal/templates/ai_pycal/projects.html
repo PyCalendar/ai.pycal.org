@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load github i18n %}
+{% load help github i18n %}
 {% block title %}{% if owner %}{{ owner }}{% else %}{% translate "Projects" %}{% endif %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1 class="crumbs-path">{% if owner %}<a href="{% url 'projects' %}">{% translate "Projects" %}</a><span class="crumbs-sep">/</span><a href="{% url 'owner_projects' owner %}">{{ owner }}</a>{% else %}{% translate "Projects" %}{% endif %}</h1>
@@ -16,7 +16,7 @@
     <ul class="list">{% for agreement in project.required_agreements.all %}
       <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.name }}</a> {% if agreement.mandatory %}<span class="badge">{% translate "mandatory" %}</span>{% else %}<span class="badge muted">{% translate "optional" %}</span>{% endif %}</li>
     {% empty %}<li class="muted">{% translate "No agreements." %}</li>{% endfor %}</ul>
-    {% if project.error_code %}<p class="message message-error">{{ project.error.title }}: <code>{{ project.error_detail }}</code> · <a href="{{ project.error.docs_url }}">{% translate "How to resolve" %}</a></p>{% endif %}
+    {% if project.error_code %}<p class="message message-error">{{ project.error.title }}: <code>{{ project.error_detail }}</code> {% help_link project.error.docs_url project.error.title %}</p>{% endif %}
   </details></li>
 {% empty %}<li>{% translate "No projects yet." %}</li>{% endfor %}
 </ul>

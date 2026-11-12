@@ -1,4 +1,4 @@
-{% load static i18n github %}<!doctype html>{% get_current_language as LANGUAGE_CODE %}
+{% load help static i18n github %}<!doctype html>{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}" data-theme="{{ theme_choice }}">
 <head>
 <meta charset="utf-8">
@@ -33,7 +33,7 @@
   {% if messages %}<div class="messages">{% for message in messages %}
     <p class="message message-{{ message.level_tag }}" role="status">{{ message }}</p>
   {% endfor %}</div>{% endif %}
-  {% if project_problems %}<div class="messages">{% for problem in project_problems %}<p class="message message-error" role="status"><a href="/project/{{ problem.repository.full_name }}/">{{ problem.repository.full_name }}</a>: {{ problem.error.title }} · {{ problem.detail }} <a href="{{ problem.error.docs_url }}">How to resolve</a></p>{% endfor %}</div>{% endif %}
+  {% if project_problems %}<div class="messages">{% for problem in project_problems %}<p class="message message-error" role="status"><a href="/project/{{ problem.repository.full_name }}/">{{ problem.repository.full_name }}</a>: {{ problem.error.title }} · {{ problem.detail }} {% help_link problem.error.docs_url problem.error.title %}</p>{% endfor %}</div>{% endif %}
   {% block main %}{% endblock %}
 </main>
 {% if not focused %}<footer class="footer">

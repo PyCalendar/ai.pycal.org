@@ -72,12 +72,18 @@ error with a link to how to solve it, and the repository is not added.
 Once added, the open pull requests get a check for each agreement, and those of
 people who signed get the labels of ``pr.labels``.
 
+.. _permission-email:
+
 5. Enter an email address
 =========================
 
 When a new version of the site needs more permissions, the site writes to the
 address of the installation and to its administrators who have an email address
-on GitHub. Enter the address next to the installation on the page **Setup**.
+on GitHub. Enter the address in **Email for new permissions** next to the
+installation on the page **Setup**. The email links to the page of GitHub where
+the owners of the installation accept the permissions; until then, the site
+keeps working with the permissions it has. The permissions are listed in
+:doc:`/reference/permissions`.
 
 Changing the agreements
 =======================

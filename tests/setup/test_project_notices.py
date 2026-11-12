@@ -34,7 +34,7 @@ def test_invalid_setup_emails_once_and_appears_in_messages(
     assert len(mailoutbox) == 1
     client.force_login(maintainer)
     page = client.get("/profile/").content.decode()
-    assert "How to resolve" in page and "file of an agreement does not exist" in page
+    assert 'class="help-link"' in page and "file of an agreement does not exist" in page
     github.push(REPOSITORY, {"agreements/cla.md": "# Fixed CLA"})
     RepositorySync(repository).sync()
     assert not ProjectProblem.objects.filter(active=True).exists()

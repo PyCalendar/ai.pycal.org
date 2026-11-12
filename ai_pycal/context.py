@@ -74,6 +74,7 @@ def site(request) -> dict:
             "app_create": f"{docs}how-to/create-github-app.html",
             "app_manual_tutorial": f"{docs}how-to/github-app-manual.html",
             "config_file": f"{docs}reference/config-file.html",
+            "permission_email": f"{docs}tutorial/admin.html#permission-email",
             "changelog": f"{docs}changelog.html",
             "source": settings.SOURCE_URL,
             "issues": f"{settings.SOURCE_URL.rstrip('/')}/issues/new",

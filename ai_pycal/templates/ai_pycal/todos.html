@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load help i18n %}
 {% block title %}{% translate "Todos" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{% translate "Todos" %}</h1>
@@ -9,7 +9,7 @@
 </section>
 {% if problems %}<section class="card">
   <h2>{% translate "Problems of my projects" %}</h2>
-  <ul class="list">{% for problem in problems %}<li data-problem="{{ problem.code }}"><a href="/project/{{ problem.repository.full_name }}/">{{ problem.repository.full_name }}</a>: {{ problem.error.title }} · {{ problem.detail }} <a href="{{ problem.error.docs_url }}">{% translate "How to resolve" %}</a></li>{% endfor %}</ul>
+  <ul class="list">{% for problem in problems %}<li data-problem="{{ problem.code }}"><a href="/project/{{ problem.repository.full_name }}/">{{ problem.repository.full_name }}</a>: {{ problem.error.title }} · {{ problem.detail }} {% help_link problem.error.docs_url problem.error.title %}</li>{% endfor %}</ul>
 </section>{% endif %}
 {% if not to_sign and not problems %}<p class="message message-success">{% translate "Nothing to do." %}</p>{% endif %}
 {% endblock %}

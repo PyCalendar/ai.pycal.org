@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load github i18n %}
+{% load help github i18n %}
 {% block title %}{% translate "Register GitHub App" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <section class="hero">
@@ -36,7 +36,7 @@
 
 {% else %}
 {% if local %}<p class="message message-warning" data-local>{% blocktranslate %}This site runs at <code>{{ site_url }}</code>, which GitHub cannot reach. Signing in works, because GitHub sends your browser back here, but webhooks cannot be delivered: the app is registered without a webhook, so pull requests are not checked. To test everything, give the site a public address first, for example with Tailscale Funnel, and set <code>SITE_URL</code> to it.{% endblocktranslate %} <a href="{{ links.documentation }}how-to/github-app-tunnel.html">{% translate "Test the GitHub App locally with Tailscale" %}</a></p>{% endif %}
-{% if error %}<div class="message message-error" role="alert" data-error="{{ error.code }}"><strong>{{ error.title }}</strong>{% if error.detail %}: <code>{{ error.detail }}</code>{% endif %} · <a href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a></div>{% endif %}
+{% if error %}<div class="message message-error" role="alert" data-error="{{ error.code }}"><strong>{{ error.title }}</strong>{% if error.detail %}: <code>{{ error.detail }}</code>{% endif %} {% help_link error.docs_url error.title %}</div>{% endif %}
 <div class="card" data-step="details">
   <h2>{% translate "1. Name the app" %}</h2>
   <form method="post" class="stacked">{% csrf_token %}

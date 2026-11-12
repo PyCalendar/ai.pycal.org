@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load help i18n %}
 {% block main %}
 <section class="hero">
   <h1>{% translate "Agreements for pull requests" %}</h1>
@@ -11,12 +11,12 @@
   <section class="card">
     <h2>{% translate "Contributors" %}</h2>
     <p>{% blocktranslate %}A check on your pull request links here. Sign in with GitHub, read the agreement and accept it. You sign each version of an agreement once, for all repositories that ask for it.{% endblocktranslate %}</p>
-    <p><a class="button" href="{% url 'mine' %}">{% translate "My agreements" %}</a> <a href="{{ links.sign }}">{% translate "How to sign" %}</a></p>
+    <p><a class="button" href="{% url 'mine' %}">{% translate "My agreements" %}</a> {% help_link links.sign "How to sign" %}</p>
   </section>
   <section class="card">
     <h2>{% translate "Maintainers" %}</h2>
     <p>{% blocktranslate %}Add a configuration file to your repository, install the GitHub App and add the repository. Pull requests are labelled when their authors signed.{% endblocktranslate %}</p>
-    <p><a class="button" href="{% url 'setup' %}">{% translate "Set up a repository" %}</a> <a href="{{ links.admin_tutorial }}">{% translate "Tutorial" %}</a></p>
+    <p><a class="button" href="{% url 'setup' %}">{% translate "Set up a repository" %}</a> {% help_link links.admin_tutorial "Set up a repository" %}</p>
   </section>
 </div>
 {% endblock %}
