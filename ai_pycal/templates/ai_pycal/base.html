@@ -40,6 +40,7 @@
   <div class="wrap footer-row">
     <ul class="footer-links">
       <li><a href="{% url 'about' %}">{% translate "About" %}</a></li>
+      {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
     </ul>
     <small>AGPL-3.0-or-later</small>
   </div>

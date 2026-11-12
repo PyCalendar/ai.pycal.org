@@ -1,4 +1,4 @@
-"""The extra links of the About page, set with ``FOOTER_LINKS`` for each site."""
+"""The extra links of the footer, set with ``FOOTER_LINKS`` for each site."""
 
 from ai_pycal.errors import InvalidFooterLink
 

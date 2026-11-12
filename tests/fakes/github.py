@@ -64,6 +64,8 @@ class FakeGitHub:
         self.oauth_response: httpx.Response | None = None
         # code of a registration: the app that GitHub created from the manifest
         self.manifest_codes: dict[str, dict] = {}
+        # the events the app is subscribed to in its settings
+        self.app_events = ["pull_request", "push", "repository"]
 
     # --- setting up the state -------------------------------------------------
 
@@ -148,6 +150,7 @@ class FakeGitHub:
 
     ROUTES = [
         ("POST", r"/app-manifests/(?P<code>[^/]+)/conversions", "manifest_conversion"),
+        ("GET", r"/app", "app"),
         ("POST", r"/login/oauth/access_token", "refresh_user_token"),
         ("POST", r"/app/installations/(?P<id>\d+)/access_tokens", "access_token"),
         ("GET", r"/app/installations/(?P<id>\d+)", "installation"),
@@ -188,6 +191,17 @@ class FakeGitHub:
     @staticmethod
     def token(request: httpx.Request) -> str:
         return request.headers.get("Authorization", "").removeprefix("Bearer ")
+
+    def app(self, request):
+        """The app itself, as GET /app describes it."""
+        return httpx.Response(
+            200,
+            json={
+                "slug": "ai-pycal-test",
+                "owner": {"login": "PyCalendar", "type": "Organization"},
+                "events": list(self.app_events),
+            },
+        )
 
     def manifest_conversion(self, request, code):
         """Give the credentials of a new app once, as GitHub does; then the code is gone."""

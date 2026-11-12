@@ -35,6 +35,16 @@ Events
    A pull request was opened or changed: it is checked.
 ``push``
    The configuration file or an agreement may have changed: it is read again.
+``repository``
+   The default branch changed: the configuration is read again and the open
+   pull requests are checked. A renamed or transferred repository keeps its
+   records under the new name. It needs only ``metadata``.
+
+An app subscribes to events in its settings on GitHub, under *Permissions and
+events*: apps registered before an event was added do not receive it until it
+is ticked there. The page **Setup** shows the administrators of the site which
+events the app misses, with the link to its settings, and
+``manage.py check_permissions`` prints them.
 
 The events ``installation`` and ``installation_repositories`` are sent to every
 app; they tell the site about new and removed installations and permissions.

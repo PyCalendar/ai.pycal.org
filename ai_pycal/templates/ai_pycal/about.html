@@ -14,7 +14,6 @@
       <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
       <li>{% translate "Source code" as source %}{% github_link links.source source source %} · AGPL-3.0-or-later</li>
       <li>{% translate "Report a bug" as bug %}{% github_link links.issues bug bug %}</li>
-      {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
     </ul>
   </section>
   <section class="card" aria-labelledby="version">

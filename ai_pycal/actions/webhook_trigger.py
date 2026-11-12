@@ -71,6 +71,11 @@ class WebhookTrigger:
         if event == "pull_request":
             pull = payload.get("pull_request") or {}
             return f"Pull request #{pull.get('number')} {action}: {pull.get('title', '')}"
+        if event == "repository":
+            if "default_branch" in (payload.get("changes") or {}):
+                branch = (payload.get("repository") or {}).get("default_branch", "")
+                return f"Default branch changed to {branch}"
+            return f"Repository {action}"
         if event == "ping":
             return "Ping of GitHub"
         if event in ("installation", "installation_repositories"):

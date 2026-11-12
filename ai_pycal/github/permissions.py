@@ -9,9 +9,26 @@ REQUIRED = {
     "pull_requests": "write",  # the labels of the pull requests
     "statuses": "write",  # the checks of the pull requests, with a link to sign
 }
-# The events the app receives
-EVENTS = ["pull_request", "push"]
+# The events the app receives; "repository" needs only metadata: a new default branch, a
+# repository renamed or transferred. An app subscribes to events in its settings on GitHub.
+EVENTS = ["pull_request", "push", "repository"]
 LEVELS = {"read": 1, "write": 2, "admin": 3}
+
+
+def missing_events(subscribed: list[str]) -> list[str]:
+    """The events of :data:`EVENTS` that the app does not receive.
+
+    Args:
+        subscribed: The events of the app, as ``GET /app`` lists them.
+
+    Returns:
+        The missing events, in the order of :data:`EVENTS`.
+
+    Examples:
+        >>> missing_events(["push", "pull_request"])
+        ['repository']
+    """
+    return [event for event in EVENTS if event not in subscribed]
 
 
 def missing(granted: dict[str, str], required: dict[str, str] | None = None) -> dict[str, str]:

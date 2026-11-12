@@ -126,7 +126,7 @@ emails are written to the log.
    ``<STATUS_CONTEXT>/<agreement>``. Default ``SITE_NAME``. Changing it
    creates new checks; update the required checks of the branch protection.
 ``FOOTER_LINKS``
-   The extra links of the About page: ``Title=URL`` entries,
+   The extra links of the footer: ``Title=URL`` entries,
    comma separated, such as
    ``pycal.org=https://pycal.org,Blog=https://example.org/blog/``. Default
    ``pycal.org=https://pycal.org``; empty for none. A wrong entry stops the

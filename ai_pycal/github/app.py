@@ -117,6 +117,40 @@ class GitHubApp:
             raise InstallationNotFound(str(installation_id)) from error
 
     @classmethod
+    def describe(cls) -> dict:
+        """What GitHub knows about the app itself, such as its events and its owner.
+
+        Returns:
+            The app as ``GET /app`` describes it.
+        """
+        return cls.app_client().get("/app")
+
+    @classmethod
+    def settings_url(cls, app: dict) -> str:
+        """The page of the permissions and events of the app on GitHub.
+
+        Args:
+            app: The app as :meth:`describe` returns it.
+
+        Returns:
+            The address, for the owner of the app.
+
+        Examples:
+            >>> owner = {"login": "O", "type": "Organization"}
+            >>> GitHubApp.settings_url({"slug": "a", "owner": owner})
+            'https://github.com/organizations/O/settings/apps/a/permissions'
+            >>> GitHubApp.settings_url({"slug": "a", "owner": {"login": "me", "type": "User"}})
+            'https://github.com/settings/apps/a/permissions'
+        """
+        owner = app.get("owner") or {}
+        if owner.get("type") == "Organization":
+            return (
+                f"https://github.com/organizations/{owner['login']}/settings/apps/"
+                f"{app['slug']}/permissions"
+            )
+        return f"https://github.com/settings/apps/{app['slug']}/permissions"
+
+    @classmethod
     def forget_tokens(cls) -> None:
         """Forget the tokens of the installations, such as between tests."""
         with cls._lock:

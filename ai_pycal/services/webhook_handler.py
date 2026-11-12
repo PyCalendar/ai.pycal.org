@@ -158,6 +158,31 @@ class WebhookHandler:
         PullRequestCheck(pull).run()
         return f"checked #{pull.number}"
 
+    def on_repository(self) -> str:
+        """A repository changed: its default branch, its name or its owner.
+
+        A new default branch can hold another configuration: it is read again and the
+        open pull requests are checked. A renamed or transferred repository keeps its id
+        on GitHub; the site updates its name.
+
+        Returns:
+            What was done.
+        """
+        repository = self.repository()
+        if repository is None:
+            return "repository not added"
+        action = self.payload.get("action", "")
+        if action in ("renamed", "transferred"):
+            # repository() already keeps the new name of every webhook
+            return f"renamed to {repository.full_name}"
+        changes = self.payload.get("changes") or {}
+        if action == "edited" and "default_branch" in changes:
+            RepositorySync(repository).sync()
+            for pull in repository.pull_requests.filter(open=True):
+                PullRequestCheck(pull).run()
+            return "read again: new default branch"
+        return f"repository {action}"
+
     def on_push(self) -> str:
         """A push to the default branch can change the configuration: read it again.
 

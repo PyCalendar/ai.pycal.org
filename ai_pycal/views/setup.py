@@ -1,5 +1,6 @@
 """The pages of administrators: install the GitHub App and add repositories."""
 
+import logging
 from urllib.parse import urlencode
 
 from django.contrib import messages
@@ -24,9 +25,12 @@ from ai_pycal.github.app import GitHubApp
 from ai_pycal.middleware import error_page
 from ai_pycal.models import Installation, Repository
 from ai_pycal.services.admin_access import AdminAccess
+from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.permission_notice import PermissionNotice
 from ai_pycal.services.repository_setup import RepositorySetup
 from ai_pycal.services.repository_sync import RepositorySync
+
+log = logging.getLogger(__name__)
 
 
 @login_required
@@ -67,8 +71,30 @@ def setup(request):
             "installations": installations,
             "error": error,
             "required": sorted(permissions.REQUIRED.items()),
+            "app_events": app_events(request.user),
         },
     )
+
+
+def app_events(user) -> dict | None:
+    """The events that the app misses, for the administrators of the site.
+
+    Args:
+        user: The visitor.
+
+    Returns:
+        ``missing`` (the events) and ``url`` (the settings of the app on GitHub); None
+        for other people, without an app, or if the app has all events.
+    """
+    if not GitHubApp.configured() or not GitHubIdentity.is_site_admin(user):
+        return None
+    try:
+        app = GitHubApp.describe()
+    except AgreementError as error:
+        log.warning("the events of the app could not be read: %s", error.code)
+        return None
+    missing = permissions.missing_events(app.get("events") or [])
+    return {"missing": missing, "url": GitHubApp.settings_url(app)} if missing else None
 
 
 def github_callback(request):

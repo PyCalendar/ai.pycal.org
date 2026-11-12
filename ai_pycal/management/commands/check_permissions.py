@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 
 from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementError
+from ai_pycal.github import permissions
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.models import Installation
 from ai_pycal.services.permission_notice import PermissionNotice
@@ -31,6 +32,21 @@ class Command(BaseCommand):
         ):
             sent = self.check_all()
         self.stdout.write(f"{sent} emails sent")
+        self.check_events()
+
+    def check_events(self) -> None:
+        """Print the events that the app does not receive, with the page to add them."""
+        try:
+            app = GitHubApp.describe()
+        except AgreementError as error:
+            self.stderr.write(f"the events of the app could not be read: {error.code}")
+            return
+        missing = permissions.missing_events(app.get("events") or [])
+        if missing:
+            self.stdout.write(
+                f"the app does not receive the events {', '.join(missing)}: "
+                f"tick them on {GitHubApp.settings_url(app)}"
+            )
 
     def check_all(self) -> int:
         """Check every installation that is not removed.
