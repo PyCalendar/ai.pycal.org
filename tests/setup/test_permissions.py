@@ -107,3 +107,18 @@ def test_the_manifest_of_the_app(capsys):
     out = capsys.readouterr().out
     assert '"statuses": "write"' in out
     assert '"setup_url": "https://ai.example.org/setup/installed/"' in out
+
+
+def test_the_permissions_are_the_minimal_set():
+    """A new permission needs a reason in docs/reference/permissions.rst first."""
+    assert permissions.REQUIRED == {
+        "metadata": "read",
+        "contents": "read",
+        "pull_requests": "write",
+        "statuses": "write",
+    }
+    from ai_pycal.github.permissions import manifest
+
+    found = manifest("a", "https://sign.example.org")
+    assert found["default_permissions"] == permissions.REQUIRED
+    assert found["request_oauth_on_install"] is False

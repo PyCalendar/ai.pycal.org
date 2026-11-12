@@ -28,6 +28,23 @@ Repository permissions
      - write
      - the checks of the pull requests, with the link to sign
 
+Each is the narrowest permission for its purpose:
+
+``metadata: read``
+   Every GitHub App has it.
+``contents: read``
+   The site reads the configuration file, the files of the agreements and the
+   commits that changed them, and never writes files.
+``pull_requests: write``
+   Labels of pull requests can be written with ``issues: write`` or
+   ``pull_requests: write``; the latter does not give access to issues. It also
+   covers reading the open pull requests.
+``statuses: write``
+   Commit statuses are narrower than check runs (``checks: write``).
+
+The app asks for no permission of accounts or organizations, and no email
+addresses. A test keeps this list exact: a new permission needs its reason here.
+
 Events
 ======
 

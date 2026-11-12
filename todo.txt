@@ -458,3 +458,5 @@
 
 - [x] Explained: GitHub shows it for every GitHub App sign-in; the site only reads the identity and,
       for administrators, their installations. Decided by the person: no separate OAuth app.
+- [x] The app uses the minimal permissions (metadata, contents read; pull_requests, statuses write):
+      each justified in docs/reference/permissions.rst, the set pinned by a test.
