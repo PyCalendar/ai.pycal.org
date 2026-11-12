@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load github i18n %}
 {% block title %}{% translate "Register GitHub App" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <section class="hero">
@@ -12,7 +12,7 @@
   <h2>{% translate "This site has a GitHub App" %}</h2>
   <p>{% if source == "environment" %}{% blocktranslate %}Its credentials come from the environment, such as <code>.env</code>. They take precedence over the volume.{% endblocktranslate %}{% else %}{% blocktranslate %}It was registered on this site; its credentials are in the volume (<code>DATA_DIR/.env</code>).{% endblocktranslate %}{% endif %}</p>
   <p>{% translate "A site has one GitHub App, so no other can be registered here." %}</p>
-  <p>{% if slug %}<a class="button" href="https://github.com/apps/{{ slug }}">{% translate "The GitHub App" %}</a> {% endif %}<a class="button button-quiet" href="{% url 'setup' %}">{% translate "Set up a repository" %}</a></p>
+  <p>{% if slug %}{% translate "The GitHub App" as the_app %}{% github_link "https://github.com/apps/"|add:slug the_app the_app "button" %} {% endif %}<a class="button button-quiet" href="{% url 'setup' %}">{% translate "Set up a repository" %}</a></p>
 </div>
 
 {% elif started %}

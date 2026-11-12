@@ -36,13 +36,16 @@ def built(tmp_path, monkeypatch):
 def test_the_about_page_shows_the_build(client, built):
     page = client.get("/about/").content.decode()
     source = "https://github.com/PyCalendar/ai.pycal.org"
-    assert f'href="{source}/commit/{BUILD["commit_full"]}"><code>4cbfd3e</code>' in page
+    assert '<code>4cbfd3e</code> <a class="github-link github-link-icon"' in page
+    assert (
+        f'href="{source}/commit/{BUILD["commit_full"]}" aria-label="This commit on GitHub"' in page
+    )
     assert "Add the &lt;b&gt;about&lt;/b&gt; page" in page
     assert f'<a href="{source}/tree/v1.2.3">1.2.3</a>' in page
     # how long ago, the exact time in UTC on hover; the browser shows its local time
     assert 'datetime="2026-11-12T13:30:00Z" title="2026-11-12 13:30 UTC">' in page
     assert 'datetime="2026-11-12T14:00:00Z" title="2026-11-12 14:00 UTC">' in page
-    assert f'href="{BUILD["build_url"]}">GitHub Actions run' in page
+    assert f'href="{BUILD["build_url"]}" title="GitHub Actions run">' in page
 
 
 def test_a_checkout_shows_the_commit_of_git(client, tmp_path, monkeypatch):

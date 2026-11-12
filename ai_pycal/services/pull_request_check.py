@@ -71,7 +71,9 @@ class PullRequestCheck:
     def states(self) -> list[AgreementState]:
         """Read signatures and the selected bundle without contacting GitHub."""
         agreements = list(
-            self.pull.repository.required_agreements.select_related("version").order_by("position")
+            self.pull.repository.required_agreements.select_related("version").order_by(
+                "-mandatory", "position"
+            )
         )
         choice = self.choice()
         selected = set(choice.agreements.values_list("pk", flat=True)) if choice else set()

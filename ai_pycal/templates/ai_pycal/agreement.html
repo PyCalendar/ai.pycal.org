@@ -1,9 +1,9 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n times %}
+{% load github i18n times %}
 {% block title %}{{ title }} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{{ title }}</h1>
-<p class="muted">{% blocktranslate with source=version.source path=version.path %}{{ path }} of {{ source }}{% endblocktranslate %} @ <a href="{{ version.url }}"><code>{{ version.short_commit }}</code></a>
+<p class="muted">{% blocktranslate with source=version.source path=version.path %}{{ path }} of {{ source }}{% endblocktranslate %} @ <code>{{ version.short_commit }}</code> {% github_link version.url "This version on GitHub" %}
 {% if required_by %} · {% translate "asked for by" %} {% for agreement in required_by %}<a href="/repository/{{ agreement.repository.full_name }}/">{{ agreement.repository.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</p>
 
 {% if signature %}

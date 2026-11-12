@@ -1,8 +1,8 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load github i18n %}
 {% block title %}{{ repository }} · {{ site_name }}{% endblock %}
 {% block main %}
-<h1><a href="{{ repository.url }}">{{ repository.full_name }}</a></h1>
+<h1>{{ repository.full_name }} {% github_link repository.url repository.full_name|add:" on GitHub" %}</h1>
 {% if not repository.active %}<p class="message message-warning">{% translate "The pull requests of this repository are not checked." %}</p>{% endif %}
 {% if repository.error_code %}<div class="message message-error" data-error="{{ repository.error_code }}">
   <strong>{{ repository.error.title }}</strong> <code>{{ repository.error_detail }}</code>

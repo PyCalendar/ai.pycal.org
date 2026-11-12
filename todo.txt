@@ -320,3 +320,11 @@
       it to false (GitHub uses /setup/installed/); the callback forwards such returns of existing apps there.
 - [x] The OAuth code in a pending prompt was redacted before the commit (asked by the person); earlier commit
       messages and archived prompts contain no tokens, keys or codes.
+
+## 2026-11-12: repository prefix, GitHub mark, mandatory first
+
+- [x] Repository pages at /repository/<owner>/<repo>/ (and /pull/<n>/); older addresses redirect (301) only
+      for known repositories, other two-part addresses are 404.
+- [x] Every link to GitHub has the mark of GitHub (Primer Octicons, MIT, REUSE.toml); next to titles and
+      commits the mark alone is the link, with aria-label and title; a test finds links without it.
+- [x] Mandatory agreements first (ordering of RequiredAgreement, migration 0007, pull request checks).

@@ -31,7 +31,7 @@ class RequiredAgreement(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["repository", "key"], name="one_agreement_per_key")
         ]
-        ordering = ["repository", "position"]
+        ordering = ["repository", "-mandatory", "position"]  # mandatory first
 
     def __str__(self) -> str:
         return f"{self.repository}: {self.key}"

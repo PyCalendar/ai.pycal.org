@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load github i18n %}
 {% block title %}{% translate "GitHub App registered" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <section class="hero" data-registered-app="{{ app.slug }}">
@@ -12,10 +12,10 @@
     <h2>{% translate "Next" %}</h2>
     <ol class="steps">
       <li><a href="{% url 'account_login' %}">{% translate "Sign in with GitHub" %}</a></li>
-      <li><a href="{{ install_url }}">{% translate "Install the app on a repository" %}</a></li>
+      <li>{% translate "Install the app on a repository" as install %}{% github_link install_url install install %}</li>
       <li><a href="{% url 'setup' %}">{% translate "Add the repository on the page Setup" %}</a></li>
     </ol>
-    <p><a class="button button-quiet" href="{{ app.html_url }}">{% translate "The app on GitHub" %}</a></p>
+    <p>{% translate "The app on GitHub" as on_github %}{% github_link app.html_url on_github on_github "button button-quiet" %}</p>
   </section>
   <section class="card">
     <h2>{% translate "Where the credentials are" %}</h2>

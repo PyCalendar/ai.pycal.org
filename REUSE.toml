@@ -24,3 +24,10 @@ path = "static/img/favicon.png"
 precedence = "override"
 SPDX-FileCopyrightText = "2026 the pycal team"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+# The mark of GitHub from Primer Octicons (https://github.com/primer/octicons)
+[[annotations]]
+path = "ai_pycal/github_mark.py"
+precedence = "override"
+SPDX-FileCopyrightText = "GitHub Inc."
+SPDX-License-Identifier = "MIT"

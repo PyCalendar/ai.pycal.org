@@ -1,8 +1,8 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load github i18n %}
 {% block title %}{{ pull }} · {{ site_name }}{% endblock %}
 {% block main %}
-<h1><a href="{{ pull.url }}">{{ pull.repository.full_name }}#{{ pull.number }}</a></h1>
+<h1>{{ pull.repository.full_name }}#{{ pull.number }} {% github_link pull.url "The pull request on GitHub" %}</h1>
 <p>{{ pull.title }} · by <a href="{% url 'contributor' pull.author_login %}">@{{ pull.author_login }}</a></p>
 <p><a href="/project/{{ pull.repository.full_name }}/">Project agreements</a></p>
 {% if not user.is_authenticated %}<p><a class="button" href="{% url 'account_login' %}?next={{ here|urlencode }}">Log in to sign agreements</a></p>{% elif not is_author %}<p>This is the public agreement record for @{{ pull.author_login }}. Only the PR author can change its choice.</p>{% endif %}

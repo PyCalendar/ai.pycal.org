@@ -142,3 +142,12 @@ def test_policy_descriptions_are_safe_markdown(client, github, policy_project):
     page = client.get(f"/project/{REPOSITORY}/").content.decode()
     assert "<strong>Responsible AI use</strong>" in page
     assert "<script>" not in page
+
+
+def test_mandatory_agreements_come_first(client, repository):
+    first, second = repository.required_agreements.order_by("position")
+    first.mandatory = False
+    first.save()
+    assert list(repository.required_agreements.all()) == [second, first]
+    page = client.get(f"/project/{repository.full_name}/").content.decode()
+    assert page.index(second.name) < page.index(first.name)

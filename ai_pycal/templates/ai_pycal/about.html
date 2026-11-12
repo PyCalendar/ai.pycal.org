@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load times i18n %}
+{% load github times i18n %}
 {% block title %}{% translate "About" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <section class="hero">
@@ -12,8 +12,8 @@
     <ul class="list">
       <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
       <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
-      <li><a href="{{ links.source }}">{% translate "Source code" %}</a> · AGPL-3.0-or-later</li>
-      <li><a href="{{ links.issues }}">{% translate "Report a bug" %}</a></li>
+      <li>{% translate "Source code" as source %}{% github_link links.source source source %} · AGPL-3.0-or-later</li>
+      <li>{% translate "Report a bug" as bug %}{% github_link links.issues bug bug %}</li>
       {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
     </ul>
   </section>
@@ -21,11 +21,11 @@
     <h2 id="version">{% translate "Version" %}</h2>
     <table class="table facts">
       <tr><th scope="row">{% translate "Version" %}</th><td>{% if build.tag %}<a href="{{ build.code_url }}">{{ build.version }}</a>{% else %}{{ build.version }}{% endif %}</td></tr>
-      {% if build.commit %}<tr><th scope="row">{% translate "Commit" %}</th><td><a href="{{ build.commit_url }}"><code>{{ build.commit }}</code></a>{% if build.message %} {{ build.message }}{% endif %}</td></tr>{% endif %}
+      {% if build.commit %}<tr><th scope="row">{% translate "Commit" %}</th><td><code>{{ build.commit }}</code> {% github_link build.commit_url "This commit on GitHub" %}{% if build.message %} {{ build.message }}{% endif %}</td></tr>{% endif %}
       {% if build.committed_at %}<tr><th scope="row">{% translate "Committed" %}</th><td>{% when build.committed_at %}</td></tr>{% endif %}
       {% if build.built_at %}<tr><th scope="row">{% translate "Built" %}</th><td>{% when build.built_at %}</td></tr>{% endif %}
-      <tr><th scope="row">{% translate "CI build" %}</th><td>{% if build.build_url %}<a href="{{ build.build_url }}">{% translate "GitHub Actions run" %}</a>{% else %}{% translate "Not built by the CI" %}{% endif %}</td></tr>
-      <tr><th scope="row">{% translate "Code" %}</th><td><a href="{{ build.code_url }}">{% translate "The code of this version" %}</a></td></tr>
+      <tr><th scope="row">{% translate "CI build" %}</th><td>{% if build.build_url %}{% translate "GitHub Actions run" as run %}{% github_link build.build_url run run %}{% else %}{% translate "Not built by the CI" %}{% endif %}</td></tr>
+      <tr><th scope="row">{% translate "Code" %}</th><td>{% translate "The code of this version" as code %}{% github_link build.code_url code code %}</td></tr>
     </table>
   </section>
 </div>
