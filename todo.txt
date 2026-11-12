@@ -373,3 +373,43 @@
 - [x] Links to the documentation next to things: ? in a circle, new tab; Email for new permissions
       explained in the tutorial.
 - [x] Todos list optional agreements too; they can be dismissed until they change.
+
+## 2026-11-12: action log, events, licenses, admin, flows and page reviews
+
+- [x] Action log: every webhook and person action is a trigger; actions (labels with reasons, checks,
+      configuration, agreement versions, signatures, emails) in ai_pycal/actions; logs of project, pull
+      request, contributor; global log for SITE_ADMINS; admin section in the menu.
+- [x] repository event: a new default branch reads the configuration again; missing events of the app
+      shown on Setup and by check_permissions (the registered app must tick "Repository" on GitHub).
+- [x] FOOTER_LINKS in the footer again, not on the About page.
+- [ ] Project status: "Up to date" / "Updating" / "Error" linking to /project/<owner>/<repo>/status
+      with the problem and the documentation (instead of "Checks pull requests").
+- [ ] Agreement page: badges (Mandatory/Optional, Signed/Outdated/Unsigned) next to the title.
+- [ ] One gear include for agreements, the same on the project and the agreement page: file, commit,
+      repository, labels (each linking to the pull requests filtered by it), configuration file on the
+      default branch, and the version.
+- [ ] Dropdowns in titles stand between the static part and the part they change (left of the
+      agreement name); "(optional)" in dropdowns as a badge without line break.
+- [ ] /licenses/ page like community-insights (reuse and pip-licenses installed): the license of the
+      project, the licenses in LICENSES/, code from other projects in REUSE.toml, the Python packages;
+      AGPL-3.0-or-later in the footer links there.
+- [ ] Admins can remove their own signatures (to test); logged, labels updated.
+- [ ] Project page: less space between agreement name and description; no list of signers; only open
+      pull requests, a switch to show all; pull requests colored: green all signed, yellow mandatory
+      signed, red mandatory missing; handles link to contributor pages; log icon next to the title.
+- [ ] Logs at /logs/<owner>/<repo>/ (and /logs/<owner>/<repo>/pulls/<n>/, /logs/contributor/<handle>/),
+      paths in the title navigate the logs; a way back to the page.
+- [ ] Update only for signed-in administrators, at most once every 5 minutes per person.
+- [ ] Signing: "Sign" and "Sign and open next agreement" buttons.
+- [ ] Signing flow /project/<owner>/<repo>/pulls/<n>/sign: sign in, then each agreement of the pull
+      request in turn (optional ones can be skipped), progress shown, no links in the title bar, only
+      About in the footer (new tab); at the end: back to the pull request on GitHub, or its page. Tests.
+- [ ] Django admin for SITE_ADMINS: the configured handle was misspelled (nicokunzmann); warn at start
+      about SITE_ADMINS that never signed in.
+- [ ] Contributor page: GitHub icon in the heading; no "Profile and email preferences"; signed
+      agreements by their title (from the Markdown, stored with the version; an agreement without a
+      title is invalid), badges and colors, the shared gear, no version; outdated first; a green check
+      for valid signatures; no empty sections (defaults, other projects); no duplicate "Projects
+      engaged with".
+- [ ] Local times without the time zone; a version shows only its date if it is the only one that day.
+- [ ] Handles link to contributor pages wherever it does not distract.

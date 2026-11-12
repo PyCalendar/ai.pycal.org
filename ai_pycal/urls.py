@@ -9,6 +9,9 @@ from .views import agreements, logs, pages, policies, profile, registration, set
 urlpatterns = [
     path("", pages.home, name="home"),
     path("about/", pages.about, name="about"),
+    path("licenses/", pages.licenses_page, name="licenses"),
+    path("licenses/packages/<str:name>/", pages.package_license, name="package_license"),
+    path("licenses/<str:name>/", pages.license_text, name="license_text"),
     path("health/", pages.health, name="health"),
     path("favicon.ico", pages.favicon, name="favicon"),
     path("theme/", pages.theme, name="theme"),

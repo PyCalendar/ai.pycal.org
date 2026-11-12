@@ -25,6 +25,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN uv sync --no-dev --no-install-project --frozen || uv sync --no-dev --no-install-project
 
 COPY manage.py REUSE.toml ./
+COPY LICENSES LICENSES
 COPY ai_pycal ai_pycal
 COPY static static
 COPY docker/start-service.sh docker/healthcheck.py ./

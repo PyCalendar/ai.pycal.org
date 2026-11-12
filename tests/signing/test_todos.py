@@ -74,3 +74,12 @@ def test_signed_agreements_are_named_not_pathed(client, cla, alice):
     assert f">{cla.name}</a>" in signed
     assert f'href="/project/{REPOSITORY}/">' in signed
     assert ">agreements/cla.md<" not in signed  # the path only in the address on GitHub
+
+
+def test_nothing_to_do_is_said_once(client, alice):
+    client.force_login(alice)
+    page = client.get("/todos/").content.decode()
+    main = page.split("<main")[1].split("</main>")[0]
+    assert "data-nothing" in main and "Nothing to do." in main
+    assert "Agreements to sign" not in main and "Nothing to sign" not in main
+    assert "message-success" not in main

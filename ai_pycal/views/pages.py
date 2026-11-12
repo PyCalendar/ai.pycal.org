@@ -5,13 +5,13 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.db import connection
-from django.http import FileResponse, HttpResponseRedirect, JsonResponse
+from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 
-from ai_pycal import build_info
+from ai_pycal import build_info, licenses
 from ai_pycal.checks import FAVICON_TYPES, is_url
 from ai_pycal.models import Repository, Signature
 from ai_pycal.theme import COOKIE, Theme
@@ -116,3 +116,62 @@ def theme(request):
             COOKIE, choice, max_age=365 * 24 * 3600, samesite="Lax", secure=request.is_secure()
         )
     return response
+
+
+def licenses_page(request):
+    """The licenses of the site: of the project, of code from other projects, of packages.
+
+    Args:
+        request: The request.
+
+    Returns:
+        The page.
+    """
+    return render(
+        request,
+        "ai_pycal/licenses.html",
+        {
+            "project_license": licenses.PROJECT_LICENSE,
+            "license_names": licenses.license_names(),
+            "reused": licenses.reused(),
+            "packages": licenses.packages(),
+        },
+    )
+
+
+def license_text(request, name: str):
+    """The text of a license of ``LICENSES/``, as plain text.
+
+    Args:
+        request: The request.
+        name: The SPDX identifier, such as ``MIT``.
+
+    Returns:
+        The text.
+
+    Raises:
+        Http404: The project has no such license.
+    """
+    path = licenses.license_file(name)
+    if path is None:
+        raise Http404(name)
+    return HttpResponse(path.read_text(), content_type="text/plain; charset=utf-8")
+
+
+def package_license(request, name: str):
+    """The text of the license of an installed Python package, as plain text.
+
+    Args:
+        request: The request.
+        name: The name of the package.
+
+    Returns:
+        The text.
+
+    Raises:
+        Http404: The package is not installed or ships no license file.
+    """
+    text = licenses.package_license_text(name)
+    if text is None:
+        raise Http404(name)
+    return HttpResponse(text, content_type="text/plain; charset=utf-8")

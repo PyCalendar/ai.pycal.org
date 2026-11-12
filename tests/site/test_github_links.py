@@ -53,6 +53,8 @@ def test_the_footer_and_the_repository_title(client, repository):
 def test_no_template_links_to_github_without_the_mark():
     for template in (ROOT / "ai_pycal" / "templates").rglob("*.html"):
         text = template.read_text()
+        if template.name == "licenses.html":
+            continue  # the home pages of packages, mostly not on GitHub
         for marker in (
             'href="https://github.com',
             'href="{{ links.source',

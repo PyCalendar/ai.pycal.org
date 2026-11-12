@@ -13,8 +13,10 @@ dependencies = [
     "gunicorn>=23",
     "httpx>=0.28.1",
     "markdown-it-py>=3.0",
+    "pip-licenses>=5.5.5",
     "PyJWT[crypto]>=2.10",
     "PyYAML>=6.0.2",
+    "reuse>=6.3.0",
     "whitenoise>=6.9",
 ]
 

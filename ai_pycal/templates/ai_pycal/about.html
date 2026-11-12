@@ -12,7 +12,7 @@
     <ul class="list">
       <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
       <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
-      <li>{% translate "Source code" as source %}{% github_link links.source source source %} · AGPL-3.0-or-later</li>
+      <li>{% translate "Source code" as source %}{% github_link links.source source source %} · <a href="{% url 'licenses' %}">AGPL-3.0-or-later</a></li>
       <li>{% translate "Report a bug" as bug %}{% github_link links.issues bug bug %}</li>
     </ul>
   </section>

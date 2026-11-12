@@ -1,0 +1,27 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n github %}
+{% block title %}{% translate "Licenses" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1>{% translate "Licenses" %}</h1>
+<p class="lead">{% blocktranslate with license=project_license %}{{ site_name }} is free software under the <a href="/licenses/{{ license }}/">{{ license }}</a>: you may use, study, share and change it; a changed version that you run for others must offer its source code.{% endblocktranslate %} {% translate "Source code" as source %}{% github_link links.source source source %}</p>
+<section class="card" id="texts">
+  <h2>{% translate "License texts" %}</h2>
+  <p class="muted">{% translate "The project follows the REUSE specification: every file has its copyright and license, the texts are in LICENSES/." %}</p>
+  <ul class="list">{% for name in license_names %}<li><a href="/licenses/{{ name }}/">{{ name }}</a></li>{% endfor %}</ul>
+</section>
+{% if reused %}<section class="card" id="reused">
+  <h2>{% translate "Code from other projects" %}</h2>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>{% translate "Files" %}</th><th>{% translate "Copyright" %}</th><th>{% translate "License" %}</th></tr></thead>
+    <tbody>{% for package in reused %}<tr><td><code>{{ package.name }}</code></td><td>{{ package.version }}</td><td><a href="{{ package.license_url }}">{{ package.license }}</a></td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>{% endif %}
+<section class="card" id="packages">
+  <h2>{% translate "Python packages on the server" %}</h2>
+  <p class="muted">{% translate "Read by pip-licenses from the packages installed on this server. The license links to its text." %}</p>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>{% translate "Package" %}</th><th>{% translate "Version" %}</th><th>{% translate "License" %}</th></tr></thead>
+    <tbody>{% for package in packages %}<tr><td><a href="{{ package.url }}">{{ package.name }}</a></td><td>{{ package.version }}</td><td>{% if package.license_url %}<a href="{{ package.license_url }}">{{ package.license }}</a>{% else %}{{ package.license }}{% endif %}</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}
