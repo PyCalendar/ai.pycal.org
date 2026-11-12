@@ -1,10 +1,13 @@
 """The pages of administrators: install the GitHub App and add repositories."""
 
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
@@ -63,6 +66,35 @@ def setup(request):
             "required": sorted(permissions.REQUIRED.items()),
         },
     )
+
+
+def github_callback(request):
+    """The callback of signing in with GitHub, which GitHub also uses after an installation.
+
+    An app with *Request user authorization (OAuth) during installation* sends people to
+    the callback after they installed it, with ``installation_id`` and ``setup_action``
+    but without the ``state`` of a sign-in that the site started; allauth refuses that as
+    a failed sign-in. Such a return goes to ``/setup/installed/`` (without the code), the
+    page for installations; every other request is the callback of allauth.
+
+    Args:
+        request: The request.
+
+    Returns:
+        A redirect to ``/setup/installed/``, or the answer of allauth.
+    """
+    from allauth.socialaccount.providers.github.views import oauth2_callback
+
+    if "state" not in request.GET and request.GET.get("installation_id"):
+        query = urlencode(
+            {
+                key: request.GET[key]
+                for key in ("installation_id", "setup_action")
+                if request.GET.get(key)
+            }
+        )
+        return redirect(f"{reverse('installed')}?{query}")
+    return oauth2_callback(request)
 
 
 @login_required

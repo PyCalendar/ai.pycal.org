@@ -1,0 +1,3 @@
+After installing the GitHub App, GitHub no longer ends in "Third-Party Login
+Failure": new apps return to ``/setup/installed/``, and a return of an existing
+app with OAuth during installation is sent there too.

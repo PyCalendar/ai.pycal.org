@@ -76,7 +76,9 @@ def manifest(name: str, url: str) -> dict:
         "callback_urls": [f"{url}/accounts/github/login/callback/"],
         "setup_url": f"{url}/setup/installed/",
         "setup_on_update": True,
-        "request_oauth_on_install": True,
+        # False: after an installation GitHub returns to setup_url (/setup/installed/); with
+        # True it would return to the sign-in callback without the state of a sign-in
+        "request_oauth_on_install": False,
         "public": True,
         "default_permissions": dict(REQUIRED),
         "default_events": list(EVENTS),

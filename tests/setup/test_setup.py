@@ -184,3 +184,30 @@ def test_unconfigured_setup_shows_env_settings_without_credentials(client, setti
     assert "data/github-app.pem" in page
     assert "do-not-show-this-secret" not in page
     assert settings.GITHUB_APP_PRIVATE_KEY not in page
+
+
+def test_the_return_after_an_installation_goes_to_the_setup(client):
+    """With OAuth during installation, GitHub returns to the sign-in callback without state."""
+    response = client.get(
+        "/accounts/github/login/callback/"
+        "?code=one-time&installation_id=181305674&setup_action=install"
+    )
+    assert response.status_code == 302
+    assert (
+        response["Location"] == "/setup/installed/?installation_id=181305674&setup_action=install"
+    )
+    assert "code" not in response["Location"]
+
+
+def test_a_sign_in_callback_is_still_handled_by_allauth(client):
+    response = client.get("/accounts/github/login/callback/?code=x&state=y")
+    assert "/setup/installed/" not in response.get("Location", "")
+    assert b"Third-Party Login Failure" in response.content or response.status_code != 302
+
+
+def test_new_apps_return_to_the_setup_url_after_installing():
+    from ai_pycal.github.permissions import manifest
+
+    found = manifest("app", "https://ai.example.org")
+    assert found["request_oauth_on_install"] is False
+    assert found["setup_url"] == "https://ai.example.org/setup/installed/"

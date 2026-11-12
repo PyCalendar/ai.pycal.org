@@ -313,3 +313,10 @@
 - [x] Docs domain: pycal.org verified for the organization PyCalendar (protects docs.ai.pycal.org).
 - [x] With GITHUB_... settings set (non-empty) or an existing key file, no page offers the registration:
       sign-in, Setup, the registration page, errors, the log and the command name what blocks it.
+
+## 2026-11-12: Third-Party Login Failure after installing the app
+
+- [x] Cause: request_oauth_on_install sent GitHub back to the sign-in callback without state. Manifest sets
+      it to false (GitHub uses /setup/installed/); the callback forwards such returns of existing apps there.
+- [x] The OAuth code in a pending prompt was redacted before the commit (asked by the person); earlier commit
+      messages and archived prompts contain no tokens, keys or codes.

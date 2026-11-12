@@ -74,6 +74,8 @@ urlpatterns = [
         account_views.confirm_email,
         name="account_confirm_email",
     ),
+    # before allauth: GitHub also returns here after installations (views/setup.py)
+    path("accounts/github/login/callback/", setup.github_callback, name="github_callback_install"),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),
     path("<str:owner>/<str:repo>/", setup.repository, name="repository"),
