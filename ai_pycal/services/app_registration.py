@@ -222,6 +222,29 @@ class AppRegistration:
         """Whether the page asks for the setup code: always, except in development."""
         return not settings.DEBUG
 
+    @staticmethod
+    def variables_set() -> list[str]:
+        """The settings of an app that the environment sets; empty ones count as unset.
+
+        Returns:
+            The names, such as ``["GITHUB_CLIENT_ID"]``.
+        """
+        return [name for name in ENVIRONMENT_NAMES if os.environ.get(name)]
+
+    @classmethod
+    def obstacle(cls) -> AppSettingsInEnvironment | PrivateKeyFileExists | None:
+        """Why a site without an app cannot register one; the pages say it instead of the button.
+
+        Returns:
+            The error, or None if the registration may start.
+        """
+        found = cls.variables_set()
+        if found:
+            return AppSettingsInEnvironment(", ".join(found))
+        if cls.key_file().exists():
+            return PrivateKeyFileExists(str(cls.key_file()))
+        return None
+
     @classmethod
     def check(cls, setup_code: str) -> None:
         """Check that a registration may start.
@@ -237,11 +260,9 @@ class AppRegistration:
         """
         if cls.source():
             raise AppAlreadyRegistered(cls.source())
-        found = [name for name in ENVIRONMENT_NAMES if os.environ.get(name)]
-        if found:
-            raise AppSettingsInEnvironment(", ".join(found))
-        if cls.key_file().exists():
-            raise PrivateKeyFileExists(str(cls.key_file()))
+        obstacle = cls.obstacle()
+        if obstacle:
+            raise obstacle
         if cls.needs_setup_code() and not hmac.compare_digest(
             setup_code.strip().lower(), cls.setup_code().lower()
         ):

@@ -28,7 +28,13 @@ class Command(BaseCommand):
             pk=settings.SITE_ID, defaults={"domain": domain, "name": settings.SITE_NAME}
         )
         self.stdout.write(f"prepared {domain}")
-        if not AppRegistration.source():
+        obstacle = None if AppRegistration.source() else AppRegistration.obstacle()
+        if obstacle:
+            self.stdout.write(
+                f"This site has no GitHub App and cannot register one: {obstacle.title}: "
+                f"{obstacle.detail} ({obstacle.docs_url()})"
+            )
+        elif not AppRegistration.source():
             self.stdout.write(
                 "This site has no GitHub App. Register it on "
                 f"{settings.SITE_URL}/setup/github-app/ with the setup code "

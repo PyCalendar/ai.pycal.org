@@ -21,4 +21,10 @@ class Command(BaseCommand):
         if source:
             self.stdout.write(f"The site has a GitHub App (from the {source}); no code is needed.")
             return
+        obstacle = AppRegistration.obstacle()
+        if obstacle:
+            self.stdout.write(
+                f"The site cannot register its GitHub App: {obstacle.title}: {obstacle}"
+            )
+            return
         self.stdout.write(AppRegistration.setup_code())

@@ -125,9 +125,13 @@ def test_the_key_goes_to_the_configured_file(client, new_site, github, tmp_path,
 
 def test_an_existing_key_is_never_overwritten(client, new_site, tmp_path):
     (tmp_path / "github-app.pem").write_text("the key of another app")
+    page = client.get("/setup/github-app/").content.decode()
+    assert 'data-registration-blocked="PrivateKeyFileExists"' in page
+    assert str(tmp_path / "github-app.pem") in page
+    assert 'name="setup_code"' not in page
     response = start(client)
     assert response.status_code == 409
-    assert 'data-error="PrivateKeyFileExists"' in response.content.decode()
+    assert 'data-registration-blocked="PrivateKeyFileExists"' in response.content.decode()
     assert (tmp_path / "github-app.pem").read_text() == "the key of another app"
 
 
@@ -136,16 +140,40 @@ def test_settings_of_an_app_in_the_environment_stop_the_registration(
     client, new_site, monkeypatch, name
 ):
     monkeypatch.setenv(name, "set")
-    response = start(client)
+    monkeypatch.setenv("GITHUB_SECRET", "set")
+    expected = ", ".join(
+        n for n in app_registration.ENVIRONMENT_NAMES if n in (name, "GITHUB_SECRET")
+    )
+    for url in ("/setup/github-app/", "/accounts/login/"):
+        page = client.get(url).content.decode()
+        assert 'data-registration-blocked="AppSettingsInEnvironment"' in page, url
+        assert f"<code>{expected}</code>" in page, url
+        assert 'href="/setup/github-app/">Register GitHub App</a>' not in page, url
+        assert 'name="setup_code"' not in page, url
+    response = start(client)  # a form sent anyway
     assert response.status_code == 409
-    page = response.content.decode()
-    assert 'data-error="AppSettingsInEnvironment"' in page
-    assert name in page
+    assert 'data-registration-blocked="AppSettingsInEnvironment"' in response.content.decode()
+
+
+def test_the_log_says_why_the_app_cannot_be_registered(new_site, monkeypatch, capsys):
+    from django.core.management import call_command
+
+    monkeypatch.setenv("GITHUB_CLIENT_ID", "set")
+    call_command("prepare")
+    out = capsys.readouterr().out
+    assert "cannot register one" in out
+    assert "GITHUB_CLIENT_ID" in out
+    assert "setup code" not in out
+    call_command("github_app_setup_code")
+    assert "GITHUB_CLIENT_ID" in capsys.readouterr().out
 
 
 def test_empty_settings_of_the_environment_count_as_unset(client, new_site, monkeypatch):
     for name in app_registration.ENVIRONMENT_NAMES:
         monkeypatch.setenv(name, "")
+    page = client.get("/accounts/login/").content.decode()
+    assert 'href="/setup/github-app/">Register GitHub App</a>' in page
+    assert "data-registration-blocked" not in page
     assert start(client).status_code == 200
 
 

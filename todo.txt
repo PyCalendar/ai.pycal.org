@@ -311,3 +311,5 @@
 - [x] Checked in the image: setup code in the log and the command, page, sign-in link, healthy.
 - [x] docker-compose.yml declares the health check of the image; a test keeps both the same.
 - [x] Docs domain: pycal.org verified for the organization PyCalendar (protects docs.ai.pycal.org).
+- [x] With GITHUB_... settings set (non-empty) or an existing key file, no page offers the registration:
+      sign-in, Setup, the registration page, errors, the log and the command name what blocks it.

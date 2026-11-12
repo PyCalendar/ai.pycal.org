@@ -28,6 +28,12 @@
   <details><summary>{% translate "The manifest" %}</summary><pre class="diff">{{ manifest_preview }}</pre></details>
 </div>
 
+{% elif app_registration_obstacle %}
+<div class="card" data-step="blocked">
+  <h2>{% translate "Registration is not possible" %}</h2>
+  {% include "ai_pycal/_register_app.html" %}
+</div>
+
 {% else %}
 {% if local %}<p class="message message-warning" data-local>{% blocktranslate %}This site runs at <code>{{ site_url }}</code>, which GitHub cannot reach. Signing in works, because GitHub sends your browser back here, but webhooks cannot be delivered: the app is registered without a webhook, so pull requests are not checked. To test everything, give the site a public address first, for example with Tailscale Funnel, and set <code>SITE_URL</code> to it.{% endblocktranslate %} <a href="{{ links.documentation }}how-to/github-app-tunnel.html">{% translate "Test the GitHub App locally with Tailscale" %}</a></p>{% endif %}
 {% if error %}<div class="message message-error" role="alert" data-error="{{ error.code }}"><strong>{{ error.title }}</strong>{% if error.detail %}: <code>{{ error.detail }}</code>{% endif %} · <a href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a></div>{% endif %}

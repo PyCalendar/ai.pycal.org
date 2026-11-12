@@ -31,6 +31,13 @@ it:
 
    docker compose exec ai-pycal python manage.py github_app_setup_code
 
+If the environment sets a ``GITHUB_...`` setting of an app, the site offers no
+registration: the sign-in, setup and registration pages, the log and the
+command name the settings that are set, because they would take precedence
+over the registered app. The same holds for an existing file of the private
+key, which the site never overwrites. Set all settings of that app, or remove
+them and restart the site.
+
 Only who can read the log or the volume can register the app: without the code,
 anybody who finds a new site could register their own app for it. With
 ``DEBUG`` on, as with ``make run``, the page asks for no code.

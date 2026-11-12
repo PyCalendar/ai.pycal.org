@@ -4,7 +4,7 @@
     <h1 id="status-title">{{ title }}</h1>
     {% if explanation %}<p class="lead">{{ explanation }}</p>{% endif %}
     {% if error.detail %}<p class="detail"><code>{{ error.detail }}</code></p>{% endif %}
-    {% if error.register_app and not github_app_configured %}<p><a class="button button-accent" href="{% url 'register_app' %}">{% translate "Register GitHub App" %}</a></p>{% endif %}
+    {% if error.register_app and not github_app_configured %}{% include "ai_pycal/_register_app.html" %}{% endif %}
     <p class="status-actions">
       {% if error %}<a class="button" href="{{ error.docs_url }}">{% translate "What this error means and how to solve it" %}</a>{% if error.guide_url %} <a class="button button-quiet" href="{{ error.guide_url }}">{{ error.guide_title }}</a>{% endif %}
       <a class="button button-quiet" href="{{ home_url|default:'/' }}">{% translate "Back to the start" %}</a>

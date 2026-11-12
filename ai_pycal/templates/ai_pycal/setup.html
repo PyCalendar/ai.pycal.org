@@ -18,7 +18,7 @@
   <h2>{% translate "Configure this site" %}</h2>
   <p class="message message-error">{% translate "This site has no GitHub App yet." %}</p>
   <p>{% blocktranslate %}The site can register its GitHub App itself and keep the credentials in its volume.{% endblocktranslate %}</p>
-  <p><a class="button button-accent" href="{% url 'register_app' %}">{% translate "Register GitHub App" %}</a></p>
+  {% include "ai_pycal/_register_app.html" %}
   <p>{% blocktranslate %}Or set the credentials yourself. For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these six values from your GitHub App:{% endblocktranslate %}</p>
   <pre><code>GITHUB_APP_ID=
 GITHUB_APP_SLUG=
