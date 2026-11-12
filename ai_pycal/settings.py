@@ -119,6 +119,9 @@ LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/profile/"
 LOGOUT_REDIRECT_URL = "/"
 SOCIALACCOUNT_ONLY = True
+# Fixed, not a setting: people sign in with GitHub only, so allauth must not ask them to confirm an
+# email address first ("mandatory" would lock them out after signing in). The emails of the site go
+# only to addresses confirmed on the profile page (EmailAddress.verified).
 ACCOUNT_EMAIL_VERIFICATION = "none"
 # The scheme of the sign-in callback follows SITE_URL, also behind a proxy or tunnel (such as
 # Tailscale Funnel) that does not send X-Forwarded-Proto: GitHub only accepts the registered one.
