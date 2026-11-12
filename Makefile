@@ -95,6 +95,15 @@ docker-test: docker-build  ## Run the container and check that Docker sees it he
 	status=$$(docker inspect -f '{{.State.Health.Status}}' ai-pycal-test); echo $$status; \
 	[ "$$status" = healthy ] || docker logs ai-pycal-test; docker rm -f ai-pycal-test >/dev/null; [ "$$status" = healthy ]
 
+TRIVY = aquasec/trivy:0.58.1
+.PHONY: docker-scan
+docker-scan: docker-build  ## Scan the image with Trivy: fails on critical vulnerabilities that have a fix
+	@# the image is saved to a file, so Trivy needs no access to the socket of Docker
+	@mkdir -p build && docker save ai-pycal -o build/ai-pycal-image.tar
+	@docker run --rm -v "$(CURDIR)/build:/scan:ro" $(TRIVY) image --input /scan/ai-pycal-image.tar \
+		--exit-code 1 --severity CRITICAL --ignore-unfixed --no-progress; \
+		status=$$?; rm -f build/ai-pycal-image.tar; exit $$status
+
 .PHONY: docker-run
 docker-run: docker-build  ## Run the container on $(PORT) with ./data
 	@mkdir -p data

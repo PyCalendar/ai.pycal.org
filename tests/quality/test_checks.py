@@ -61,3 +61,10 @@ def test_compose_uses_the_pushed_image():
     compose = (ROOT / "docker-compose.yml").read_text()
     assert "image: ghcr.io/pycalendar/ai.pycal.org:latest" in compose
     assert "./data:/app/data" in compose
+
+
+def test_every_make_target_of_the_ci_exists():
+    makefile = (ROOT / "Makefile").read_text()
+    text = (ROOT / ".github" / "workflows" / "tests.yml").read_text()
+    for target in re.findall(r"run: make ([\w-]+)", text):
+        assert re.search(rf"^{target}:", makefile, re.MULTILINE), target
