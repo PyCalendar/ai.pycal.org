@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load times i18n %}
 {% block title %}{% translate "My agreements" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{% translate "My agreements" %}</h1>
@@ -23,7 +23,7 @@
   {% for signature in signatures %}<tr>
     <td><a href="{% url 'agreement' signature.version_id %}">{{ signature.version.source }}/{{ signature.version.path }}</a></td>
     <td><a href="{{ signature.version.url }}"><code>{{ signature.version.short_commit }}</code></a></td>
-    <td><time datetime="{{ signature.signed|date:'c' }}">{{ signature.signed|date:"Y-m-d H:i" }} UTC</time></td>
+    <td>{% when signature.signed %}</td>
   </tr>{% endfor %}</tbody></table>{% else %}<p>{% translate "You have not signed an agreement yet." %}</p>{% endif %}
 </section>
 {% endblock %}

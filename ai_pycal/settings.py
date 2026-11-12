@@ -169,7 +169,8 @@ SIGN_MAX_HOURS = env.float("SIGN_MAX_HOURS", default=24)
 
 # Branding: docs/how-to/brand.rst
 THEME = Theme.from_environment(dict(os.environ))
-FAVICON_FILE = env("FAVICON_FILE", default="")
+# the icon: an address (https://...) or the path of a file; FAVICON_FILE is its older name
+FAVICON = env("FAVICON", default="") or env("FAVICON_FILE", default="")
 EXTRA_CSS_URL = env("EXTRA_CSS_URL", default="")
 SOURCE_URL = env("SOURCE_URL", default="https://github.com/PyCalendar/ai.pycal.org")
 DOCS_URL = env("DOCS_URL", default="https://docs.ai.pycal.org/")
@@ -191,7 +192,7 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=f"agreements@{SITE_NAME}"
 
 LANGUAGE_CODE = "en"
 LANGUAGES = [("en", "English")]
-TIME_ZONE = env("TIME_ZONE", default="UTC")  # of the times on the pages, such as Europe/Berlin
+TIME_ZONE = "UTC"  # the pages show times in the local time of the browser (static/local-time.js)
 USE_I18N = True
 USE_TZ = True
 

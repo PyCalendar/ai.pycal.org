@@ -102,16 +102,24 @@ than the colors.
 Icon
 ====
 
-``FAVICON_FILE`` is the path of a PNG, ICO or SVG file in the container. Put it
-in the volume of the data:
+``FAVICON`` is the icon: an address on the web, or the path of a PNG, ICO or
+SVG file in the container. An address is linked as it is:
+
+.. code-block:: shell
+
+   echo FAVICON=https://pycal.org/favicon.png >> .env
+
+A file is served by the site; put it in the volume of the data:
 
 .. code-block:: shell
 
    cp my-icon.png data/favicon.png
-   echo FAVICON_FILE=/app/data/favicon.png >> .env
+   echo FAVICON=/app/data/favicon.png >> .env
 
-The icon is shown in the menu and as icon of the browser tab, at
-``/favicon.ico``. The default is the icon of pycal.
+The icon is shown in the menu and as icon of the browser tab; ``/favicon.ico``
+serves the file or redirects to the address. The default is the icon of pycal.
+A file that is missing or of another type stops the start of the site.
+``FAVICON_FILE`` is the older name of the setting and still works.
 
 Name
 ====

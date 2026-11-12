@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load i18n %}
+{% load i18n times %}
 {% block title %}{{ title }} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{{ title }}</h1>
@@ -7,7 +7,7 @@
 {% if required_by %} · {% translate "asked for by" %} {% for agreement in required_by %}<a href="/{{ agreement.repository.full_name }}/">{{ agreement.repository.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}</p>
 
 {% if signature %}
-<p class="message message-success" data-signed>{% blocktranslate with date=signature.signed|date:"Y-m-d" %}You signed this agreement on {{ date }}.{% endblocktranslate %}</p>
+<p class="message message-success" data-signed>{% when signature.signed as signed %}{% blocktranslate %}You signed this agreement {{ signed }}.{% endblocktranslate %}</p>
 {% elif previous %}
 <section class="card changes" data-changes>
   <h2>{% translate "Changed since you signed it" %}</h2>

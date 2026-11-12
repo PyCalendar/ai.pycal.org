@@ -277,3 +277,14 @@
 - [ ] The person: DNS record docs.ai.pycal.org CNAME pycalendar.github.io (does not resolve yet), then Enforce HTTPS.
 - [ ] Sencho: SENCHO_TOKEN works, but the stack ai-pycal does not exist ("Stack not found", 404): create it,
       or set the repository variable SENCHO_STACK to its name.
+
+## 2026-11-12: email verification, local times, favicon
+
+- [x] ACCOUNT_EMAIL_VERIFICATION stays fixed ("none"): sign-in is GitHub only; emails go only to addresses
+      confirmed on the profile page. Explained in settings.py.
+- [x] Times like GitHub: {% when %} shows how long ago, the exact UTC time on hover; static/local-time.js
+      (decided by the person) shows the exact local time of the browser and keeps the text current.
+      TIME_ZONE setting removed. AGENTS.md: no inline JavaScript; small static scripts may enhance pages.
+- [x] Browser test of the script in Europe/Berlin and America/New_York; unit tests of the server rules.
+- [x] FAVICON: an address or a local file (FAVICON_FILE still read as older name); /favicon.ico redirects
+      to an address; docs, .env.example, tests.

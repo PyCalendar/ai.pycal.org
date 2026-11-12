@@ -48,10 +48,11 @@ class UnknownColor(ConfigurationError):
 
 
 class FaviconNotFound(ConfigurationError):
-    """The file of ``FAVICON_FILE`` does not exist.
+    """The file of ``FAVICON`` does not exist.
 
-    ``FAVICON_FILE`` is the path of a PNG, ICO or SVG file inside the container,
-    such as ``/app/data/favicon.png`` in the volume of the data. See
+    ``FAVICON`` is an address such as ``https://pycal.org/favicon.png``, or the
+    path of a PNG, ICO or SVG file inside the container, such as
+    ``/app/data/favicon.png`` in the volume of the data. See
     :doc:`/how-to/brand`.
     """
 
@@ -61,7 +62,7 @@ class FaviconNotFound(ConfigurationError):
 
 
 class UnsupportedFavicon(ConfigurationError):
-    """The file of ``FAVICON_FILE`` is not a PNG, ICO or SVG file.
+    """The file of ``FAVICON`` is not a PNG, ICO or SVG file.
 
     Browsers show these formats as icon of the page. Convert the icon and name
     the file with its extension: ``.png``, ``.ico`` or ``.svg``.

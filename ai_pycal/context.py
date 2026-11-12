@@ -2,8 +2,10 @@
 
 from django.conf import settings
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from .checks import is_url
 from .models import ProjectProblem
 from .services.identity import GitHubIdentity
 from .theme import COOKIE, Theme
@@ -42,6 +44,7 @@ def site(request) -> dict:
         "color_scheme": "light dark" if theme == "auto" else theme,
         "theme_css": settings.THEME.stylesheet(theme),
         "extra_css_url": settings.EXTRA_CSS_URL,
+        "favicon_url": settings.FAVICON if is_url(settings.FAVICON) else reverse("favicon"),
         "links": {
             "documentation": docs,
             "sign": f"{docs}tutorial/sign.html",

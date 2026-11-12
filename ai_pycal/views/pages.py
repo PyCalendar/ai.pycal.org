@@ -12,7 +12,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 
 from ai_pycal import build_info
-from ai_pycal.checks import FAVICON_TYPES
+from ai_pycal.checks import FAVICON_TYPES, is_url
 from ai_pycal.models import Repository, Signature
 from ai_pycal.theme import COOKIE, Theme
 
@@ -48,7 +48,7 @@ def about(request):
     return render(
         request,
         "ai_pycal/about.html",
-        {"build": build_info.get(settings.SOURCE_URL), "time_zone": settings.TIME_ZONE},
+        {"build": build_info.get(settings.SOURCE_URL)},
     )
 
 
@@ -71,15 +71,17 @@ def health(request):
 
 @cache_control(max_age=86400, public=True)
 def favicon(request):
-    """The icon of the site: ``FAVICON_FILE``, or the icon of pycal.
+    """The icon of the site: ``FAVICON`` (an address or a file), or the icon of pycal.
 
     Args:
         request: The request.
 
     Returns:
-        The image.
+        The image, or a redirect to the address of the icon.
     """
-    path = Path(settings.FAVICON_FILE) if settings.FAVICON_FILE else None
+    if is_url(settings.FAVICON):
+        return HttpResponseRedirect(settings.FAVICON)
+    path = Path(settings.FAVICON) if settings.FAVICON else None
     if not path or not path.is_file():
         path = Path(finders.find("img/favicon.png"))
     return FileResponse(

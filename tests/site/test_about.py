@@ -33,16 +33,15 @@ def built(tmp_path, monkeypatch):
     build_info.get.cache_clear()
 
 
-def test_the_about_page_shows_the_build(client, built, settings):
-    settings.TIME_ZONE = "Europe/Berlin"
+def test_the_about_page_shows_the_build(client, built):
     page = client.get("/about/").content.decode()
     source = "https://github.com/PyCalendar/ai.pycal.org"
     assert f'href="{source}/commit/{BUILD["commit_full"]}"><code>4cbfd3e</code>' in page
     assert "Add the &lt;b&gt;about&lt;/b&gt; page" in page
     assert f'<a href="{source}/tree/v1.2.3">1.2.3</a>' in page
-    assert "2026-11-12 14:30 CET" in page  # committed, in the time zone of the site
-    assert "2026-11-12 15:00 CET" in page  # built
-    assert 'datetime="2026-11-12T14:30:00+01:00"' in page
+    # how long ago, the exact time in UTC on hover; the browser shows its local time
+    assert 'datetime="2026-11-12T13:30:00Z" title="2026-11-12 13:30 UTC">' in page
+    assert 'datetime="2026-11-12T14:00:00Z" title="2026-11-12 14:00 UTC">' in page
     assert f'href="{BUILD["build_url"]}">GitHub Actions run' in page
 
 

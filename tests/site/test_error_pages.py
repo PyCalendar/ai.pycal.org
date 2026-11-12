@@ -15,7 +15,8 @@ def designed(page: str) -> None:
     assert "--brand: #3b79aa;" in page
     assert 'class="status-page' in page
     assert 'class="nav"' in page
-    assert "<script" not in page
+    assert page.count("<script") == 1  # only the time script, which pages do not need
+    assert '<script src="/static/local-time.js" defer></script>' in page
 
 
 def test_page_not_found(client):

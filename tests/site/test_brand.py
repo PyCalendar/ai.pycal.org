@@ -61,7 +61,7 @@ def test_the_default_favicon(client):
 def test_an_own_favicon(client, settings, tmp_path):
     icon = tmp_path / "icon.svg"
     icon.write_text("<svg/>")
-    settings.FAVICON_FILE = str(icon)
+    settings.FAVICON = str(icon)
     response = client.get("/favicon.ico")
     assert response["Content-Type"] == "image/svg+xml"
     assert b"".join(response.streaming_content) == b"<svg/>"
@@ -73,7 +73,7 @@ def test_an_own_favicon(client, settings, tmp_path):
 )
 def test_a_wrong_favicon_stops_the_start(settings, tmp_path, name, check):
     (tmp_path / "icon.gif").write_bytes(b"GIF")
-    settings.FAVICON_FILE = str(tmp_path / name)
+    settings.FAVICON = str(tmp_path / name)
     assert check in [message.id for message in run_checks()]
 
 
@@ -85,7 +85,8 @@ def test_the_switch_is_a_dropdown_with_icons_without_javascript(client):
     assert 'action="/theme/"' in page
     assert 'name="next" value="/projects/"' in page
     assert 'value="auto" aria-pressed="true"' in page
-    assert "<script" not in page
+    assert page.count("<script") == 1  # only the time script, which pages do not need
+    assert '<script src="/static/local-time.js" defer></script>' in page
 
 
 @pytest.mark.parametrize("choice", ["light", "dark"])
@@ -130,3 +131,42 @@ def test_the_switch_only_returns_to_this_site(client, target):
 
 def test_the_switch_only_accepts_posts(client):
     assert client.get("/theme/").status_code == 405
+
+
+def test_the_favicon_can_be_an_address(client, settings):
+    settings.FAVICON = "https://pycal.org/favicon.png"
+    page = client.get("/").content.decode()
+    assert '<link rel="icon" href="https://pycal.org/favicon.png">' in page
+    assert '<img src="https://pycal.org/favicon.png" alt=""' in page
+    response = client.get("/favicon.ico")
+    assert response.status_code == 302
+    assert response["Location"] == "https://pycal.org/favicon.png"
+    assert not [m for m in run_checks() if m.id.startswith("ai_pycal.E")]
+
+
+def test_a_local_favicon_is_served_by_the_site(client, settings, tmp_path):
+    icon = tmp_path / "icon.png"
+    icon.write_bytes(b"\x89PNG")
+    settings.FAVICON = str(icon)
+    assert '<link rel="icon" href="/favicon.ico">' in client.get("/").content.decode()
+
+
+def test_favicon_file_is_the_older_name(monkeypatch):
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    environment = dict(os.environ, DEBUG="1", FAVICON_FILE="/app/data/old.png")
+    environment.pop("FAVICON", None)
+    environment["DJANGO_SETTINGS_MODULE"] = "ai_pycal.settings"
+    code = "from django.conf import settings; print(settings.FAVICON)"
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=Path(__file__).parents[2],
+        env=environment,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert result.stdout.strip() == "/app/data/old.png"

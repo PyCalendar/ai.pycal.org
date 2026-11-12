@@ -8,6 +8,8 @@ REFERENCE = (ROOT / "docs" / "reference" / "settings.rst").read_text()
 EXAMPLE = (ROOT / ".env.example").read_text()
 # set by the image or the tools, not by the people who run the site
 INTERNAL = {"PATH", "PYTHONUNBUFFERED", "UV_PROJECT_ENVIRONMENT", "DJANGO_SETTINGS_MODULE"}
+# older names, still read and documented, but not offered in .env.example
+OLDER_NAMES = {"FAVICON_FILE"}
 
 
 def read_variables() -> set[str]:
@@ -39,7 +41,7 @@ def test_every_setting_of_the_site_is_in_the_example():
     build = set(re.findall(r"``(GITHUB_[A-Z_]+)``", REFERENCE.split("9. Build information")[1]))
     missing = [
         name
-        for name in sorted(read_variables() - build)
+        for name in sorted(read_variables() - build - OLDER_NAMES)
         if not re.search(rf"^#? ?{name}=", EXAMPLE, re.MULTILINE)
     ]
     assert not missing

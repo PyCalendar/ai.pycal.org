@@ -126,9 +126,6 @@ emails are written to the log.
    ``pycal.org=https://pycal.org,Blog=https://example.org/blog/``. Default
    ``pycal.org=https://pycal.org``; empty for none. A wrong entry stops the
    start with :class:`~ai_pycal.errors.configuration.InvalidFooterLink`.
-``TIME_ZONE``
-   The time zone of the times on the pages, such as the commit and the build
-   on the About page, for example ``Europe/Berlin``. Default ``UTC``.
 ``SOURCE_URL``
    The repository of the code, for the links of the footer and the About page.
    Default ``https://github.com/PyCalendar/ai.pycal.org``.
@@ -142,9 +139,12 @@ emails are written to the log.
    names and defaults: :doc:`/how-to/brand`.
 ``EXTRA_CSS_URL``
    A style sheet loaded after that of the site. Default none.
+``FAVICON``
+   The icon of the site: an address such as ``https://pycal.org/favicon.png``,
+   or the path of a PNG, ICO or SVG file such as ``/app/data/favicon.png``.
+   Default the icon of pycal. See :doc:`/how-to/brand`.
 ``FAVICON_FILE``
-   A PNG, ICO or SVG file for the icon, such as ``/app/data/favicon.png``.
-   Default the icon of pycal.
+   The older name of ``FAVICON``, still read if ``FAVICON`` is empty.
 
 .. _settings-signing:
 

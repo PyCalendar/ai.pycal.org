@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="{{ color_scheme }}">
 <title>{% block title %}{{ site_name }}{% endblock %}</title>
-<link rel="icon" href="{% url 'favicon' %}">
+<link rel="icon" href="{{ favicon_url }}">
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <style>{{ theme_css }}</style>
 {% if extra_css_url %}<link rel="stylesheet" href="{{ extra_css_url }}">{% endif %}
+<script src="{% static 'local-time.js' %}" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">{% translate "Skip to the content" %}</a>
 <header class="nav">
   <div class="wrap nav-row">
-    <a class="brand" href="{% url 'home' %}"><img src="{% url 'favicon' %}" alt="" width="28" height="28"> {{ site_name }}</a>
+    <a class="brand" href="{% url 'home' %}"><img src="{{ favicon_url }}" alt="" width="28" height="28"> {{ site_name }}</a>
     <nav aria-label="{% translate "Menu" %}">
       <ul class="menu">
       {% if user.is_authenticated %}

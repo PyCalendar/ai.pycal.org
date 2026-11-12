@@ -35,7 +35,10 @@ Calendaring Ecosystem](https://icalendar.readthedocs.io/en/latest/contribute/ind
   checks it.
 - The tests never use the network: GitHub is faked (`tests/fakes/github.py`).
 - Never change a migration that may be applied somewhere; add a new one.
-- No JavaScript in templates.
+- No inline JavaScript in templates (no `<script>` with code, `javascript:` or
+  `on...=` attributes). Every page works without JavaScript; a small script in
+  `static/` may only enhance it, loaded with `<script src="{% static ... %}" defer>`
+  and listed in `tests/quality/test_structure.py`.
 - Agreements are only signed by people on the page of the agreement: never add
   an API, a command or an admin action that signs.
 - The format of `.github/agreements.yml` is versioned
