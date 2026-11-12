@@ -1,6 +1,7 @@
 """docker/set_version.py writes the build information that the About page shows."""
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -32,8 +33,11 @@ def test_a_release_in_github_actions():
 
 def test_a_local_build_reads_git(tmp_path):
     target = tmp_path / "version.json"
+    local = {key: value for key, value in os.environ.items() if not key.startswith("GITHUB_")}
     subprocess.run(
-        [sys.executable, str(ROOT / "docker" / "set_version.py"), str(target)], check=True
+        [sys.executable, str(ROOT / "docker" / "set_version.py"), str(target)],
+        check=True,
+        env=local,
     )
     info = json.loads(target.read_text())
     head = subprocess.run(
