@@ -39,7 +39,7 @@ def profile(request):
         "ai_pycal/profile.html",
         {
             "preferences": preferences,
-            "addresses": EmailAddress.objects.filter(user=request.user),
+            "primary": EmailAddress.objects.filter(user=request.user, primary=True).first(),
             "projects": request.user.watched_projects.all(),
         },
     )

@@ -1,6 +1,8 @@
 """The pages of administrators: install the GitHub App and add repositories."""
 
 import logging
+from datetime import timedelta
+from math import ceil
 from urllib.parse import urlencode
 
 from django.contrib import messages
@@ -10,6 +12,7 @@ from django.core.validators import validate_email
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
@@ -23,7 +26,7 @@ from ai_pycal.errors import (
 from ai_pycal.github import permissions
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.middleware import error_page
-from ai_pycal.models import Installation, Repository
+from ai_pycal.models import Installation, LogTrigger, Repository
 from ai_pycal.services.admin_access import AdminAccess
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.permission_notice import PermissionNotice
@@ -256,6 +259,37 @@ def may_update(user, repository: Repository) -> bool:
     return bool(installation and installation.admins.filter(pk=user.pk).exists())
 
 
+UPDATE_EVERY = timedelta(minutes=5)  # one manual update per person and project
+
+
+def update_wait(user, repository: Repository) -> int:
+    """How long a person waits before updating a project again by hand.
+
+    The updates are the triggers ``update`` of the log; the one that is running is not
+    counted.
+
+    Args:
+        user: The person.
+        repository: The project.
+
+    Returns:
+        The minutes to wait, rounded up; 0 if the person may update now.
+    """
+    login = GitHubIdentity.of(user).login if GitHubIdentity.of(user) else user.username
+    since = timezone.now() - UPDATE_EVERY
+    last = (
+        LogTrigger.objects.filter(
+            kind="update", repository=repository, actor_login=login, created__gte=since
+        )
+        .exclude(pk=Trigger.current().pk)
+        .order_by("-created")
+        .first()
+    )
+    if last is None:
+        return 0
+    return max(1, ceil((last.created + UPDATE_EVERY - timezone.now()).total_seconds() / 60))
+
+
 @login_required
 @require_POST
 @Trigger.view("update", "Repository configuration updated by @{login}")
@@ -275,6 +309,14 @@ def update_project(request, owner: str, repo: str):
     repository = repository_or_404(f"{owner}/{repo}")
     if not may_update(request.user, repository):
         raise PermissionDenied(repository.full_name)
+    wait = update_wait(request.user, repository)
+    if wait:
+        messages.info(
+            request,
+            _("You updated this project recently. You can update it again in %(minutes)d minutes.")
+            % {"minutes": wait},
+        )
+        return redirect(f"/project/{repository.full_name}/")
     setup = RepositorySetup(repository)
     try:
         RepositorySync(repository, setup.api).sync()

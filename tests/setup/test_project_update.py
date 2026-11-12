@@ -55,3 +55,21 @@ def test_others_may_not_update(client, repository, alice):
     client.force_login(alice)
     assert client.post(f"/project/{REPOSITORY}/update/").status_code == 403
     assert client.get(f"/project/{REPOSITORY}/update/").status_code == 405
+
+
+def test_a_person_updates_a_project_once_in_five_minutes(client, github, repository, maintainer):
+    from datetime import timedelta
+
+    from ai_pycal.models import LogTrigger
+
+    repository.installation.admins.add(maintainer)
+    client.force_login(maintainer)
+    client.post(f"/project/{REPOSITORY}/update/")
+    client.post(f"/project/{REPOSITORY}/update/")
+    page = client.get(URL).content.decode()
+    assert "You can update it again in 5 minutes" in page
+    runs = LogTrigger.objects.filter(kind="update")
+    assert runs.count() == 2 and runs.first().actions.count() == 0  # the second did nothing
+    runs.update(created=runs.first().created - timedelta(minutes=6))
+    client.post(f"/project/{REPOSITORY}/update/")
+    assert "The configuration was read again" in client.get(URL).content.decode()

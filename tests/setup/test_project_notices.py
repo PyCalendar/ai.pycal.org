@@ -131,3 +131,16 @@ def test_label_failure_has_specific_error_email_and_resolution(
     response = send_webhook(client, "pull_request", pull_payload(github, 1))
     assert response.status_code == 200
     assert not ProjectProblem.objects.get(code="CannotWriteLabels").active
+
+
+def test_the_profile_shows_only_the_primary_email(client, maintainer):
+    from allauth.account.models import EmailAddress
+
+    EmailAddress.objects.create(
+        user=maintainer, email="main@example.org", primary=True, verified=True
+    )
+    EmailAddress.objects.create(user=maintainer, email="other@example.org", primary=False)
+    client.force_login(maintainer)
+    page = client.get("/profile/").content.decode()
+    assert "main@example.org" in page and "other@example.org" not in page
+    assert page.split("data-primary-email>")[1].split("</p>")[0].count("verified") == 1

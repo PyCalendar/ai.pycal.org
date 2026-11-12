@@ -85,6 +85,15 @@ the owners of the installation accept the permissions; until then, the site
 keeps working with the permissions it has. The permissions are listed in
 :doc:`/reference/permissions`.
 
+Update by hand
+==============
+
+The site reads the configuration on every push to the default branch. To read
+it again by hand, such as after changing an agreement in another repository,
+press **Update** below the pull requests on the page of the project. Each
+administrator can do this once in 5 minutes; every update is in the log of the
+project.
+
 Changing the agreements
 =======================
 
