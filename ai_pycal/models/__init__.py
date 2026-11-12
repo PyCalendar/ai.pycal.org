@@ -1,5 +1,6 @@
 """The models of the site, one per module."""
 
+from .agreement_use import AgreementUse
 from .agreement_version import AgreementVersion
 from .contributor_preference import ContributorPreference
 from .installation import Installation
@@ -15,6 +16,7 @@ from .signature import Signature
 from .todo_dismissal import TodoDismissal
 
 __all__ = [
+    "AgreementUse",
     "AgreementVersion",
     "Installation",
     "PullRequest",

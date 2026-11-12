@@ -341,6 +341,10 @@ def history(request, owner: str, repo: str, agreement_path: str):
                 {
                     "version": version,
                     "projects": visible.filter(required_agreements__version=version).distinct(),
+                    # mandatory or optional, as each project asked for this version
+                    "uses": version.uses.filter(repository__in=visible)
+                    .select_related("repository")
+                    .order_by("repository__full_name"),
                 }
             )
     return render(

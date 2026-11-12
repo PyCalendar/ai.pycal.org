@@ -121,7 +121,10 @@ def test_public_pages_call_them_agreements(client, policy_project, alice):
     for url, expected in [
         ("/", ">Browse projects</a>"),
         (f"/project/{REPOSITORY}/", ">Earlier versions</a>"),
-        (f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/", "<p>Earlier versions</p>"),
+        (
+            f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/",
+            "The versions of this agreement",
+        ),
     ]:
         response = client.get(url)
         assert response.status_code == 200
@@ -212,3 +215,29 @@ def test_the_contributor_page_shows_valid_and_outdated_signatures(
     assert "Profile and email preferences" not in page
     assert "Projects engaged with" not in page
     assert "Defaults for future pull requests" not in page  # nothing chosen: no section
+
+
+def test_mandatory_or_optional_is_kept_per_version(client, github, repository):
+    from ai_pycal.models import AgreementUse
+    from ai_pycal.services.repository_sync import RepositorySync
+
+    old = repository.required_agreements.get(key="ai-policy").version
+    assert AgreementUse.objects.get(repository=repository, version=old).mandatory
+    config = (github.repositories[REPOSITORY].trees[github.repositories[REPOSITORY].refs["main"]])[
+        ".github/agreements.yml"
+    ].decode()
+    github.push(
+        REPOSITORY,
+        {
+            ".github/agreements.yml": config.replace("mandatory: true", "mandatory: false", 1),
+            "agreements/ai-policy.md": "# AI Policy (example)\n\nNew version, now optional.",
+        },
+    )
+    RepositorySync(repository).sync()
+    new = repository.required_agreements.get(key="ai-policy").version
+    assert not AgreementUse.objects.get(repository=repository, version=new).mandatory
+    page = client.get(f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/").content.decode()
+    newer = page.split(f'data-version-row="{new.pk}"')[1].split("</section>")[0]
+    older = page.split(f'data-version-row="{old.pk}"')[1].split("</section>")[0]
+    assert "Optional" in newer and "current" in newer
+    assert "Mandatory" in older and "current" not in older

@@ -1,3 +1,10 @@
 {% extends "ai_pycal/base.html" %}
-{% load times %}
-{% block main %}<h1>{% if agreement %}{% include "ai_pycal/_agreement_path.html" %}{% else %}{{ path }}{% endif %}</h1><p>Earlier versions</p>{% for row in versions %}<section class="card"><h2><a href="{% url 'agreement' row.version.pk %}">Version {% version row.version %}</a></h2><p>Currently used by: {% for project in row.projects %}<a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a> {% empty %}No current projects.{% endfor %}</p></section>{% endfor %}{% endblock %}
+{% load times i18n %}
+{% block title %}{% translate "Versions" %} · {{ site_name }}{% endblock %}
+{% block main %}<h1>{% if agreement %}{% include "ai_pycal/_agreement_path.html" %}{% else %}{{ path }}{% endif %}</h1>
+<p class="muted">{% translate "The versions of this agreement, newest first. Whether a project asked for it as mandatory or optional belongs to each version." %}</p>
+{% for row in versions %}<section class="card" data-version-row="{{ row.version.pk }}">
+  <h2><a href="{% url 'agreement' row.version.pk %}">{% translate "Version" %} {% version row.version %}</a></h2>
+  {% if row.uses %}<ul class="list">{% for use in row.uses %}<li data-use="{{ use.repository.full_name }}"><a href="/project/{{ use.repository.full_name }}/">{{ use.repository.full_name }}</a> {% if use.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}{% if use.repository in row.projects %} <span class="badge badge-success">{% translate "current" %}</span>{% endif %}</li>{% endfor %}</ul>
+  {% else %}<p>{% translate "Currently used by:" %} {% for project in row.projects %}<a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a> {% empty %}{% translate "No current projects." %}{% endfor %}</p>{% endif %}
+</section>{% endfor %}{% endblock %}

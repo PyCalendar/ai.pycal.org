@@ -10,7 +10,7 @@ from ai_pycal.config import CONFIG_PATH, GitHubRemote, RepositoryConfig
 from ai_pycal.errors import AgreementError, ConfigFileNotFound, GitHubNotFound
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.github.repository_api import RepositoryAPI
-from ai_pycal.models import PolicyChoice, Repository, RequiredAgreement
+from ai_pycal.models import AgreementUse, PolicyChoice, Repository, RequiredAgreement
 
 from .agreement_fetcher import AgreementFetcher
 
@@ -98,6 +98,13 @@ class RepositorySync:
                     },
                 )
                 required.append(agreement)
+                # mandatory or optional belongs to this version of the configuration
+                AgreementUse.objects.update_or_create(
+                    repository=repository,
+                    version=version,
+                    key=spec.id,
+                    defaults={"mandatory": spec.mandatory},
+                )
             repository.required_agreements.exclude(key__in=[s.id for s, _ in versions]).delete()
             by_key = {agreement.key: agreement for agreement in required}
             for position, spec in enumerate(config.choices):

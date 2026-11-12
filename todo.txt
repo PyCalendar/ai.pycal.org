@@ -440,7 +440,7 @@
       the background update reads their state from GitHub.
 - [x] Pull request page: no "Read the agreement · Version" and no text of the agreement; a minimal list.
 - [x] Gear: the configuration shows the id of the agreement (its key) instead of the path; GitHub icon stays.
-- [ ] Mandatory or optional belongs to a version of the configuration: show it per version in the
+- [x] Mandatory or optional belongs to a version of the configuration: show it per version in the
       menus of versions (keep it with the version an agreement was asked for).
 - [x] Every prompt is recorded here as a checkbox.
 
@@ -450,7 +450,7 @@
       repository PyCalendar/sign.pycal.org (renamed by the person), image ghcr.io/pycalendar/sign.pycal.org;
       the GitHub environment keeps its name ai.pycal.org (it holds SENCHO_TOKEN); local remote updated.
 - [x] Status badge of the example deployment in the README and the documentation of the deployment.
-- [ ] The person: DNS for sign.pycal.org and docs.sign.pycal.org; GitHub App URLs (homepage, callback,
+- [x] The person: DNS for sign.pycal.org and docs.sign.pycal.org (done); still open for the person: GitHub App URLs (homepage, callback,
       setup, webhook) to sign.pycal.org; Sencho: .env (SITE_URL, ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS) and
       the image name of the stack.
 
