@@ -31,7 +31,8 @@ Repository permissions
 Each is the narrowest permission for its purpose:
 
 ``metadata: read``
-   Every GitHub App has it.
+   Every GitHub App has it. The site reads with it the name and the
+   visibility of a repository, and the role of a person in it.
 ``contents: read``
    The site reads the configuration file, the files of the agreements and the
    commits that changed them, and never writes files.
@@ -55,7 +56,10 @@ Events
 ``repository``
    The default branch changed: the configuration is read again and the open
    pull requests are checked. A renamed or transferred repository keeps its
-   records under the new name. It needs only ``metadata``.
+   records under the new name. A repository made public is listed on the site,
+   one made private is hidden. It needs only ``metadata``. If such a webhook is
+   lost, the next reading of the configuration corrects the name and the
+   visibility.
 
 An app subscribes to events in its settings on GitHub, under *Permissions and
 events*: apps registered before an event was added do not receive it until it

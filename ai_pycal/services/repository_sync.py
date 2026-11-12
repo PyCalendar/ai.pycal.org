@@ -51,6 +51,23 @@ class RepositorySync:
         home = GitHubRemote.parse(name)
         return commit, RepositoryConfig.parse(content.decode("utf-8", "replace"), home)
 
+    def read_repository(self) -> None:
+        """Keep the name and the visibility of the repository as GitHub has them now.
+
+        A repository made public or private, or renamed, while a webhook was lost is
+        corrected on the next reading.
+        """
+        data = self.api.repository(self.repository.full_name)
+        changed = []
+        if "private" in data and bool(data["private"]) != self.repository.private:
+            self.repository.private = bool(data["private"])
+            changed.append("private")
+        if data.get("full_name") and data["full_name"] != self.repository.full_name:
+            self.repository.full_name = data["full_name"]
+            changed.append("full_name")
+        if changed:
+            self.repository.save(update_fields=changed)
+
     def sync(self) -> list[RequiredAgreement]:
         """Read the configuration and the agreements; store them or the error.
 
@@ -64,6 +81,7 @@ class RepositorySync:
         """
         repository = self.repository
         try:
+            self.read_repository()
             commit, config = self.read_config()
             fetcher = AgreementFetcher(self.api)
             versions = [(spec, fetcher.fetch(spec)) for spec in config.agreements]

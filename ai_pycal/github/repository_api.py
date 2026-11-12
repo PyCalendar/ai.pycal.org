@@ -195,6 +195,17 @@ class RepositoryAPI:
                 return found
             page += 1
 
+    def repository(self, full_name: str) -> dict:
+        """A repository as GitHub describes it: its name, its visibility, its default branch.
+
+        Args:
+            full_name: ``owner/name``.
+
+        Returns:
+            The repository.
+        """
+        return self.client.get(f"/repos/{full_name}")
+
     def pull(self, full_name: str, number: int) -> dict:
         """A pull request with its state, such as ``merged``.
 

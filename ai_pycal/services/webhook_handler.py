@@ -183,9 +183,17 @@ class WebhookHandler:
             .select_related("installation")
             .first()
         )
-        if found and repo.get("full_name") and found.full_name != repo["full_name"]:
+        if found is None:
+            return None
+        changed = []
+        if repo.get("full_name") and found.full_name != repo["full_name"]:
             found.full_name = repo["full_name"]  # renamed or moved
-            found.save(update_fields=["full_name"])
+            changed.append("full_name")
+        if "private" in repo and bool(repo["private"]) != found.private:
+            found.private = bool(repo["private"])  # publicized or privatized
+            changed.append("private")
+        if changed:
+            found.save(update_fields=changed)
         return found
 
     def on_pull_request(self) -> str:
@@ -239,6 +247,9 @@ class WebhookHandler:
         if action in ("renamed", "transferred"):
             # repository() already keeps the new name of every webhook
             return f"renamed to {repository.full_name}"
+        if action in ("publicized", "privatized"):
+            # repository() already keeps the visibility of every webhook
+            return "private" if repository.private else "public"
         changes = self.payload.get("changes") or {}
         if action == "edited" and "default_branch" in changes:
             RepositorySync(repository).sync()

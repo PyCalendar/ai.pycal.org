@@ -501,3 +501,10 @@
       https://sign.pycal.org) and check that error pages have the right status (404 is not 500);
       run it after each push.
 - [x] https://sign.pycal.org/projects/ shows all projects by default (all organizations open; the example repository is private on GitHub, so visitors who are not signed in see a hint to sign in).
+- [x] The footer shows no license: the About page has it.
+- [x] Bug: a repository made public (or private) on GitHub stays as it was on the site; handle
+      publicized/privatized and read the visibility on every update.
+- [ ] make check-live waits while the site restarts (5xx), takes a public project of the live site and
+      walks every page that should be public from it.
+- [ ] Public by default: every page without personal information or configuration that needs
+      privileges; the page of a person is public, to check what they signed without signing in.

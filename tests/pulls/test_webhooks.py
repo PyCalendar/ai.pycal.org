@@ -103,6 +103,7 @@ def test_a_renamed_repository_keeps_its_agreements(client, github, repository):
     payload = pull_payload(github, 1)
     payload["repository"]["full_name"] = "PyCalendar/renamed"
     github.repositories["PyCalendar/renamed"] = github.repositories[REPOSITORY]
+    github.repositories[REPOSITORY].full_name = "PyCalendar/renamed"  # as GitHub answers now
     send_webhook(client, "pull_request", payload)
     assert Repository.objects.get(pk=repository.pk).full_name == "PyCalendar/renamed"
 

@@ -41,3 +41,9 @@ def test_the_image_contains_the_license_texts():
 
     dockerfile = (Path(__file__).parents[2] / "Dockerfile").read_text()
     assert "COPY LICENSES LICENSES" in dockerfile
+
+
+def test_the_footer_has_no_license(client):
+    footer = client.get("/").content.decode().split("<footer")[1]
+    assert "AGPL" not in footer
+    assert "AGPL-3.0-or-later" in client.get("/about/").content.decode()

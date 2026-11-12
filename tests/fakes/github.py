@@ -178,6 +178,7 @@ class FakeGitHub:
         ("POST", r"/repos/(?P<repo>[^/]+/[^/]+)/statuses/(?P<sha>\w+)", "set_status"),
         ("GET", r"/repos/(?P<repo>[^/]+/[^/]+)/pulls", "list_pulls"),
         ("GET", r"/repos/(?P<repo>[^/]+/[^/]+)/pulls/(?P<number>\d+)", "get_pull"),
+        ("GET", r"/repos/(?P<repo>[^/]+/[^/]+)", "get_repository"),
     ]
 
     def handle(self, request: httpx.Request) -> httpx.Response:
@@ -192,6 +193,11 @@ class FakeGitHub:
             if method == request.method and match:
                 return getattr(self, name)(request, **match.groupdict())
         return self.not_found()
+
+    def get_repository(self, request, repo: str) -> httpx.Response:
+        if repo not in self.repositories:
+            return self.not_found()
+        return httpx.Response(200, json=self.repositories[repo].as_json())
 
     @staticmethod
     def not_found() -> httpx.Response:
