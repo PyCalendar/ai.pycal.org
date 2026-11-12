@@ -180,6 +180,11 @@ These have good defaults in the image.
    The port in the container. Default ``5000``.
 ``WORKERS``, ``THREADS``
    The gunicorn processes and the threads of each. Default ``2`` and ``4``.
+``REPOSITORY_UPDATE_HOURS``
+   Hours between the regular updates of every repository: the configuration,
+   the agreements and the pull requests are read again, which makes up for
+   webhooks lost while the site was down. The first update runs a minute after
+   the start. Default ``6``.
 ``LOG_LEVEL``
    ``DEBUG``, ``INFO``, ``WARNING`` or ``ERROR``. Default ``INFO``.
 ``DEBUG``

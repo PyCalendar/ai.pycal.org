@@ -252,7 +252,7 @@
 - [x] CI pushes the image to ghcr.io after all checks (latest / stable / semver, amd64 + arm64) and calls
       the Sencho update API; skipped without SENCHO_TOKEN. make docker-scan with Trivy (image saved to a file).
 - [x] make docker-test: healthy. make docker-scan could not run locally (the sandbox refused it); it runs in CI.
-- [ ] The person: create the Sencho stack ai-pycal with .env and data/github-app.pem, the environment
+- [x] The person: create the Sencho stack ai-pycal with .env and data/github-app.pem, the environment
       ai.pycal.org with SENCHO_TOKEN, and make the ghcr.io package public.
 - [x] Commit, push and check CI: run 43245171349 green, image pushed; deploy skipped (no SENCHO_TOKEN yet).
 
@@ -274,8 +274,8 @@
 - [x] GitHub Pages enabled in the repository: source GitHub Actions, custom domain docs.ai.pycal.org.
 - [x] Published by run of 74beaf7; GitHub Pages serves the docs for the host docs.ai.pycal.org (HTTP 200,
       checked against the Pages servers); pycalendar.github.io/ai.pycal.org redirects there.
-- [ ] The person: DNS record docs.ai.pycal.org CNAME pycalendar.github.io (does not resolve yet), then Enforce HTTPS.
-- [ ] Sencho: SENCHO_TOKEN works, but the stack ai-pycal does not exist ("Stack not found", 404): create it,
+- [x] The person: DNS record docs.ai.pycal.org (done; now docs.sign.pycal.org).
+- [x] Sencho: SENCHO_TOKEN works, but the stack ai-pycal does not exist (created by the person) ("Stack not found", 404): create it,
       or set the repository variable SENCHO_STACK to its name.
 
 ## 2026-11-12: email verification, local times, favicon
@@ -367,7 +367,7 @@
       Optional gray; dark text a little less white.
 - [x] Labels are renewed for open pull requests when the configuration or an agreement file of the
       repository changes, and when a pull request is reopened; closed ones are not touched.
-- [ ] An agreement file in another repository: a push there does not renew labels (Update does).
+- [x] An agreement file in another repository: a push there does not renew labels; the regular update does.
 - [x] The footer only links to About; the About page has the other links.
 - [x] Setup: numbered list has room for its numbers.
 - [x] Links to the documentation next to things: ? in a circle, new tab; Email for new permissions
@@ -434,9 +434,9 @@
 
 ## 2026-11-12: background updates, merged state, minimal pull request page
 
-- [ ] A restart can lose webhooks: a background process at start (and then regularly) updates every
+- [x] A restart can lose webhooks: a background process at start (and then regularly) updates every
       repository: configuration, agreements, open pull requests, and the state of closed ones.
-- [ ] Merged pull requests show as merged (purple), also those closed before the site kept "merged":
+- [x] Merged pull requests show as merged (purple), also those closed before the site kept "merged":
       the background update reads their state from GitHub.
 - [ ] Pull request page: no "Read the agreement · Version" and no text of the agreement; a minimal list.
 - [ ] Gear: the configuration shows the id of the agreement (its key) instead of the path; GitHub icon stays.

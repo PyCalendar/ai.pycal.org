@@ -2,6 +2,8 @@
 
 import logging
 
+from django.db.models import Q
+
 from ai_pycal.errors import AgreementError
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.github.repository_api import RepositoryAPI
@@ -69,5 +71,29 @@ class RepositorySetup:
                 PullRequestCheck(pull, self.api).run()
             except AgreementError as error:
                 log.warning("%s: %s %s", pull, error.code, error)
-        self.repository.pull_requests.exclude(number__in=open_numbers).update(open=False)
+        for pull in self.repository.pull_requests.exclude(number__in=open_numbers).filter(
+            Q(open=True) | Q(merged=False, state_checked=False)
+        ):
+            self.read_state(pull)
         return len(open_numbers)
+
+    def read_state(self, pull: PullRequest) -> None:
+        """Read whether a pull request that is not open any more was merged or closed.
+
+        A pull request that closed while a webhook was lost, or before the site kept
+        ``merged``, gets its state; it is read once.
+
+        Args:
+            pull: The pull request.
+        """
+        try:
+            data = self.api.pull(self.repository.full_name, pull.number)
+        except AgreementError as error:
+            log.warning("%s: %s %s", pull, error.code, error)
+            pull.open = False
+            pull.save(update_fields=["open"])
+            return
+        pull.open = data.get("state") == "open"
+        pull.merged = bool(data.get("merged"))
+        pull.state_checked = not pull.open
+        pull.save(update_fields=["open", "merged", "state_checked"])

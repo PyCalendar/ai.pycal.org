@@ -195,6 +195,18 @@ class RepositoryAPI:
                 return found
             page += 1
 
+    def pull(self, full_name: str, number: int) -> dict:
+        """A pull request with its state, such as ``merged``.
+
+        Args:
+            full_name: ``owner/name`` of the repository.
+            number: The number of the pull request.
+
+        Returns:
+            The pull request as GitHub describes it.
+        """
+        return self.client.get(f"/repos/{full_name}/pulls/{number}")
+
     def open_pulls(self, full_name: str) -> list[dict]:
         """The open pull requests of a repository, at most 300.
 

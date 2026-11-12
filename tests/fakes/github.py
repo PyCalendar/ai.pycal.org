@@ -177,6 +177,7 @@ class FakeGitHub:
         ),
         ("POST", r"/repos/(?P<repo>[^/]+/[^/]+)/statuses/(?P<sha>\w+)", "set_status"),
         ("GET", r"/repos/(?P<repo>[^/]+/[^/]+)/pulls", "list_pulls"),
+        ("GET", r"/repos/(?P<repo>[^/]+/[^/]+)/pulls/(?P<number>\d+)", "get_pull"),
     ]
 
     def handle(self, request: httpx.Request) -> httpx.Response:
@@ -392,6 +393,10 @@ class FakeGitHub:
         data = json.loads(request.content)
         self.statuses.append({"repo": repo, "sha": sha, **data})
         return httpx.Response(201, json=data)
+
+    def get_pull(self, request, repo, number):
+        found = next((p for p in self.pulls.get(repo, []) if p["number"] == int(number)), None)
+        return httpx.Response(200, json=found) if found else self.not_found()
 
     def list_pulls(self, request, repo):
         page = int(request.url.params.get("page", "1"))

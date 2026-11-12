@@ -21,6 +21,8 @@ class PullRequest(models.Model):
     head_sha = models.CharField(max_length=40)
     open = models.BooleanField(default=True)
     merged = models.BooleanField(default=False)
+    # whether the state of a closed pull request was read from GitHub (merged or not)
+    state_checked = models.BooleanField(default=False)
     all_signed = models.BooleanField(default=False)
     choice = models.ForeignKey("PolicyChoice", null=True, blank=True, on_delete=models.SET_NULL)
     choice_initialized = models.BooleanField(default=False)

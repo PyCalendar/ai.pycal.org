@@ -17,7 +17,11 @@ GitHub App are in ``./data``: keep it in your backups. Set ``DATABASE_URL`` for
 PostgreSQL.
 
 At each start the container migrates the database, sets the domain of the site
-and checks the permissions of the installations (see :doc:`github-app`). The
+and checks the permissions of the installations (see :doc:`github-app`). A
+minute after the start, and then every ``REPOSITORY_UPDATE_HOURS`` hours, it
+updates every repository (``manage.py update_repositories``): webhooks lost
+while the site was down are made up for, and pull requests merged meanwhile
+show as merged. The
 health check of the container reads ``/health/``.
 
 Images
