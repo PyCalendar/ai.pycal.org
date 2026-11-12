@@ -13,8 +13,8 @@ the site as its title: owner, project and agreement, each a link. The arrow
 between the project and the agreement opens the other agreements of the
 project. Badges say whether the agreement is mandatory and whether you signed
 it. Its version is the date of its last change, with the time only if the file
-changed twice that day; times are in your local time. Its source and version are at the
-bottom. The history of an agreement, ``/agreements/history/<source>/<path>/``,
+changed twice that day; times are in your local time. Its file, commit and
+repository are behind the gear next to the title. The history of an agreement, ``/agreements/history/<source>/<path>/``,
 shows each visible version with the projects that asked for it, and whether
 each asked for it as mandatory or optional: that belongs to the version of the
 configuration, so it can differ between versions.
