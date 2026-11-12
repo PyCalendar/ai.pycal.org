@@ -14,9 +14,9 @@ from django.urls import reverse
 from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementNotShown, SigningError
 from ai_pycal.middleware import error_page
+from ai_pycal.services.agreement_text import AgreementText
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.pull_request_check import PullRequestCheck
-from ai_pycal.services.rendering import render as markdown
 from ai_pycal.services.signer import Signer
 
 from .agreements import handle_pattern
@@ -137,7 +137,8 @@ def flow(request, owner: str, repo: str, number: int):
             "position": ordered.index(current) + 1,
             "total": len(ordered),
             "more": len(remaining) > 1,
-            "html": markdown(version.text, version.path),
+            "text": (text := AgreementText.of(version, request)),
+            "html": text.html,
             "shown_token": signer.shown_token(version),
             "handle_pattern": handle_pattern(identity.login),
             "sign_error": error,

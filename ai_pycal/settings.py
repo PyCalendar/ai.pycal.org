@@ -196,7 +196,12 @@ EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=not EMAIL_USE_SSL)
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=f"agreements@{SITE_NAME}")
 
 LANGUAGE_CODE = "en"
-LANGUAGES = [("en", "English")]
+# the first language of a visitor comes from the browser (Accept-Language); the menu next
+# to the colors changes it (cookie django_language). docs/contribute.rst: Translate
+LANGUAGES = [("en", "English"), ("de", "Deutsch"), ("es", "Español")]
+LOCALE_PATHS = [BASE_DIR / "ai_pycal" / "locale"]
+LANGUAGE_COOKIE_AGE = 365 * 24 * 3600
+LANGUAGE_COOKIE_SAMESITE = "Lax"
 TIME_ZONE = "UTC"  # the pages show times in the local time of the browser (static/local-time.js)
 USE_I18N = True
 USE_TZ = True

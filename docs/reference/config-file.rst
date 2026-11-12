@@ -174,6 +174,24 @@ not required, so a previous pending check cannot keep blocking the PR.
 ``choices/selection`` tracks the selected bundle and ``configuration/setup``
 reports invalid project setup. Retired checks are marked successful.
 
+.. _agreement-translations:
+
+Translations of agreements
+==========================
+
+A translation of an agreement is the file ``<name>.<language>.md`` next to the
+file of the agreement, such as ``agreements/cla.de.md`` for
+``agreements/cla.md``. The site reads it with the agreement, at the same
+reference, for the languages of the site: ``en``, ``de`` and ``es``. It needs
+no entry in the configuration file.
+
+People who use the site in that language read the translation, with a note that
+it is for reading and that they sign the original, which is binding, and a link
+to the original. The signature is always of the original version. Changing a
+translation therefore needs no new signature, and it never stops the
+configuration: a translation that cannot be read is left out and logged. A
+deleted translation is removed with the next reading.
+
 Agreements and signatures
 =========================
 

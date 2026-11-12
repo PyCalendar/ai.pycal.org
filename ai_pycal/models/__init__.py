@@ -1,5 +1,6 @@
 """The models of the site, one per module."""
 
+from .agreement_translation import AgreementTranslation
 from .agreement_use import AgreementUse
 from .agreement_version import AgreementVersion
 from .contributor_preference import ContributorPreference
@@ -17,6 +18,7 @@ from .todo_dismissal import TodoDismissal
 from .webhook_delivery import WebhookDelivery
 
 __all__ = [
+    "AgreementTranslation",
     "AgreementUse",
     "AgreementVersion",
     "Installation",

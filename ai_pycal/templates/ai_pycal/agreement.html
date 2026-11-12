@@ -3,6 +3,7 @@
 {% block title %}{{ title }} · {{ site_name }}{% endblock %}
 {% block main %}
 {% if crumbs %}{% include "ai_pycal/_crumbs.html" %}{% else %}<h1>{{ title }}</h1>{% endif %}
+{% include "ai_pycal/_translation_note.html" %}
 
 {% if signature %}
 <p class="message message-success" data-signed>{% when signature.signed as signed %}{% blocktranslate %}You signed this agreement {{ signed }}.{% endblocktranslate %}{% if site_admin %} <form method="post" action="{% url 'unsign' version.pk %}" class="inline" data-unsign>{% csrf_token %}<button class="button button-small button-quiet" type="submit" title="{% translate "For administrators of the site: test what happens without your signature" %}">{% translate "Remove my signature" %}</button></form>{% endif %}</p>

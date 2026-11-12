@@ -1,0 +1,1 @@
+The site is in German and Spanish: the browser chooses the first language, a menu with a globe next to the colors changes it, and each language is named in itself. An agreement can have translations, such as ``agreements/cla.de.md`` next to ``agreements/cla.md``: people read the translation of their language and sign the original.

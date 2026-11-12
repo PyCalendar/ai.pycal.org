@@ -1,0 +1,1751 @@
+# Spanish translation of sign.pycal.org.
+# SPDX-FileCopyrightText: 2026 sign.pycal.org contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# How to translate: docs/contribute.rst, section Translate
+msgid ""
+msgstr ""
+"Project-Id-Version: sign.pycal.org\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 23:41+0000\n"
+"PO-Revision-Date: 2026-11-12 23:45+0000\n"
+"Last-Translator: sign.pycal.org contributors\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: Babel 2.18.0\n"
+
+msgid "As the system"
+msgstr "Como el sistema"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "Something went wrong"
+msgstr "Algo salió mal"
+
+msgid "How to report a bug"
+msgstr "Cómo informar de un error"
+
+msgid "Unexpected error"
+msgstr "Error inesperado"
+
+msgid "The mandatory flag must be true or false"
+msgstr "El valor de mandatory debe ser true o false"
+
+msgid "The choices must be a list of choices"
+msgstr "Las opciones deben ser una lista"
+
+msgid "A choice field is missing or invalid"
+msgstr "Falta un campo de una opción o no es válido"
+
+msgid "A choice refers to an unknown agreement"
+msgstr "Una opción nombra un acuerdo desconocido"
+
+msgid "Choice names must be distinct"
+msgstr "Los nombres de las opciones deben ser distintos"
+
+msgid "Only one choice can be the project default"
+msgstr "Solo una opción puede ser la predeterminada del proyecto"
+
+msgid "The choice is not available"
+msgstr "La opción no está disponible"
+
+msgid "Only the pull request author can change its agreements"
+msgstr "Solo el autor de la pull request puede cambiar sus acuerdos"
+
+msgid "A choice is not a mapping"
+msgstr "Una opción no es un mapeo"
+
+msgid "The choice name is invalid"
+msgstr "El nombre de la opción no es válido"
+
+msgid "The choice needs a Markdown description"
+msgstr "La opción necesita una descripción en Markdown"
+
+msgid "The choice needs a list of agreements"
+msgstr "La opción necesita una lista de acuerdos"
+
+msgid "The choice default must be true or false"
+msgstr "El valor de default debe ser true o false"
+
+msgid "The configuration file can not be used"
+msgstr "No se puede usar el archivo de configuración"
+
+msgid "The configuration file"
+msgstr "El archivo de configuración"
+
+msgid "The repository has no configuration file"
+msgstr "El repositorio no tiene archivo de configuración"
+
+msgid "The configuration file is not valid YAML"
+msgstr "El archivo de configuración no es YAML válido"
+
+msgid "The configuration file is not a mapping"
+msgstr "El archivo de configuración no es un mapeo"
+
+msgid "The configuration file has no version"
+msgstr "El archivo de configuración no tiene versión"
+
+msgid "The version of the configuration file is invalid"
+msgstr "La versión del archivo de configuración no es válida"
+
+msgid "The version of the configuration file is not supported"
+msgstr "La versión del archivo de configuración no es compatible"
+
+msgid "The configuration file contains an unknown key"
+msgstr "El archivo de configuración contiene una clave desconocida"
+
+msgid "The configuration file lists no agreements"
+msgstr "El archivo de configuración no nombra ningún acuerdo"
+
+msgid "The identifier of an agreement is invalid"
+msgstr "El identificador de un acuerdo no es válido"
+
+msgid "An agreement is not a mapping"
+msgstr "Un acuerdo no es un mapeo"
+
+msgid "An agreement lacks a field"
+msgstr "A un acuerdo le falta un campo"
+
+msgid "A field of an agreement is invalid"
+msgstr "Un campo de un acuerdo no es válido"
+
+msgid "The path of an agreement is invalid"
+msgstr "La ruta de un acuerdo no es válida"
+
+msgid "A label of the pull requests is invalid"
+msgstr "Una etiqueta de las pull requests no es válida"
+
+msgid "The reading time of an agreement is invalid"
+msgstr "El tiempo de lectura de un acuerdo no es válido"
+
+msgid "The repository of an agreement is not on GitHub"
+msgstr "El repositorio de un acuerdo no está en GitHub"
+
+msgid "The reference of an agreement does not exist"
+msgstr "La referencia de un acuerdo no existe"
+
+msgid "The file of an agreement does not exist"
+msgstr "El archivo de un acuerdo no existe"
+
+msgid "The file of an agreement is too large"
+msgstr "El archivo de un acuerdo es demasiado grande"
+
+msgid "The agreement has no title"
+msgstr "El acuerdo no tiene título"
+
+msgid "The file of an agreement is not text"
+msgstr "El archivo de un acuerdo no es texto"
+
+msgid "A setting of the site is invalid"
+msgstr "Un ajuste del sitio no es válido"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "A color of the theme is invalid"
+msgstr "Un color del tema no es válido"
+
+msgid "Change the colors and the icon"
+msgstr "Cambiar los colores y el icono"
+
+msgid "The theme has no such color"
+msgstr "El tema no tiene ese color"
+
+msgid "The favicon was not found"
+msgstr "No se encontró el favicon"
+
+msgid "The favicon has an unsupported format"
+msgstr "El favicon tiene un formato no compatible"
+
+msgid "A link of the footer is invalid"
+msgstr "Un enlace del pie de página no es válido"
+
+msgid "GitHub answered with an error"
+msgstr "GitHub respondió con un error"
+
+msgid "GitHub could not be reached"
+msgstr "No se pudo contactar con GitHub"
+
+msgid "GitHub allows no more requests for now"
+msgstr "GitHub no permite más solicitudes por ahora"
+
+msgid "GitHub answered with something unreadable"
+msgstr "GitHub respondió algo ilegible"
+
+msgid "GitHub returned an invalid file history"
+msgstr "GitHub devolvió un historial de archivo no válido"
+
+msgid "The site has no GitHub App"
+msgstr "El sitio no tiene GitHub App"
+
+msgid "Create the GitHub App"
+msgstr "Crear la GitHub App"
+
+msgid "Signing in with GitHub is not configured"
+msgstr "El inicio de sesión con GitHub no está configurado"
+
+msgid "The private key of the GitHub App is invalid"
+msgstr "La clave privada de la GitHub App no es válida"
+
+msgid "The installation of the GitHub App was not found"
+msgstr "No se encontró la instalación de la GitHub App"
+
+msgid "Set up a repository"
+msgstr "Configurar un repositorio"
+
+msgid "You can not administer this installation"
+msgstr "No puedes administrar esta instalación"
+
+msgid "The GitHub App is not installed on this repository"
+msgstr "La GitHub App no está instalada en este repositorio"
+
+msgid "The GitHub App lacks permissions"
+msgstr "A la GitHub App le faltan permisos"
+
+msgid "Permissions of the GitHub App"
+msgstr "Permisos de la GitHub App"
+
+msgid "GitHub did not find it"
+msgstr "GitHub no lo encontró"
+
+msgid "Your sign in with GitHub has expired"
+msgstr "Tu sesión con GitHub ha caducado"
+
+msgid "The GitHub App cannot write pull request labels"
+msgstr "La GitHub App no puede escribir etiquetas en las pull requests"
+
+msgid "The GitHub App could not be registered"
+msgstr "No se pudo registrar la GitHub App"
+
+msgid "Register the GitHub App on the site"
+msgstr "Registrar la GitHub App en el sitio"
+
+msgid "The site already has a GitHub App"
+msgstr "El sitio ya tiene una GitHub App"
+
+msgid "A private key exists already"
+msgstr "Ya existe una clave privada"
+
+msgid "Settings of a GitHub App are set in the environment"
+msgstr "Hay ajustes de una GitHub App en el entorno"
+
+msgid "The setup code is wrong"
+msgstr "El código de configuración es incorrecto"
+
+msgid "The name of the GitHub App is invalid"
+msgstr "El nombre de la GitHub App no es válido"
+
+msgid "The organization is invalid"
+msgstr "La organización no es válida"
+
+msgid "The registration does not belong to this browser"
+msgstr "El registro no pertenece a este navegador"
+
+msgid "GitHub returned without a code"
+msgstr "GitHub volvió sin código"
+
+msgid "GitHub did not give the credentials of the app"
+msgstr "GitHub no entregó las credenciales de la app"
+
+msgid "The credentials could not be saved"
+msgstr "No se pudieron guardar las credenciales"
+
+msgid "The repository could not be set up"
+msgstr "No se pudo configurar el repositorio"
+
+msgid "The repository was not found"
+msgstr "No se encontró el repositorio"
+
+msgid "You do not administer this repository"
+msgstr "No administras este repositorio"
+
+msgid "The agreement could not be signed"
+msgstr "No se pudo firmar el acuerdo"
+
+msgid "Sign an agreement"
+msgstr "Firmar un acuerdo"
+
+msgid "You did not accept the agreement"
+msgstr "No aceptaste el acuerdo"
+
+msgid "The handle does not match your account"
+msgstr "El nombre no coincide con tu cuenta"
+
+msgid "The agreement was not shown before signing"
+msgstr "El acuerdo no se mostró antes de firmar"
+
+msgid "This version of the agreement is not asked for"
+msgstr "Esta versión del acuerdo no se pide"
+
+msgid "The agreement was not found"
+msgstr "No se encontró el acuerdo"
+
+msgid "The pull request was not found"
+msgstr "No se encontró la pull request"
+
+msgid "The agreement was signed too fast"
+msgstr "El acuerdo se firmó demasiado rápido"
+
+msgid "The page of the agreement is too old"
+msgstr "La página del acuerdo es demasiado antigua"
+
+msgid "The webhook could not be handled"
+msgstr "No se pudo procesar el webhook"
+
+msgid "The site has no webhook secret"
+msgstr "El sitio no tiene secreto de webhook"
+
+msgid "The webhook has no signature"
+msgstr "El webhook no tiene firma"
+
+msgid "The signature of the webhook is invalid"
+msgstr "La firma del webhook no es válida"
+
+msgid "The content of the webhook is invalid"
+msgstr "El contenido del webhook no es válido"
+
+msgid "Email addresses"
+msgstr "Direcciones de correo"
+
+# | msgid "Back to the project"
+msgid "Back to the profile"
+msgstr "Volver al perfil"
+
+msgid "verified"
+msgstr "verificada"
+
+# | msgid "not read"
+msgid "not verified"
+msgstr "sin verificar"
+
+msgid "primary"
+msgstr "principal"
+
+msgid "Send verification email"
+msgstr "Enviar correo de verificación"
+
+msgid "Make primary"
+msgstr "Hacer principal"
+
+msgid "Remove"
+msgstr "Quitar"
+
+# | msgid "Email addresses"
+msgid "Add an address"
+msgstr "Añadir una dirección"
+
+msgid "Add and verify email"
+msgstr "Añadir y verificar el correo"
+
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+msgid "Sign in with GitHub"
+msgstr "Iniciar sesión con GitHub"
+
+msgid "This site has no GitHub App yet, so nobody can sign in."
+msgstr ""
+"Este sitio aún no tiene GitHub App, así que nadie puede iniciar sesión."
+
+msgid ""
+"The people who run the site register the app here, on the site. It gets the "
+"permissions the site needs and the credentials are kept in the volume of the "
+"site."
+msgstr ""
+"Quienes gestionan el sitio registran la app aquí, en el sitio. Recibe los "
+"permisos que el sitio necesita y las credenciales se guardan en el volumen "
+"del sitio."
+
+msgid "Other ways to set up the app"
+msgstr "Otras formas de configurar la app"
+
+msgid ""
+"This site only reads your GitHub handle. Administrators of repositories are "
+"also asked by GitHub which installations of the app they may manage."
+msgstr ""
+"Este sitio solo lee tu nombre de GitHub. A quienes administran repositorios, "
+"GitHub además les pregunta qué instalaciones de la app pueden gestionar."
+
+msgid "There are no passwords on this site."
+msgstr "En este sitio no hay contraseñas."
+
+msgid "To do"
+msgstr "Pendiente"
+
+msgid "Todos"
+msgstr "Tareas"
+
+msgid "My agreements"
+msgstr "Mis acuerdos"
+
+msgid "Dashboard"
+msgstr "Panel"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Administration"
+msgstr "Administración"
+
+msgid "Global log"
+msgstr "Registro global"
+
+msgid "Django admin"
+msgstr "Administración de Django"
+
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+msgid "Mandatory"
+msgstr "Obligatorio"
+
+msgid "Optional"
+msgstr "Opcional"
+
+msgid "Signed"
+msgstr "Firmado"
+
+msgid "Outdated signature"
+msgstr "Firma desactualizada"
+
+msgid "Unsigned"
+msgstr "Sin firmar"
+
+msgid "Details of the agreement"
+msgstr "Detalles del acuerdo"
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "Earlier versions"
+msgstr "Versiones anteriores"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "Commit"
+msgstr "Commit"
+
+msgid "Repository"
+msgstr "Repositorio"
+
+msgid "Labels when signed"
+msgstr "Etiquetas al firmar"
+
+msgid "Labels while not signed"
+msgstr "Etiquetas mientras no esté firmado"
+
+msgid "Reading time"
+msgstr "Tiempo de lectura"
+
+#, python-format
+msgid "At least %(seconds)s second before signing"
+msgid_plural "At least %(seconds)s seconds before signing"
+msgstr[0] "Al menos %(seconds)s segundo antes de firmar"
+msgstr[1] "Al menos %(seconds)s segundos antes de firmar"
+
+msgid "Configuration"
+msgstr "Configuración"
+
+msgid "Path"
+msgstr "Ruta"
+
+msgid "Other agreements of this project"
+msgstr "Otros acuerdos de este proyecto"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Log"
+msgstr "Registro"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Up to date"
+msgstr "Al día"
+
+msgid "The site cannot register its GitHub App."
+msgstr "El sitio no puede registrar su GitHub App."
+
+#, python-format
+msgid ""
+"These settings of an app are set in the environment: <code>%(names)s</code>. "
+"They take precedence over a registered app, so the site would mix two apps. "
+"Set all settings of the app, or remove these and restart the site to "
+"register it here."
+msgstr ""
+"Estos ajustes de una app están en el entorno: <code>%(names)s</code>. Tienen "
+"prioridad sobre una app registrada, así que el sitio mezclaría dos apps. "
+"Define todos los ajustes de la app, o quita estos y reinicia el sitio para "
+"registrarla aquí."
+
+#, python-format
+msgid ""
+"The file for the private key exists already: <code>%(path)s</code>. The site "
+"does not overwrite it. Set the other settings of that app, or move the file "
+"away and restart the site to register it here."
+msgstr ""
+"El archivo de la clave privada ya existe: <code>%(path)s</code>. El sitio no "
+"lo sobrescribe. Define los demás ajustes de esa app, o mueve el archivo y "
+"reinicia el sitio para registrarla aquí."
+
+msgid "Register GitHub App"
+msgstr "Registrar GitHub App"
+
+msgid "What this error means and how to solve it"
+msgstr "Qué significa este error y cómo resolverlo"
+
+msgid "Back to the start"
+msgstr "Volver al inicio"
+
+msgid "Documentation"
+msgstr "Documentación"
+
+msgid "Details to copy"
+msgstr "Detalles para copiar"
+
+msgid "Select the text and copy it into a bug report or a question."
+msgstr "Selecciona el texto y cópialo en un informe de error o una pregunta."
+
+#, python-format
+msgid ""
+"Is this wrong? <a href=\"%(issues)s\">Report a bug</a> and say what you did "
+"before."
+msgstr ""
+"¿Está mal? <a href=\"%(issues)s\">Informa de un error</a> y di qué hiciste "
+"antes."
+
+msgid "Colors of the page"
+msgstr "Colores de la página"
+
+msgid "Dismiss"
+msgstr "Descartar"
+
+#, python-format
+msgid ""
+"You signed an earlier version %(signed)s. The agreement changed: read the "
+"changes and sign again."
+msgstr ""
+"Firmaste una versión anterior %(signed)s. El acuerdo cambió: lee los cambios "
+"y firma de nuevo."
+
+msgid "Nothing to sign."
+msgstr "Nada que firmar."
+
+#, python-format
+msgid ""
+"This is a translation into %(language)s, for reading. You sign the original "
+"text, which is binding."
+msgstr ""
+"Esta es una traducción al idioma %(language)s, para leer. Firmas el texto "
+"original, que es el vinculante."
+
+msgid "Read the original"
+msgstr "Leer el original"
+
+msgid "This is the original text, which you sign."
+msgstr "Este es el texto original, que firmas."
+
+#, python-format
+msgid "Read the translation into %(language)s"
+msgstr "Leer la traducción al idioma %(language)s"
+
+msgid "About"
+msgstr "Acerca de"
+
+#, python-format
+msgid "About %(site_name)s"
+msgstr "Acerca de %(site_name)s"
+
+msgid ""
+"People read and sign the agreements that projects ask of their contributors, "
+"such as an AI policy or a contributor license agreement. The pull requests "
+"show who signed."
+msgstr ""
+"Las personas leen y firman los acuerdos que los proyectos piden a quienes "
+"contribuyen, como una política de IA o un acuerdo de licencia de "
+"contribución. Las pull requests muestran quién firmó."
+
+msgid "Links"
+msgstr "Enlaces"
+
+msgid "Changelog"
+msgstr "Registro de cambios"
+
+msgid "Source code"
+msgstr "Código fuente"
+
+msgid "Report a bug"
+msgstr "Informar de un error"
+
+msgid "Committed"
+msgstr "Commit"
+
+msgid "Built"
+msgstr "Compilado"
+
+msgid "CI build"
+msgstr "Compilación de CI"
+
+msgid "GitHub Actions run"
+msgstr "Ejecución de GitHub Actions"
+
+msgid "Not built by the CI"
+msgstr "No compilado por la CI"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "The code of this version"
+msgstr "El código de esta versión"
+
+#, python-format
+msgid "You signed this agreement %(signed)s."
+msgstr "Firmaste este acuerdo %(signed)s."
+
+msgid ""
+"For administrators of the site: test what happens without your signature"
+msgstr "Para la administración del sitio: probar qué pasa sin tu firma"
+
+msgid "Remove my signature"
+msgstr "Quitar mi firma"
+
+#, python-format
+msgid ""
+"You signed an earlier version of this agreement, of %(signed_version)s. It "
+"changed, so it needs a new signature. Read it, or look at the changes."
+msgstr ""
+"Firmaste una versión anterior de este acuerdo, del %(signed_version)s. "
+"Cambió, así que necesita una nueva firma. Léelo, o mira los cambios."
+
+msgid "Agreement"
+msgstr "Acuerdo"
+
+msgid "Changes since you signed"
+msgstr "Cambios desde que firmaste"
+
+msgid "The changes on their own page"
+msgstr "Los cambios en su propia página"
+
+msgid "Sign"
+msgstr "Firmar"
+
+msgid "I have read and accept this agreement."
+msgstr "He leído y acepto este acuerdo."
+
+msgid "Type your GitHub handle to sign:"
+msgstr "Escribe tu nombre de GitHub para firmar:"
+
+#, python-format
+msgid "Your GitHub handle: %(login)s"
+msgstr "Tu nombre de GitHub: %(login)s"
+
+msgid "Sign and open next agreement"
+msgstr "Firmar y abrir el siguiente acuerdo"
+
+msgid "Sign in with GitHub to sign"
+msgstr "Inicia sesión con GitHub para firmar"
+
+msgid "GitHub App registered"
+msgstr "GitHub App registrada"
+
+msgid "The GitHub App is registered"
+msgstr "La GitHub App está registrada"
+
+#, python-format
+msgid ""
+"<strong>%(name)s</strong> belongs to <strong>%(owner)s</strong> on GitHub. "
+"The site uses it now."
+msgstr ""
+"<strong>%(name)s</strong> pertenece a <strong>%(owner)s</strong> en GitHub. "
+"El sitio la usa ahora."
+
+msgid ""
+"The app has no webhook, because GitHub cannot reach this site. When the site "
+"has a public address, add the webhook in the settings of the app on GitHub: "
+"the address of the site plus <code>/github/webhook/</code>, and a secret "
+"that you also set as <code>GITHUB_WEBHOOK_SECRET</code>."
+msgstr ""
+"La app no tiene webhook, porque GitHub no puede llegar a este sitio. Cuando "
+"el sitio tenga una dirección pública, añade el webhook en los ajustes de la "
+"app en GitHub: la dirección del sitio más <code>/github/webhook/</code>, y "
+"un secreto que también defines como <code>GITHUB_WEBHOOK_SECRET</code>."
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Install the app on a repository"
+msgstr "Instalar la app en un repositorio"
+
+msgid "Add the repository on the page Setup"
+msgstr "Añadir el repositorio en la página Configuración"
+
+msgid "The app on GitHub"
+msgstr "La app en GitHub"
+
+msgid "Where the credentials are"
+msgstr "Dónde están las credenciales"
+
+#, python-format
+msgid ""
+"The settings are in <code>%(env_file)s</code>, the private key in "
+"<code>%(key_file)s</code>. Back up the volume; keep both secret."
+msgstr ""
+"Los ajustes están en <code>%(env_file)s</code>, la clave privada en "
+"<code>%(key_file)s</code>. Haz una copia de seguridad del volumen; mantén "
+"ambos en secreto."
+
+msgid ""
+"The processes of the site restart to read them; this takes a few seconds."
+msgstr "Los procesos del sitio se reinician para leerlos; tarda unos segundos."
+
+msgid ""
+"The site reads them at every start; settings of the environment take "
+"precedence."
+msgstr ""
+"El sitio los lee en cada inicio; los ajustes del entorno tienen prioridad."
+
+msgid "Skip to the content"
+msgstr "Saltar al contenido"
+
+msgid "Menu"
+msgstr "Menú"
+
+msgid "Projects"
+msgstr "Proyectos"
+
+msgid "Changes"
+msgstr "Cambios"
+
+msgid "Changes of the agreement"
+msgstr "Cambios del acuerdo"
+
+msgid "Read and sign the new version"
+msgstr "Leer y firmar la nueva versión"
+
+msgid "Signed agreements"
+msgstr "Acuerdos firmados"
+
+msgid "Valid"
+msgstr "Válido"
+
+msgid "valid for"
+msgstr "válido para"
+
+msgid "a newer version is asked for"
+msgstr "se pide una versión más reciente"
+
+msgid "No signed agreements yet."
+msgstr "Aún no hay acuerdos firmados."
+
+msgid "Defaults for future pull requests"
+msgstr "Valores predeterminados para futuras pull requests"
+
+msgid "Existing pull requests keep their choices when a default changes."
+msgstr ""
+"Las pull requests existentes conservan sus opciones cuando cambia un valor "
+"predeterminado."
+
+msgid "Pull requests"
+msgstr "Pull requests"
+
+msgid "No pull requests recorded."
+msgstr "No hay pull requests registradas."
+
+msgid "Other projects"
+msgstr "Otros proyectos"
+
+msgid "Versions"
+msgstr "Versiones"
+
+msgid ""
+"The versions of this agreement, newest first. Whether a project asked for it "
+"as mandatory or optional belongs to each version."
+msgstr ""
+"Las versiones de este acuerdo, la más reciente primero. Si un proyecto lo "
+"pidió como obligatorio u opcional pertenece a cada versión."
+
+msgid "current"
+msgstr "actual"
+
+msgid "Currently used by:"
+msgstr "Usado actualmente por:"
+
+msgid "No current projects."
+msgstr "No hay proyectos actuales."
+
+msgid "Agreements for pull requests"
+msgstr "Acuerdos para pull requests"
+
+msgid ""
+"Read and sign the agreements a project asks of its contributors, such as an "
+"AI policy or a contributor license agreement. Your pull requests show that "
+"you signed."
+msgstr ""
+"Lee y firma los acuerdos que un proyecto pide a quienes contribuyen, como "
+"una política de IA o un acuerdo de licencia de contribución. Tus pull "
+"requests muestran que firmaste."
+
+#, python-format
+msgid "%(counter)s repository"
+msgid_plural "%(counter)s repositories"
+msgstr[0] "%(counter)s repositorio"
+msgstr[1] "%(counter)s repositorios"
+
+#, python-format
+msgid "%(counter)s signature"
+msgid_plural "%(counter)s signatures"
+msgstr[0] "%(counter)s firma"
+msgstr[1] "%(counter)s firmas"
+
+# | msgid "Other projects"
+msgid "Browse projects"
+msgstr "Ver los proyectos"
+
+msgid "Contributors"
+msgstr "Contribuyentes"
+
+msgid ""
+"A check on your pull request links here. Sign in with GitHub, read the "
+"agreement and accept it. You sign each version of an agreement once, for all "
+"repositories that ask for it."
+msgstr ""
+"Una comprobación de tu pull request enlaza aquí. Inicia sesión con GitHub, "
+"lee el acuerdo y acéptalo. Firmas cada versión de un acuerdo una vez, para "
+"todos los repositorios que la piden."
+
+msgid "Maintainers"
+msgstr "Mantenedores"
+
+msgid ""
+"Add a configuration file to your repository, install the GitHub App and add "
+"the repository. Pull requests are labelled when their authors signed."
+msgstr ""
+"Añade un archivo de configuración a tu repositorio, instala la GitHub App y "
+"añade el repositorio. Las pull requests reciben etiquetas cuando sus autores "
+"han firmado."
+
+msgid "The GitHub App is installed"
+msgstr "La GitHub App está instalada"
+
+msgid ""
+"Nothing else is needed: every repository you chose that has the file "
+"<code>.github/agreements.yml</code> on its default branch is set up now, and "
+"its open pull requests are checked. A repository without the file is set up "
+"when the file is pushed."
+msgstr ""
+"No hace falta nada más: cada repositorio que elegiste con el archivo "
+"<code>.github/agreements.yml</code> en su rama predeterminada ya está "
+"configurado, y se comprueban sus pull requests abiertas. Un repositorio sin "
+"el archivo se configura cuando se sube el archivo."
+
+msgid "Set up:"
+msgstr "Configurados:"
+
+msgid "All projects"
+msgstr "Todos los proyectos"
+
+msgid "Setup"
+msgstr "Configuración"
+
+msgid "Licenses"
+msgstr "Licencias"
+
+#, python-format
+msgid ""
+"%(site_name)s is free software under the <a href=\"/licenses/%(license)s/"
+"\">%(license)s</a>: you may use, study, share and change it; a changed "
+"version that you run for others must offer its source code."
+msgstr ""
+"%(site_name)s es software libre bajo la <a href=\"/licenses/%(license)s/"
+"\">%(license)s</a>: puedes usarlo, estudiarlo, compartirlo y cambiarlo; una "
+"versión modificada que ofrezcas a otros debe ofrecer su código fuente."
+
+msgid "License texts"
+msgstr "Textos de las licencias"
+
+msgid ""
+"The project follows the REUSE specification: every file has its copyright "
+"and license, the texts are in LICENSES/."
+msgstr ""
+"El proyecto sigue la especificación REUSE: cada archivo tiene su copyright y "
+"su licencia, los textos están en LICENSES/."
+
+msgid "Code from other projects"
+msgstr "Código de otros proyectos"
+
+msgid "Files"
+msgstr "Archivos"
+
+msgid "Copyright"
+msgstr "Copyright"
+
+msgid "License"
+msgstr "Licencia"
+
+msgid "Python packages on the server"
+msgstr "Paquetes de Python en el servidor"
+
+msgid ""
+"Read by pip-licenses from the packages installed on this server. The license "
+"links to its text."
+msgstr ""
+"Leídos por pip-licenses de los paquetes instalados en este servidor. La "
+"licencia enlaza a su texto."
+
+msgid "Package"
+msgstr "Paquete"
+
+msgid "Logs"
+msgstr "Registros"
+
+msgid "Back to the pull request"
+msgstr "Volver a la pull request"
+
+msgid "Back to the project"
+msgstr "Volver al proyecto"
+
+msgid "Back to the projects"
+msgstr "Volver a los proyectos"
+
+msgid "Back to the contributor"
+msgstr "Volver a la persona"
+
+msgid "Every trigger and action of the site, also those that are not public."
+msgstr ""
+"Cada desencadenante y acción del sitio, también los que no son públicos."
+
+msgid ""
+"What happened here, newest first. Open a trigger to see the actions that "
+"followed from it."
+msgstr ""
+"Lo que pasó aquí, lo más reciente primero. Abre un desencadenante para ver "
+"las acciones que siguieron."
+
+#, python-format
+msgid "%(counter)s action"
+msgid_plural "%(counter)s actions"
+msgstr[0] "%(counter)s acción"
+msgstr[1] "%(counter)s acciones"
+
+msgid "not public"
+msgstr "no público"
+
+msgid "no actions"
+msgstr "sin acciones"
+
+msgid "Open in the global log"
+msgstr "Abrir en el registro global"
+
+msgid "Nothing happened yet."
+msgstr "Aún no ha pasado nada."
+
+msgid "Newer"
+msgstr "Más recientes"
+
+msgid "Older"
+msgstr "Más antiguos"
+
+msgid ""
+"Your account is not connected to GitHub. Sign out and sign in with GitHub."
+msgstr ""
+"Tu cuenta no está conectada a GitHub. Cierra sesión e inicia sesión con "
+"GitHub."
+
+msgid "To sign"
+msgstr "Por firmar"
+
+msgid "My pull requests"
+msgstr "Mis pull requests"
+
+msgid "The site knows no pull requests of yours."
+msgstr "El sitio no conoce pull requests tuyas."
+
+msgid "You have not signed an agreement yet."
+msgstr "Aún no has firmado ningún acuerdo."
+
+msgid "Sign in without acting on behalf"
+msgstr "Iniciar sesión sin actuar en tu nombre"
+
+msgid ""
+"When people sign in with the GitHub App, GitHub asks them to let it act on "
+"their behalf, although the site only reads who they are. An OAuth app "
+"without scopes signs them in with read access to their public information "
+"only. The GitHub App keeps writing labels and checks with its own token."
+msgstr ""
+"Cuando las personas inician sesión con la GitHub App, GitHub les pide que le "
+"permitan actuar en su nombre, aunque el sitio solo lee quiénes son. Una app "
+"OAuth sin scopes las identifica solo con acceso de lectura a su información "
+"pública. La GitHub App sigue escribiendo etiquetas y comprobaciones con su "
+"propio token."
+
+msgid "People sign in with an OAuth app."
+msgstr "Las personas inician sesión con una app OAuth."
+
+msgid ""
+"The OAuth app is set in the environment (GITHUB_OAUTH_CLIENT_ID); change it "
+"there."
+msgstr ""
+"La app OAuth está definida en el entorno (GITHUB_OAUTH_CLIENT_ID); cámbiala "
+"allí."
+
+msgid "1. Create the OAuth app on GitHub"
+msgstr "1. Crear la app OAuth en GitHub"
+
+msgid "New OAuth app"
+msgstr "Nueva app OAuth"
+
+msgid ""
+"of your account, or <em>Settings → Developer settings → OAuth apps</em> of "
+"the organization."
+msgstr ""
+"de tu cuenta, o <em>Settings → Developer settings → OAuth apps</em> de la "
+"organización."
+
+#, python-format
+msgid "Homepage URL: <code>%(site_url)s</code>"
+msgstr "Homepage URL: <code>%(site_url)s</code>"
+
+#, python-format
+msgid "Authorization callback URL: <code>%(callback_url)s</code>"
+msgstr "Authorization callback URL: <code>%(callback_url)s</code>"
+
+msgid "Register the application and generate a client secret."
+msgstr "Registra la aplicación y genera un client secret."
+
+msgid "2. Enter it here"
+msgstr "2. Introducirla aquí"
+
+msgid "Enter the client ID and a client secret as GitHub shows them."
+msgstr "Introduce el client ID y un client secret tal como los muestra GitHub."
+
+msgid "Client ID"
+msgstr "Client ID"
+
+msgid "Client secret"
+msgstr "Client secret"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid ""
+"They are kept in the volume of the site (DATA_DIR/.env); settings of the "
+"environment take precedence."
+msgstr ""
+"Se guardan en el volumen del sitio (DATA_DIR/.env); los ajustes del entorno "
+"tienen prioridad."
+
+msgid "Profile"
+msgstr "Perfil"
+
+msgid "My public contributor page"
+msgstr "Mi página pública de contribuciones"
+
+msgid "Email"
+msgstr "Correo"
+
+# | msgid "Email addresses"
+msgid "No email address added."
+msgstr "No hay ninguna dirección de correo."
+
+# | msgid "Needs a verified email address."
+msgid "Add, verify or change email addresses"
+msgstr "Añadir, verificar o cambiar direcciones de correo"
+
+msgid ""
+"Project problem emails are sent only to verified addresses. Email addresses "
+"and preferences are private."
+msgstr ""
+"Los correos sobre problemas de proyectos solo se envían a direcciones "
+"verificadas. Las direcciones y las preferencias son privadas."
+
+msgid ""
+"Email me when a project I maintain has an invalid setup or cannot write "
+"labels"
+msgstr ""
+"Enviarme un correo cuando un proyecto que mantengo esté mal configurado o no "
+"pueda escribir etiquetas"
+
+# | msgid "Preferences"
+msgid "Save preferences"
+msgstr "Guardar preferencias"
+
+msgid "Projects I can write to"
+msgstr "Proyectos en los que puedo escribir"
+
+msgid "No projects found. Install the GitHub App and visit Setup."
+msgstr ""
+"No se encontraron proyectos. Instala la GitHub App y visita Configuración."
+
+msgid "This agreement needs your attention:"
+msgid_plural "These agreements need your attention:"
+msgstr[0] "Este acuerdo necesita tu atención:"
+msgstr[1] "Estos acuerdos necesitan tu atención:"
+
+msgid "It changed since you signed it."
+msgstr "Cambió desde que lo firmaste."
+
+msgid "It is mandatory and you have not signed it."
+msgstr "Es obligatorio y no lo has firmado."
+
+msgid "Agreements"
+msgstr "Acuerdos"
+
+msgid "No open pull requests."
+msgstr "No hay pull requests abiertas."
+
+msgid "Only open pull requests"
+msgstr "Solo pull requests abiertas"
+
+msgid "All pull requests"
+msgstr "Todas las pull requests"
+
+msgid "Stop watching"
+msgstr "Dejar de seguir"
+
+msgid "Emails about problems of this project go to the people who watch it:"
+msgstr ""
+"Los correos sobre problemas de este proyecto van a las personas que lo "
+"siguen:"
+
+msgid "Each gets them at their own address on this site."
+msgstr "Cada una los recibe en su propia dirección de este sitio."
+
+msgid "You have no verified email address yet."
+msgstr "Aún no tienes una dirección de correo verificada."
+
+msgid "Watch this project"
+msgstr "Seguir este proyecto"
+
+msgid "Get an email when the project has a problem."
+msgstr "Recibir un correo cuando el proyecto tenga un problema."
+
+msgid "Needs a verified email address."
+msgstr "Necesita una dirección de correo verificada."
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid ""
+"Read the configuration and the agreements again and check the open pull "
+"requests."
+msgstr ""
+"Leer de nuevo la configuración y los acuerdos y comprobar las pull requests "
+"abiertas."
+
+msgid "Status"
+msgstr "Estado"
+
+msgid ""
+"Until it is fixed, the pull requests are checked with the agreements of the "
+"last configuration that could be read."
+msgstr ""
+"Hasta que se corrija, las pull requests se comprueban con los acuerdos de la "
+"última configuración que se pudo leer."
+
+msgid "How to fix it"
+msgstr "Cómo corregirlo"
+
+msgid ""
+"The configuration and the agreements were read; the pull requests are "
+"checked."
+msgstr ""
+"Se leyeron la configuración y los acuerdos; las pull requests se comprueban."
+
+msgid "Last checked"
+msgstr "Última comprobación"
+
+msgid "not yet"
+msgstr "aún no"
+
+#, python-format
+msgid "format %(version)s"
+msgstr "formato %(version)s"
+
+msgid "not read"
+msgstr "no leído"
+
+msgid "Other problems"
+msgstr "Otros problemas"
+
+msgid ""
+"Projects in private repositories are only listed for the people who work on "
+"them:"
+msgstr ""
+"Los proyectos en repositorios privados solo se muestran a las personas que "
+"trabajan en ellos:"
+
+msgid "Open a project to see the agreements it asks of its contributors."
+msgstr "Abre un proyecto para ver los acuerdos que pide a quienes contribuyen."
+
+#, python-format
+msgid "%(counter)s project"
+msgid_plural "%(counter)s projects"
+msgstr[0] "%(counter)s proyecto"
+msgstr[1] "%(counter)s proyectos"
+
+#, python-format
+msgid "%(counter)s agreement"
+msgid_plural "%(counter)s agreements"
+msgstr[0] "%(counter)s acuerdo"
+msgstr[1] "%(counter)s acuerdos"
+
+msgid "No agreements."
+msgstr "No hay acuerdos."
+
+msgid "No projects yet."
+msgstr "Aún no hay proyectos."
+
+#, python-format
+msgid ""
+"Administrators of a repository add it on the page <a "
+"href=\"%(setup)s\">Setup</a>, after installing the GitHub App."
+msgstr ""
+"Quienes administran un repositorio lo añaden en la página <a "
+"href=\"%(setup)s\">Configuración</a>, después de instalar la GitHub App."
+
+msgid "Log of this pull request"
+msgstr "Registro de esta pull request"
+
+msgid "My pull requests in this project"
+msgstr "Mis pull requests en este proyecto"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "Filter by title or #number"
+msgstr "Filtrar por título o #número"
+
+msgid "No pull request matches."
+msgstr "Ninguna pull request coincide."
+
+msgid "by"
+msgstr "de"
+
+#, python-format
+msgid ""
+"This is the public agreement record for <a "
+"href=\"%(author_url)s\">@%(author)s</a>. Only the author of the pull request "
+"can change its choice."
+msgstr ""
+"Este es el registro público de acuerdos de <a "
+"href=\"%(author_url)s\">@%(author)s</a>. Solo el autor de la pull request "
+"puede cambiar su opción."
+
+msgid "Policy choice"
+msgstr "Opción de política"
+
+msgid "Current choice:"
+msgstr "Opción actual:"
+
+msgid "No choice selected. The author of the pull request must choose one."
+msgstr ""
+"No hay ninguna opción elegida. El autor de la pull request debe elegir una."
+
+msgid "Also use this as my default for future pull requests in this project"
+msgstr ""
+"Usar también como mi valor predeterminado para futuras pull requests en este "
+"proyecto"
+
+msgid "Save choice"
+msgstr "Guardar opción"
+
+msgid ""
+"Existing pull requests keep their choices. Changing a choice does not sign "
+"any agreement."
+msgstr ""
+"Las pull requests existentes conservan sus opciones. Cambiar una opción no "
+"firma ningún acuerdo."
+
+msgid "Agreements for this pull request"
+msgstr "Acuerdos para esta pull request"
+
+msgid "Required by your choice"
+msgstr "Exigido por tu opción"
+
+msgid "Sign the agreements"
+msgstr "Firmar los acuerdos"
+
+msgid "Sign in to sign agreements"
+msgstr "Inicia sesión para firmar acuerdos"
+
+msgid ""
+"The site signs people in, reads the agreements and checks the pull requests "
+"with its own GitHub App. It can register the app on GitHub itself and keep "
+"the credentials in its volume."
+msgstr ""
+"El sitio identifica a las personas, lee los acuerdos y comprueba las pull "
+"requests con su propia GitHub App. Puede registrar la app en GitHub por sí "
+"mismo y guardar las credenciales en su volumen."
+
+msgid "This site has a GitHub App"
+msgstr "Este sitio tiene una GitHub App"
+
+msgid ""
+"Its credentials come from the environment, such as <code>.env</code>. They "
+"take precedence over the volume."
+msgstr ""
+"Sus credenciales vienen del entorno, como <code>.env</code>. Tienen "
+"prioridad sobre el volumen."
+
+msgid ""
+"It was registered on this site; its credentials are in the volume "
+"(<code>DATA_DIR/.env</code>)."
+msgstr ""
+"Se registró en este sitio; sus credenciales están en el volumen "
+"(<code>DATA_DIR/.env</code>)."
+
+msgid "A site has one GitHub App, so no other can be registered here."
+msgstr ""
+"Un sitio tiene una sola GitHub App, así que aquí no se puede registrar otra."
+
+msgid "The GitHub App"
+msgstr "La GitHub App"
+
+msgid "2. Create the app on GitHub"
+msgstr "2. Crear la app en GitHub"
+
+#, python-format
+msgid ""
+"GitHub opens the form for a new app of the organization "
+"<strong>%(organization)s</strong>, filled in with the manifest below."
+msgstr ""
+"GitHub abre el formulario de una nueva app de la organización "
+"<strong>%(organization)s</strong>, rellenado con el manifiesto de abajo."
+
+msgid ""
+"GitHub opens the form for a new app of your account, filled in with the "
+"manifest below."
+msgstr ""
+"GitHub abre el formulario de una nueva app de tu cuenta, rellenado con el "
+"manifiesto de abajo."
+
+msgid ""
+"Check the name and press Create GitHub App there. GitHub then returns to "
+"this site, which saves the credentials."
+msgstr ""
+"Comprueba allí el nombre y pulsa Create GitHub App. GitHub vuelve después a "
+"este sitio, que guarda las credenciales."
+
+msgid ""
+"If GitHub refuses the app, for example because the name is taken, it says so "
+"on its page: come back here and start again with another name."
+msgstr ""
+"Si GitHub rechaza la app, por ejemplo porque el nombre está ocupado, lo dice "
+"en su página: vuelve aquí y empieza de nuevo con otro nombre."
+
+msgid "Continue to GitHub"
+msgstr "Continuar a GitHub"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "The manifest"
+msgstr "El manifiesto"
+
+msgid "Registration is not possible"
+msgstr "No es posible registrarla"
+
+#, python-format
+msgid ""
+"This site runs at <code>%(site_url)s</code>, which GitHub cannot reach. "
+"Signing in works, because GitHub sends your browser back here, but webhooks "
+"cannot be delivered: the app is registered without a webhook, so pull "
+"requests are not checked. To test everything, give the site a public address "
+"first, for example with Tailscale Funnel, and set <code>SITE_URL</code> to "
+"it."
+msgstr ""
+"Este sitio funciona en <code>%(site_url)s</code>, que GitHub no puede "
+"alcanzar. Iniciar sesión funciona, porque GitHub devuelve tu navegador aquí, "
+"pero los webhooks no se pueden entregar: la app se registra sin webhook, así "
+"que no se comprueban las pull requests. Para probarlo todo, da primero al "
+"sitio una dirección pública, por ejemplo con Tailscale Funnel, y define "
+"<code>SITE_URL</code> con ella."
+
+msgid "Test the GitHub App locally with Tailscale"
+msgstr "Probar la GitHub App localmente con Tailscale"
+
+msgid "1. Name the app"
+msgstr "1. Nombrar la app"
+
+msgid "Name on GitHub"
+msgstr "Nombre en GitHub"
+
+msgid "At most 34 characters, and no other GitHub App may have it."
+msgstr "Como máximo 34 caracteres, y ninguna otra GitHub App puede tenerlo."
+
+msgid "Organization"
+msgstr "Organización"
+
+msgid "optional"
+msgstr "opcional"
+
+msgid ""
+"The login of the organization that owns the app, such as PyCalendar. Empty: "
+"your own account."
+msgstr ""
+"El nombre de la organización dueña de la app, como PyCalendar. Vacío: tu "
+"propia cuenta."
+
+msgid "Setup code"
+msgstr "Código de configuración"
+
+msgid ""
+"Only the people who run the site may register its app. The site writes the "
+"code into its log at every start, and <code>manage.py github_app_setup_code</"
+"code> shows it."
+msgstr ""
+"Solo quienes gestionan el sitio pueden registrar su app. El sitio escribe el "
+"código en su registro en cada inicio, y <code>manage.py "
+"github_app_setup_code</code> lo muestra."
+
+#, python-format
+msgid ""
+"The app gets the permissions and events the site needs, and the addresses of "
+"this site: <code>%(site_url)s</code>. The credentials are written into the "
+"volume of the site; settings of the environment take precedence."
+msgstr ""
+"La app recibe los permisos y eventos que el sitio necesita, y las "
+"direcciones de este sitio: <code>%(site_url)s</code>. Las credenciales se "
+"escriben en el volumen del sitio; los ajustes del entorno tienen prioridad."
+
+msgid "People are asked to let the app act on their behalf when they sign in."
+msgstr ""
+"Al iniciar sesión, se pide a las personas que dejen que la app actúe en su "
+"nombre."
+
+msgid ""
+"Sign them in with an OAuth app instead: GitHub then only tells who they are."
+msgstr ""
+"Identifícalas en cambio con una app OAuth: GitHub solo dice quiénes son."
+
+msgid "Set up the OAuth app"
+msgstr "Configurar la app OAuth"
+
+msgid "The GitHub App does not receive all events it needs."
+msgstr "La GitHub App no recibe todos los eventos que necesita."
+
+#, python-format
+msgid ""
+"Missing: <code>%(events)s</code>. Tick them in the settings of the app on "
+"GitHub, under Permissions and events; no new permission is needed."
+msgstr ""
+"Faltan: <code>%(events)s</code>. Márcalos en los ajustes de la app en "
+"GitHub, en Permissions and events; no hace falta ningún permiso nuevo."
+
+msgid "Settings of the app"
+msgstr "Ajustes de la app"
+
+msgid ""
+"Add the file <code>.github/agreements.yml</code> to the default branch of "
+"the repository."
+msgstr ""
+"Añade el archivo <code>.github/agreements.yml</code> a la rama "
+"predeterminada del repositorio."
+
+msgid ""
+"Install the GitHub App on the account or organization and choose the "
+"repository. GitHub asks you to accept these permissions:"
+msgstr ""
+"Instala la GitHub App en la cuenta u organización y elige el repositorio. "
+"GitHub te pide que aceptes estos permisos:"
+
+msgid "Install the GitHub App"
+msgstr "Instalar la GitHub App"
+
+msgid ""
+"That is all: the repositories you chose that have the file are set up, and "
+"their open pull requests are checked and labelled. Below, you can remove a "
+"repository or add it again."
+msgstr ""
+"Eso es todo: los repositorios elegidos que tienen el archivo están "
+"configurados, y sus pull requests abiertas se comprueban y reciben "
+"etiquetas. Abajo puedes quitar un repositorio o añadirlo de nuevo."
+
+msgid "The whole tutorial"
+msgstr "El tutorial completo"
+
+msgid "Configure this site"
+msgstr "Configurar este sitio"
+
+msgid "This site has no GitHub App yet."
+msgstr "Este sitio aún no tiene GitHub App."
+
+msgid ""
+"The site can register its GitHub App itself and keep the credentials in its "
+"volume."
+msgstr ""
+"El sitio puede registrar su GitHub App por sí mismo y guardar las "
+"credenciales en su volumen."
+
+msgid ""
+"Or set the credentials yourself. For a local test setup, copy "
+"<code>.env.development.example</code> to <code>.env</code> in the checkout, "
+"keeping any existing settings. Fill in these six values from your GitHub App:"
+msgstr ""
+"O define tú las credenciales. Para una instalación local de prueba, copia "
+"<code>.env.development.example</code> a <code>.env</code> en la copia del "
+"código, conservando los ajustes existentes. Rellena estos seis valores de tu "
+"GitHub App:"
+
+msgid ""
+"<code>GITHUB_SECRET</code> is the app's client secret. Save its private key "
+"as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</"
+"code> automatically; restart it after editing the file. It supplies "
+"localhost defaults for other required settings. Run <code>make livehtml</"
+"code> in another terminal for the local documentation."
+msgstr ""
+"<code>GITHUB_SECRET</code> es el client secret de la app. Guarda su clave "
+"privada como <code>data/github-app.pem</code>. <code>make run</code> lee "
+"<code>.env</code> automáticamente; reinícialo después de editar el archivo. "
+"Proporciona valores de localhost para otros ajustes necesarios. Ejecuta "
+"<code>make livehtml</code> en otra terminal para la documentación local."
+
+msgid "Choose a GitHub App setup flow"
+msgstr "Elegir una forma de configurar la GitHub App"
+
+msgid "App manifest with the submission form"
+msgstr "Manifiesto de la app con el formulario"
+
+msgid "App manifest CLI flow"
+msgstr "Manifiesto de la app por línea de comandos"
+
+msgid "Manual app creation"
+msgstr "Crear la app a mano"
+
+#, python-format
+msgid "The app needs new permissions: %(missing)s."
+msgstr "La app necesita permisos nuevos: %(missing)s."
+
+msgid "Accept them on GitHub"
+msgstr "Aceptarlos en GitHub"
+
+msgid "checked"
+msgstr "comprobado"
+
+msgid "Read again"
+msgstr "Leer de nuevo"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "needs the role admin or maintain"
+msgstr "necesita el rol admin o maintain"
+
+msgid "No repositories you can access."
+msgstr "No hay repositorios a los que puedas acceder."
+
+msgid "You manage no installation of the GitHub App yet."
+msgstr "Aún no gestionas ninguna instalación de la GitHub App."
+
+#, python-format
+msgid ""
+"This pull request is by @%(author)s: only its author signs its agreements "
+"here."
+msgstr ""
+"Esta pull request es de @%(author)s: solo su autor firma aquí sus acuerdos."
+
+msgid "View the pull request page"
+msgstr "Ver la página de la pull request"
+
+msgid "Choose the policy of this pull request"
+msgstr "Elegir la política de esta pull request"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Agreements are still missing"
+msgstr "Aún faltan acuerdos"
+
+msgid "All done"
+msgstr "Todo listo"
+
+msgid "Some required agreements of this pull request are not signed."
+msgstr "Algunos acuerdos exigidos de esta pull request no están firmados."
+
+#, python-format
+msgid ""
+"The required agreements are signed. You skipped %(counter)s optional "
+"agreement."
+msgid_plural ""
+"The required agreements are signed. You skipped %(counter)s optional "
+"agreements."
+msgstr[0] ""
+"Los acuerdos exigidos están firmados. Omitiste %(counter)s acuerdo opcional."
+msgstr[1] ""
+"Los acuerdos exigidos están firmados. Omitiste %(counter)s acuerdos "
+"opcionales."
+
+msgid ""
+"You signed every agreement of this pull request. Its checks are updated."
+msgstr ""
+"Firmaste todos los acuerdos de esta pull request. Sus comprobaciones se "
+"actualizan."
+
+msgid "The pull request is closed."
+msgstr "La pull request está cerrada."
+
+msgid "Return to the pull request on GitHub"
+msgstr "Volver a la pull request en GitHub"
+
+#, python-format
+msgid "Agreement %(position)s of %(total)s"
+msgstr "Acuerdo %(position)s de %(total)s"
+
+msgid ""
+"The pull request is closed; your signature still counts for later pull "
+"requests."
+msgstr ""
+"La pull request está cerrada; tu firma cuenta para pull requests posteriores."
+
+msgid "Sign and continue"
+msgstr "Firmar y continuar"
+
+msgid "Skip"
+msgstr "Omitir"
+
+msgid "Agreements to sign"
+msgstr "Acuerdos por firmar"
+
+msgid "Problems of my projects"
+msgstr "Problemas de mis proyectos"
+
+msgid "Nothing to do."
+msgstr "Nada que hacer."
+
+#, python-format
+msgid "Help: %(label)s (opens in a new tab)"
+msgstr "Ayuda: %(label)s (se abre en una pestaña nueva)"
+
+msgid "just now"
+msgstr "ahora mismo"
+
+#, python-format
+msgid "%(count)d minute ago"
+msgid_plural "%(count)d minutes ago"
+msgstr[0] "hace %(count)d minuto"
+msgstr[1] "hace %(count)d minutos"
+
+#, python-format
+msgid "%(count)d hour ago"
+msgid_plural "%(count)d hours ago"
+msgstr[0] "hace %(count)d hora"
+msgstr[1] "hace %(count)d horas"
+
+msgid "yesterday"
+msgstr "ayer"
+
+#, python-format
+msgid "%(count)d day ago"
+msgid_plural "%(count)d days ago"
+msgstr[0] "hace %(count)d día"
+msgstr[1] "hace %(count)d días"
+
+#, python-format
+msgid "on %(date)s"
+msgstr "el %(date)s"
+
+msgid "The time of the last change of the agreement"
+msgstr "La hora del último cambio del acuerdo"
+
+msgid "The date of the last change of the agreement"
+msgstr "La fecha del último cambio del acuerdo"
+
+msgid "The optional agreement is no longer in your todos."
+msgstr "El acuerdo opcional ya no está en tus tareas."
+
+msgid "Only optional agreements can be dismissed."
+msgstr "Solo se pueden descartar acuerdos opcionales."
+
+msgid "You signed the agreement. Your pull requests are updated."
+msgstr "Firmaste el acuerdo. Tus pull requests se actualizan."
+
+msgid "You had already signed this agreement."
+msgstr "Ya habías firmado este acuerdo."
+
+msgid "Your signature is removed; your pull requests are updated."
+msgstr "Tu firma se ha quitado; tus pull requests se actualizan."
+
+msgid "Bad request"
+msgstr "Solicitud incorrecta"
+
+msgid ""
+"The site could not understand the request. Go back, reload the page and try "
+"again."
+msgstr ""
+"El sitio no pudo entender la solicitud. Vuelve atrás, recarga la página e "
+"inténtalo de nuevo."
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid ""
+"You may not open this page. Sign in with the GitHub account that has access, "
+"or ask the maintainers of the project."
+msgstr ""
+"No puedes abrir esta página. Inicia sesión con la cuenta de GitHub que tiene "
+"acceso, o pregunta a quienes mantienen el proyecto."
+
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+msgid ""
+"This page does not exist or has moved. Check the address, or start again."
+msgstr ""
+"Esta página no existe o se ha movido. Comprueba la dirección, o empieza de "
+"nuevo."
+
+msgid ""
+"The site could not answer this time. The problem was logged. Please try "
+"again in a few minutes."
+msgstr ""
+"El sitio no pudo responder esta vez. El problema quedó registrado. Inténtalo "
+"de nuevo en unos minutos."
+
+msgid "The form has expired"
+msgstr "El formulario ha caducado"
+
+msgid ""
+"The site accepts a form only from its own pages, with its cookie. Go back, "
+"reload the page and send the form again. Allow cookies for this site if this "
+"happens again."
+msgstr ""
+"El sitio solo acepta un formulario de sus propias páginas, con su cookie. "
+"Vuelve atrás, recarga la página y envía el formulario de nuevo. Permite las "
+"cookies de este sitio si vuelve a pasar."
+
+#, python-format
+msgid "The GitHub App is installed on %s."
+msgstr "La GitHub App está instalada en %s."
+
+#, python-format
+msgid "%(repository)s was added; %(count)d open pull requests were checked."
+msgstr ""
+"Se añadió %(repository)s; se comprobaron %(count)d pull requests abiertas."
+
+#, python-format
+msgid "%s is no longer checked."
+msgstr "%s ya no se comprueba."
+
+#, python-format
+msgid ""
+"You updated this project recently. You can update it again in %(minutes)d "
+"minutes."
+msgstr ""
+"Actualizaste este proyecto hace poco. Puedes actualizarlo de nuevo en "
+"%(minutes)d minutos."
+
+#, python-format
+msgid ""
+"The configuration was read again; %(count)d open pull requests were checked."
+msgstr ""
+"Se leyó de nuevo la configuración; se comprobaron %(count)d pull requests "
+"abiertas."

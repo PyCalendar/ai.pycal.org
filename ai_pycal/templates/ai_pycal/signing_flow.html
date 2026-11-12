@@ -31,6 +31,7 @@
 {% if not pull.open %}<p class="message message-warning">{% translate "The pull request is closed; your signature still counts for later pull requests." %}</p>{% endif %}
 <section class="card agreement-step {% if state.required %}state-missing{% else %}state-optional{% endif %}" data-step="agreement" data-version="{{ state.agreement.version_id }}">
   <h1>{{ state.agreement.title }} <span class="badges">{% if state.agreement.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% elif state.required %}<span class="badge badge-strong">{% translate "Required by your choice" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}</span></h1>
+  {% include "ai_pycal/_translation_note.html" %}
   <article class="agreement">{{ html }}</article>
   {% if sign_error %}<div class="message message-error" role="alert" data-error="{{ sign_error.code }}"><strong>{{ sign_error.title }}</strong>{% if sign_error.detail %}: <code>{{ sign_error.detail }}</code>{% endif %}</div>{% endif %}
   <form method="post" action="{{ here }}">{% csrf_token %}

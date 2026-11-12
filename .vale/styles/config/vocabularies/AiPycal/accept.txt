@@ -6,3 +6,5 @@ tailnet
 Sencho
 Trivy
 ghcr
+Deutsch
+gettext

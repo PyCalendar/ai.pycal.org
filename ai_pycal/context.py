@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.translation import get_language_info
 from django.utils.translation import gettext_lazy as _
 
 from . import build_info
@@ -31,6 +32,23 @@ def is_flow(path: str) -> bool:
         (True, False)
     """
     return "/pulls/" in path and path.rstrip("/").endswith("/sign")
+
+
+def language_name(code: str) -> str:
+    """The name of a language in itself, as an item of the menu.
+
+    Args:
+        code: Such as ``es``.
+
+    Returns:
+        The name, starting with a capital letter.
+
+    Examples:
+        >>> language_name("es"), language_name("de")
+        ('Español', 'Deutsch')
+    """
+    name = get_language_info(code)["name_local"]
+    return name[:1].upper() + name[1:]
 
 
 def version_text() -> str:
@@ -77,6 +95,7 @@ def site(request) -> dict:
         "site_name": settings.SITE_NAME,
         "theme_choice": theme,
         "themes": THEMES,
+        "languages": [(code, language_name(code)) for code, _ in settings.LANGUAGES],
         "color_scheme": "light dark" if theme == "auto" else theme,
         "theme_css": settings.THEME.stylesheet(theme),
         "extra_css_url": settings.EXTRA_CSS_URL,

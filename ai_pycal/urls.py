@@ -3,6 +3,7 @@
 from allauth.account import views as account_views
 from django.contrib import admin
 from django.urls import include, path
+from django.views import i18n as i18n_views
 
 from .views import (
     agreements,
@@ -26,6 +27,7 @@ urlpatterns = [
     path("health/", pages.health, name="health"),
     path("favicon.ico", pages.favicon, name="favicon"),
     path("theme/", pages.theme, name="theme"),
+    path("language/", i18n_views.set_language, name="set_language"),
     path("projects/", policies.projects, name="projects"),
     path("projects/<str:owner>/", policies.projects, name="owner_projects"),
     path("contributor/<str:handle>/", policies.contributor, name="contributor"),

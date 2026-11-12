@@ -246,3 +246,7 @@ details { margin: .75rem 0; }
 summary { cursor: pointer; font-weight: 600; }
 input[type="radio"], input[type="checkbox"] { margin-right: .35rem; }
 select { font: inherit; padding: .4rem; max-width: 100%; }
+
+/* The menu of the languages, next to the colors: each language in its own name. */
+.language-menu summary { gap: .3rem; }
+.language-menu .language-code { font-size: .75rem; font-weight: 700; letter-spacing: .03em; }

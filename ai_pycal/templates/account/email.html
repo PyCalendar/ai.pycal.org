@@ -1,6 +1,7 @@
-{% extends "ai_pycal/base.html" %}
-{% block main %}<h1>Email addresses</h1><p><a href="{% url 'profile' %}">Back to profile</a></p>
+{% extends "ai_pycal/base.html" %}{% load i18n %}
+{% block title %}{% translate "Email addresses" %} · {{ site_name }}{% endblock %}
+{% block main %}<h1>{% translate "Email addresses" %}</h1><p><a href="{% url 'profile' %}">{% translate "Back to the profile" %}</a></p>
 <form method="post" action="{% url 'account_email' %}">{% csrf_token %}
-{% for item in emailaddress_radios %}<p><label><input type="radio" name="email" value="{{ item.emailaddress.email }}" {% if item.checked %}checked{% endif %}> {{ item.emailaddress.email }} · {% if item.emailaddress.verified %}verified{% else %}not verified{% endif %}{% if item.emailaddress.primary %} · primary{% endif %}</label></p>{% endfor %}
-<button class="button" name="action_send">Send verification email</button> <button class="button button-quiet" name="action_primary">Make primary</button> <button class="button button-quiet" name="action_remove">Remove</button></form>
-{% if can_add_email %}<h2>Add an address</h2><form method="post" action="{% url 'account_email' %}">{% csrf_token %}{{ form.as_p }}<button class="button" name="action_add">Add and verify email</button></form>{% endif %}{% endblock %}
+{% for item in emailaddress_radios %}<p><label><input type="radio" name="email" value="{{ item.emailaddress.email }}" {% if item.checked %}checked{% endif %}> {{ item.emailaddress.email }} · {% if item.emailaddress.verified %}{% translate "verified" %}{% else %}{% translate "not verified" %}{% endif %}{% if item.emailaddress.primary %} · {% translate "primary" %}{% endif %}</label></p>{% endfor %}
+<button class="button" name="action_send">{% translate "Send verification email" %}</button> <button class="button button-quiet" name="action_primary">{% translate "Make primary" %}</button> <button class="button button-quiet" name="action_remove">{% translate "Remove" %}</button></form>
+{% if can_add_email %}<h2>{% translate "Add an address" %}</h2><form method="post" action="{% url 'account_email' %}">{% csrf_token %}{{ form.as_p }}<button class="button" name="action_add">{% translate "Add and verify email" %}</button></form>{% endif %}{% endblock %}

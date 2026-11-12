@@ -14,9 +14,9 @@ from ai_pycal.actions import SignatureRemoved, Trigger
 from ai_pycal.errors import AgreementNotFound, SigningError
 from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
+from ai_pycal.services.agreement_text import AgreementText
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.pull_state import PullState
-from ai_pycal.services.rendering import render as render_agreement
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.todos import Todos
 from ai_pycal.services.visibility import visible_projects
@@ -210,7 +210,8 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
             "crumbs": crumbs,
             "next_agreement": next_agreement,
             "title": names[0].name if names else version.path,
-            "html": render_agreement(version.text, version.path),
+            "text": (text := AgreementText.of(version, request)),
+            "html": text.html,
             "signature": signature,
             "previous": previous,
             "changes": AgreementDiff(previous, version).changes() if previous else [],
