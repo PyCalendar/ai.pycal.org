@@ -135,6 +135,7 @@ li.state-signed, li.state-missing, li.state-optional, li.state-merged { border: 
 .log-link { color: var(--text-muted); display: inline-flex; padding: .2rem; border-radius: .3rem; }
 .log-link:hover { color: var(--primary); background: var(--surface-tint); }
 .label-link { text-decoration: none; }
+.valid-check { color: var(--success); font-weight: 700; }
 .card-title .tech-menu dl { left: auto; right: 0; }
 .tech-menu { position: relative; }
 .tech-menu summary { list-style: none; cursor: pointer; display: flex; padding: .25rem; border-radius: .3rem; color: var(--text-muted); }

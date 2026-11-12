@@ -412,7 +412,7 @@
       About in the footer (new tab); at the end: back to the pull request on GitHub, or its page. Tests.
 - [x] Django admin for SITE_ADMINS: the configured handle was misspelled (nicokunzmann); warn at start
       about SITE_ADMINS that never signed in.
-- [ ] Contributor page: GitHub icon in the heading; no "Profile and email preferences"; signed
+- [x] Contributor page: GitHub icon in the heading; no "Profile and email preferences"; signed
       agreements by their title (from the Markdown, stored with the version; an agreement without a
       title is invalid), badges and colors, the shared gear, no version; outdated first; a green check
       for valid signatures; no empty sections (defaults, other projects); no duplicate "Projects

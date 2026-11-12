@@ -1,5 +1,7 @@
 """Public policy records, agreement histories, badges and private project visibility."""
 
+import re
+
 import pytest
 
 from ai_pycal.models import AgreementVersion
@@ -34,8 +36,8 @@ def test_public_records_status_and_badge(client, github, policy_project, alice):
     assert 'href="/contributor/alice/">@alice</a>' in page and "data-pull-state=" in page
     assert "No signatures yet" not in page
     contributor = client.get("/contributor/alice/").content.decode()
-    assert REPOSITORY in contributor and "Valid for" in contributor
-    assert "<details><summary>Other projects" in contributor
+    assert REPOSITORY in contributor and "valid for" in contributor
+    assert "Other projects" not in contributor  # no other projects: no section
     missing = client.get(f"/project/{REPOSITORY}/contributor/alice/missing.json")
     assert missing.status_code == 404
     assert missing.json()["error"] == "AgreementNotFound"
@@ -183,3 +185,30 @@ def test_projects_are_grouped_by_organization(client, policy_project):
 def test_no_projects_says_how_to_add_one(client, db):
     page = client.get("/projects/").content.decode()
     assert "data-no-projects" in page and 'href="/setup/">Setup</a>' in page
+
+
+def test_the_contributor_page_shows_valid_and_outdated_signatures(
+    client, github, repository, alice
+):
+    from ai_pycal.services.repository_sync import RepositorySync
+    from tests.conftest import sign_agreement
+
+    cla = repository.required_agreements.get(key="cla")
+    ai = repository.required_agreements.get(key="ai-policy")
+    client.force_login(alice)
+    sign_agreement(client, cla.version_id, "alice")
+    sign_agreement(client, ai.version_id, "alice")
+    github.push(REPOSITORY, {"agreements/cla.md": "# Contributor License Agreement\n\nNew."})
+    RepositorySync(repository).sync()
+    page = client.get("/contributor/alice/").content.decode()
+    states = re.findall(r'data-signature-state="(\w+)"', page)
+    assert states == ["outdated", "valid"]  # outdated first, one entry per agreement
+    valid = page.split('data-signature-state="valid"')[1].split("</section>")[0]
+    assert "valid-check" in valid and "data-technical" in valid
+    outdated = page.split('data-signature-state="outdated"')[1].split("</section>")[0]
+    assert "Outdated signature" in outdated and "valid-check" not in outdated
+    title = page.split("data-title>")[1].split("</div>")[0]
+    assert 'href="https://github.com/alice"' in title
+    assert "Profile and email preferences" not in page
+    assert "Projects engaged with" not in page
+    assert "Defaults for future pull requests" not in page  # nothing chosen: no section

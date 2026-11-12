@@ -28,9 +28,11 @@ and the configuration file on the default branch. The log icon next to the title
 leads to the log of the project. Contributors can set their default for future
 PRs there. Defaults do not change existing PR choices.
 
-The public contributor page ``/contributor/<github-handle>/`` shows signed
-versions, signing dates, projects where each signature is currently valid,
-and recorded PR choices. Projects the person has engaged with are shown
+The public contributor page ``/contributor/<github-handle>/`` lists the newest
+signature of each agreement: outdated ones first (a project asks for a newer
+version), then valid ones with a green check and the projects where they are
+valid. Each has its badges and the gear with its version. Then come the pull
+requests with their state. Projects the person has engaged with are shown
 first; other projects are inside a collapsed details view. When viewing your
 own page, review existing PRs after changing a default and change their choices
 individually if appropriate.

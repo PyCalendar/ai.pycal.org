@@ -1,9 +1,18 @@
 {% extends "ai_pycal/base.html" %}
-{% load times %}
-{% block title %}@{{ handle }} · {{ site_name }}<p><a href="{% url 'contributor_log' handle %}" data-log>Log of @{{ handle }}</a></p>{% endblock %}
-{% block main %}<h1>@{{ handle }}</h1>{% if is_self %}<p><a href="{% url 'profile' %}">Profile and email preferences</a></p>{% endif %}
-<h2>Signed agreements</h2>{% for signature in signatures %}<section class="card"><h3>{% if signature.agreement %}{% include "ai_pycal/_agreement_path.html" with agreement=signature.agreement version_id=signature.version_id %}{% else %}<a href="{% url 'agreement' signature.version_id %}">{{ signature.version.path }}</a>{% endif %}</h3><p>Signed {% when signature.signed %} · Version {% version signature.version %}</p><p>Valid for: {% for project in signature.projects %}<a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a> {% endfor %}</p></section>{% empty %}<p>No signed agreements yet.</p>{% endfor %}
-<h2>Projects engaged with</h2><ul>{% for project in engaged %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% empty %}<li>No projects yet.</li>{% endfor %}</ul>
-{% if is_self %}<h2>Defaults for future PRs</h2><ul>{% for preference in preferences %}<li><a href="/project/{{ preference.repository.full_name }}/">{{ preference.repository.full_name }}</a>: {{ preference.choice.name }}</li>{% empty %}<li>No personal defaults yet. Choose one on a project or PR page.</li>{% endfor %}</ul><p>Existing PRs keep their choices when a default changes. Open a PR below to change it individually.</p>{% endif %}
-<h2>Pull requests</h2><ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_repository=True %}{% empty %}<li class="muted">No pull requests recorded.</li>{% endfor %}</ul>
-<details><summary>Other projects</summary><ul>{% for project in others %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% empty %}<li>No other projects.</li>{% endfor %}</ul></details>{% endblock %}
+{% load times i18n github %}
+{% block title %}@{{ handle }} · {{ site_name }}{% endblock %}
+{% block main %}
+<div class="crumbs" data-title><h1 class="crumbs-current">@{{ handle }}</h1> {% github_link "https://github.com/"|add:handle "@"|add:handle|add:" on GitHub" %} {% url 'contributor_log' handle as log_url %}{% include "ai_pycal/_log_link.html" with url=log_url %}</div>
+<h2>{% translate "Signed agreements" %}</h2>
+{% for signature in signatures %}
+<section class="card signed-agreement {% if signature.state == "valid" %}state-signed{% elif signature.state == "outdated" and signature.mandatory %}state-missing{% elif signature.state == "outdated" %}state-optional{% endif %}" data-signature-state="{{ signature.state }}">
+  <div class="card-title"><h3>{% if signature.agreement %}{% include "ai_pycal/_agreement_path.html" with agreement=signature.agreement version_id=signature.version_id %}{% else %}<a href="{% url 'agreement' signature.version_id %}">{{ signature.version.title|default:signature.version.path }}</a>{% endif %}
+    <span class="badges">{% if signature.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}{% if signature.state == "outdated" %} <span class="badge badge-warning">{% translate "Outdated signature" %}</span>{% endif %}</span></h3>
+    {% include "ai_pycal/_agreement_gear.html" with version=signature.version agreement=signature.agreement %}</div>
+  <p>{% if signature.state == "valid" %}<span class="valid-check" title="{% translate "Valid" %}" aria-label="{% translate "Valid" %}">✓</span> {% endif %}{% translate "Signed" %} {% when signature.signed %}{% if signature.projects %} · {% translate "valid for" %} {% for project in signature.projects %}<a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% elif signature.state == "outdated" %} · {% translate "a newer version is asked for" %}{% endif %}</p>
+</section>
+{% empty %}<p class="muted">{% translate "No signed agreements yet." %}</p>{% endfor %}
+{% if is_self and preferences %}<h2>{% translate "Defaults for future pull requests" %}</h2><ul>{% for preference in preferences %}<li><a href="/project/{{ preference.repository.full_name }}/">{{ preference.repository.full_name }}</a>: {{ preference.choice.name }}</li>{% endfor %}</ul><p class="muted">{% translate "Existing pull requests keep their choices when a default changes." %}</p>{% endif %}
+<h2>{% translate "Pull requests" %}</h2><ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_repository=True %}{% empty %}<li class="muted">{% translate "No pull requests recorded." %}</li>{% endfor %}</ul>
+{% if others %}<details><summary>{% translate "Other projects" %}</summary><ul>{% for project in others %}<li><a href="/project/{{ project.full_name }}/">{{ project.full_name }}</a></li>{% endfor %}</ul></details>{% endif %}
+{% endblock %}

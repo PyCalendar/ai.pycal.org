@@ -174,6 +174,41 @@ def project(request, owner: str, repo: str):
     )
 
 
+def signed_agreements(signatures: list, visible) -> list:
+    """The newest signature of each agreement, with its state, outdated ones first.
+
+    Args:
+        signatures: The signatures of a person, newest first.
+        visible: The projects the visitor may see.
+
+    Returns:
+        The signatures, each with ``agreement`` (the agreement of a project, to name it),
+        ``projects`` (where it is valid), ``state`` (``valid``, ``outdated`` when a project
+        asks for a newer version, or ``former`` when none asks for the file any more) and
+        ``mandatory``.
+    """
+    newest: dict[tuple[str, str], object] = {}
+    for signature in sorted(signatures, key=lambda s: s.signed, reverse=True):
+        newest.setdefault((signature.version.source, signature.version.path), signature)
+    found = []
+    for signature in newest.values():
+        current = list(
+            RequiredAgreement.objects.filter(
+                version__source=signature.version.source,
+                version__path=signature.version.path,
+                repository__in=visible,
+            ).select_related("repository", "version")
+        )
+        same = [a for a in current if a.version_id == signature.version_id]
+        signature.agreement = (same or current or [None])[0]
+        signature.projects = [a.repository for a in same]
+        signature.mandatory = any(a.mandatory for a in current)
+        signature.state = "valid" if same else "outdated" if current else "former"
+        found.append(signature)
+    order = {"outdated": 0, "valid": 1, "former": 2}
+    return sorted(found, key=lambda s: (order[s.state], -s.signed.timestamp()))
+
+
 def contributor(request, handle: str):
     """Show dated signatures, engaged projects and PR choices; hide other projects in details."""
     github_id = contributor_id(handle)
@@ -187,16 +222,7 @@ def contributor(request, handle: str):
         if github_id
         else []
     )
-    for signature in signatures:
-        signature.projects = visible.filter(
-            required_agreements__version=signature.version
-        ).distinct()
-        # the agreement of a project, to name it for people instead of its file
-        signature.agreement = (
-            RequiredAgreement.objects.filter(version=signature.version, repository__in=visible)
-            .select_related("repository")
-            .first()
-        )
+    signatures = signed_agreements(signatures, visible)
     engaged = (
         visible.filter(
             Q(pull_requests__author_github_id=github_id)
@@ -226,7 +252,6 @@ def contributor(request, handle: str):
         {
             "handle": handle,
             "signatures": signatures,
-            "engaged": engaged,
             "others": visible.exclude(pk__in=engaged.values("pk")),
             "pulls": pulls,
             "preferences": preferences,

@@ -118,7 +118,7 @@ def test_default_changes_only_future_prs(client, github, policy_project, alice):
     two.refresh_from_db()
     assert one.choice.key == "human-only" and two.choice.key == "ai-allowed"
     page = client.get("/contributor/alice/").content.decode()
-    assert page_url(1) in page and page_url(2) in page and "Existing PRs" in page
+    assert page_url(1) in page and page_url(2) in page and "Existing pull requests" in page
 
 
 def test_signing_requires_mandatory_and_only_selected_bundle(client, github, policy_project, alice):
