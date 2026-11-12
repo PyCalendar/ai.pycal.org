@@ -88,16 +88,16 @@ agreements:
 
 def test_the_page_of_a_pull_request_shows_the_agreements(client, github, repository, alice):
     send_webhook(client, "pull_request", pull_payload(github, 1))
-    page = client.get(f"/repository/{REPOSITORY}/pull/1/").content.decode()
+    page = client.get(f"/project/{REPOSITORY}/pulls/1/").content.decode()
     assert 'data-agreement="ai-policy"' in page and "Unsigned" in page
     client.force_login(alice)
     sign_agreement(client, versions(repository)["ai-policy"], "alice")
-    page = client.get(f"/repository/{REPOSITORY}/pull/1/").content.decode()
+    page = client.get(f"/project/{REPOSITORY}/pulls/1/").content.decode()
     assert page.count('data-state="missing"') == 1
 
 
 def test_an_unknown_pull_request_has_its_error(client, repository):
-    response = client.get(f"/repository/{REPOSITORY}/pull/99/")
+    response = client.get(f"/project/{REPOSITORY}/pulls/99/")
     assert response.status_code == 404
     assert b'data-error="PullRequestNotFound"' in response.content
     assert b"reference/errors.html#ai_pycal.errors.signing.PullRequestNotFound" in response.content
@@ -106,7 +106,7 @@ def test_an_unknown_pull_request_has_its_error(client, repository):
 def test_signing_returns_to_the_pull_request(client, github, repository, alice):
     send_webhook(client, "pull_request", pull_payload(github, 1))
     client.force_login(alice)
-    target = f"/repository/{REPOSITORY}/pull/1/"
+    target = f"/project/{REPOSITORY}/pulls/1/"
     response = sign_agreement(client, versions(repository)["cla"], "alice", next=target)
     assert response["Location"] == target
     response = sign_agreement(

@@ -69,7 +69,7 @@ def test_adding_a_repository(client, example, maintainer):
     assert repository.active
     assert repository.config_version == "2.1.0"
     assert [a.key for a in repository.required_agreements.all()] == ["ai-policy", "cla"]
-    page = client.get(f"/repository/{REPOSITORY}/").content.decode()
+    page = client.get(f"/project/{REPOSITORY}/").content.decode()
     assert "AI Policy (example)" in page and "cla-signed" in page
 
 
@@ -140,7 +140,8 @@ def test_the_email_for_permissions(client, example, maintainer):
 
 def test_an_unknown_repository(client, db):
     assert client.get("/nobody/nothing/").status_code == 404  # the older address
-    response = client.get("/repository/nobody/nothing/")
+    assert client.get("/repository/nobody/nothing/").status_code == 404
+    response = client.get("/project/nobody/nothing/")
     assert response.status_code == 404
     assert error_of(response) == "RepositoryNotFound"
 

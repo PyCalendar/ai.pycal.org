@@ -89,8 +89,8 @@ def test_private_project_records_never_appear_to_anonymous_visitors(
     policy_project.save()
     version = policy_project.required_agreements.get(key="ai").version
     for url in [
-        f"/repository/{REPOSITORY}/",
-        f"/repository/{REPOSITORY}/pull/{item.number}/",
+        f"/project/{REPOSITORY}/",
+        f"/project/{REPOSITORY}/pulls/{item.number}/",
         f"/project/{REPOSITORY}/",
         f"/project/{REPOSITORY}/pulls/{item.number}/",
         f"/project/{REPOSITORY}/contributor/alice/ai.json",

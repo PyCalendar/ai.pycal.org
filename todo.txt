@@ -351,7 +351,7 @@
 - [x] Technical details (file on GitHub, commit, repository on GitHub) only behind the gear icon next
       to the title of the agreement; no commit hashes or paths elsewhere.
 - [ ] The rest of the message "Make sure that" of the account menu was cut off: ask the person.
-- [ ] /repository/<owner>/<repo>/ and /project/<owner>/<repo>/ show the same project: merge them.
+- [x] /repository/<owner>/<repo>/ and /project/<owner>/<repo>/ show the same project: merged, /repository/ redirects.
 
 ## 2026-11-12: settings hidden, labels while unsigned, update, PR page, colors, help links
 
@@ -393,7 +393,7 @@
 - [x] /licenses/ page like community-insights (reuse and pip-licenses installed): the license of the
       project, the licenses in LICENSES/, code from other projects in REUSE.toml, the Python packages;
       AGPL-3.0-or-later in the footer links there.
-- [ ] Admins can remove their own signatures (to test); logged, labels updated.
+- [x] Admins can remove their own signatures (to test); logged, labels updated.
 - [x] Project page: less space between agreement name and description; no list of signers; only open
       pull requests, a switch to show all; pull requests colored: green all signed, yellow mandatory
       signed, red mandatory missing; handles link to contributor pages; log icon next to the title.

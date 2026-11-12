@@ -56,8 +56,12 @@ administrator action can sign for someone else.
 
 This page and the login flow returning to it omit the footer and extra menu
 links. The site name at the top left returns to the home page; login is at
-the top right. ``/repository/<owner>/<repo>/pull/<number>/`` shows the same page; the older
-``/<owner>/<repo>/pull/<number>/`` links redirect there.
+the top right. The older addresses ``/repository/<owner>/<repo>/...`` and
+``/<owner>/<repo>/...`` redirect to ``/project/...``.
+
+Administrators of the site (``SITE_ADMINS``) can remove their own signature on
+the page of an agreement, to test what follows: their pull requests are checked
+again and the log records it.
 
 Profile, email and project problems
 ===================================

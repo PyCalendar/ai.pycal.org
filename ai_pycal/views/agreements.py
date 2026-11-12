@@ -2,6 +2,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -9,7 +10,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
-from ai_pycal.actions import Trigger
+from ai_pycal.actions import SignatureRemoved, Trigger
 from ai_pycal.errors import AgreementNotFound, SigningError
 from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
@@ -277,6 +278,38 @@ def sign(request, pk: int):
         target, {request.get_host()}, require_https=request.is_secure()
     ):
         return redirect(target)
+    return redirect("agreement", pk=version.pk)
+
+
+@login_required
+@require_POST
+@Trigger.view("unsigned", "@{login} removes a signature", public=True)
+def unsign(request, pk: int):
+    """Remove the own signature of an agreement: for the administrators of the site, to test.
+
+    The pull requests of the person are checked again, so their labels and checks change
+    as without the signature; the log records it.
+
+    Args:
+        request: The request.
+        pk: The number of the version.
+
+    Returns:
+        Back to the agreement.
+
+    Raises:
+        PermissionDenied: The person is not in ``SITE_ADMINS``.
+    """
+    if not GitHubIdentity.is_site_admin(request.user):
+        raise PermissionDenied("SITE_ADMINS")
+    version = version_or_404(pk, request.user)
+    identity = GitHubIdentity.of(request.user)
+    signature = Signature.objects.filter(version=version, github_id=identity.github_id).first()
+    if signature:
+        named = version.required_by.first()
+        SignatureRemoved(signature, named.title if named else version.path).run()
+        Signer(request.user, identity).update_pull_requests(version)
+        messages.info(request, _("Your signature is removed; your pull requests are updated."))
     return redirect("agreement", pk=version.pk)
 
 

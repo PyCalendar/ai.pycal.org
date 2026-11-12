@@ -41,7 +41,7 @@ def test_no_address_no_link():
 
 
 def test_the_footer_and_the_repository_title(client, repository):
-    page = client.get(f"/repository/{repository.full_name}/").content.decode()
+    page = client.get(f"/project/{repository.full_name}/").content.decode()
     title = page.split('<div class="crumbs">')[1].split("</div>")[0]
     assert '<a href="/projects/PyCalendar/">PyCalendar</a>' in title
     assert '</h1> <a class="github-link github-link-icon"' in title

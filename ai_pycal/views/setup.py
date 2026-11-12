@@ -337,7 +337,7 @@ def update_project(request, owner: str, repo: str):
 
 
 def older_address(request, owner: str, repo: str, number: int | None = None):
-    """The older addresses of repositories, without ``repository/``, for links that use them.
+    """The older addresses of projects, ``/repository/...`` and without a prefix.
 
     Only repositories that the site knows are redirected; any other address of two parts,
     such as ``/accounts/signup/``, is not found.
@@ -349,7 +349,7 @@ def older_address(request, owner: str, repo: str, number: int | None = None):
         number: The number of a pull request, or None.
 
     Returns:
-        A permanent redirect to ``/repository/...``.
+        A permanent redirect to the page of the project or of the pull request.
 
     Raises:
         Http404: The site knows no such repository.
@@ -358,24 +358,8 @@ def older_address(request, owner: str, repo: str, number: int | None = None):
         raise Http404(f"{owner}/{repo}")
     kwargs = {"owner": owner, "repo": repo}
     if number is None:
-        target = reverse("repository", kwargs=kwargs)
+        target = reverse("project", kwargs=kwargs)
     else:
-        target = reverse("pull_request", kwargs={**kwargs, "number": number})
+        target = reverse("project_pull", kwargs={**kwargs, "number": number})
     query = request.META.get("QUERY_STRING", "")
     return redirect(f"{target}?{query}" if query else target, permanent=True)
-
-
-def repository(request, owner: str, repo: str):
-    """The agreements a repository asks for, and the last error of its configuration.
-
-    Args:
-        request: The request.
-        owner: The owner of the repository.
-        repo: The name of the repository.
-
-    Returns:
-        The page.
-    """
-    from .policies import project
-
-    return project(request, owner, repo)

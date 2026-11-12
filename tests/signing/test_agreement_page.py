@@ -168,3 +168,28 @@ def test_sign_alone_goes_back(client, cla, alice):
     client.force_login(alice)
     response = sign_agreement(client, cla.version_id, "alice", next="/project/x/y/pulls/1/")
     assert response["Location"] == "/project/x/y/pulls/1/"
+
+
+def test_site_admins_remove_their_own_signature(client, cla, alice, settings, github):
+    from ai_pycal.models import LogAction
+    from tests.conftest import REPOSITORY, pull_payload, send_webhook
+
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    client.force_login(alice)
+    sign_agreement(client, cla.version_id, "alice")
+    assert "cla-signed" in github.labels[(REPOSITORY, 1)]
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    assert "data-unsign" not in page  # not an administrator of the site
+    assert client.post(f"/agreements/{cla.version_id}/unsign/").status_code == 403
+    settings.SITE_ADMINS = ["alice"]
+    assert "data-unsign" in client.get(f"/agreements/{cla.version_id}/").content.decode()
+    response = client.post(f"/agreements/{cla.version_id}/unsign/")
+    assert response.status_code == 302
+    assert not Signature.objects.filter(version_id=cla.version_id).exists()
+    labels = github.labels[(REPOSITORY, 1)]
+    assert "cla-signed" not in labels and "cla-missing" in labels
+    action = LogAction.objects.get(kind="signature-removed")
+    assert (
+        action.text == "@alice removed their signature of Contributor License Agreement (example)"
+    )
+    assert action.trigger.public

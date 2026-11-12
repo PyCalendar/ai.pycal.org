@@ -90,9 +90,11 @@ def test_documentation_navigation_and_error_help_share_the_configured_url(client
 @pytest.mark.parametrize(
     ("old", "new"),
     [
-        ("/{name}/", "/repository/{name}/"),
-        ("/{name}/pull/3/", "/repository/{name}/pull/3/"),
-        ("/{name}/?x=1", "/repository/{name}/?x=1"),
+        ("/{name}/", "/project/{name}/"),
+        ("/{name}/pull/3/", "/project/{name}/pulls/3/"),
+        ("/{name}/?x=1", "/project/{name}/?x=1"),
+        ("/repository/{name}/", "/project/{name}/"),
+        ("/repository/{name}/pull/3/", "/project/{name}/pulls/3/"),
     ],
 )
 def test_the_older_repository_addresses_redirect(client, repository, old, new):

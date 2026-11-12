@@ -69,6 +69,7 @@ urlpatterns = [
     ),
     path("agreements/<int:pk>/", agreements.show, name="agreement"),
     path("agreements/<int:pk>/sign/", agreements.sign, name="sign"),
+    path("agreements/<int:pk>/unsign/", agreements.unsign, name="unsign"),
     path("agreements/<int:pk>/changes/<int:old>/", agreements.changes, name="changes"),
     path("setup/", setup.setup, name="setup"),
     path("setup/installed/", setup.installed, name="installed"),
@@ -102,10 +103,11 @@ urlpatterns = [
     path("accounts/github/login/callback/", setup.github_callback, name="github_callback_install"),
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),
-    path("repository/<str:owner>/<str:repo>/", setup.repository, name="repository"),
+    # /repository/ showed the same as /project/: it redirects there, like the older addresses
+    path("repository/<str:owner>/<str:repo>/", setup.older_address, name="repository"),
     path(
         "repository/<str:owner>/<str:repo>/pull/<int:number>/",
-        policies.pull,
+        setup.older_address,
         name="pull_request",
     ),
     # The older addresses, without "repository/", which links may still use; last, so that

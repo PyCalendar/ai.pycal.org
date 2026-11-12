@@ -12,6 +12,7 @@ from .email_sent import EmailSent
 from .label_added import LabelAdded
 from .label_removed import LabelRemoved
 from .signature_added import SignatureAdded
+from .signature_removed import SignatureRemoved
 from .status_set import StatusSet
 from .trigger import Trigger
 from .webhook_trigger import WebhookTrigger
@@ -24,6 +25,7 @@ __all__ = [
     "LabelAdded",
     "LabelRemoved",
     "SignatureAdded",
+    "SignatureRemoved",
     "StatusSet",
     "Trigger",
     "WebhookTrigger",
