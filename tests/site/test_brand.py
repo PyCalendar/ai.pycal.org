@@ -77,8 +77,11 @@ def test_a_wrong_favicon_stops_the_start(settings, tmp_path, name, check):
     assert check in [message.id for message in run_checks()]
 
 
-def test_the_switch_is_in_the_footer_without_javascript(client):
+def test_the_switch_is_a_dropdown_with_icons_without_javascript(client):
     page = client.get("/projects/").content.decode()
+    menu = page.split('<details class="theme-menu">')[1].split("</details>")[0]
+    assert menu.count('<svg class="icon"') == 4  # the summary and the three choices
+    assert 'aria-label="Colors of the page"' in menu
     assert 'action="/theme/"' in page
     assert 'name="next" value="/projects/"' in page
     assert 'value="auto" aria-pressed="true"' in page

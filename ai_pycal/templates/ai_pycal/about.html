@@ -1,0 +1,34 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n tz %}
+{% block title %}{% translate "About" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<section class="hero">
+  <h1>{% blocktranslate %}About {{ site_name }}{% endblocktranslate %}</h1>
+  <p class="lead">{% blocktranslate %}People read and sign the agreements that projects ask of their contributors, such as an AI policy or a contributor license agreement. The pull requests show who signed.{% endblocktranslate %}</p>
+</section>
+<div class="columns">
+  <section class="card" aria-labelledby="about-links">
+    <h2 id="about-links">{% translate "Links" %}</h2>
+    <ul class="list">
+      <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
+      <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
+      <li><a href="{{ links.source }}">{% translate "Source code" %}</a> · AGPL-3.0-or-later</li>
+      <li><a href="{{ links.issues }}">{% translate "Report a bug" %}</a></li>
+      {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
+    </ul>
+  </section>
+  <section class="card" aria-labelledby="version">
+    <h2 id="version">{% translate "Version" %}</h2>
+    <table class="table facts">
+      <tr><th scope="row">{% translate "Version" %}</th><td>{% if build.tag %}<a href="{{ build.code_url }}">{{ build.version }}</a>{% else %}{{ build.version }}{% endif %}</td></tr>
+      {% if build.commit %}<tr><th scope="row">{% translate "Commit" %}</th><td><a href="{{ build.commit_url }}"><code>{{ build.commit }}</code></a>{% if build.message %} {{ build.message }}{% endif %}</td></tr>{% endif %}
+      {% timezone time_zone %}
+      {% if build.committed_at %}<tr><th scope="row">{% translate "Committed" %}</th><td><time datetime="{{ build.committed_at|date:'c' }}">{{ build.committed_at|date:"Y-m-d H:i T" }}</time></td></tr>{% endif %}
+      {% if build.built_at %}<tr><th scope="row">{% translate "Built" %}</th><td><time datetime="{{ build.built_at|date:'c' }}">{{ build.built_at|date:"Y-m-d H:i T" }}</time></td></tr>{% endif %}
+      {% endtimezone %}
+      <tr><th scope="row">{% translate "CI build" %}</th><td>{% if build.build_url %}<a href="{{ build.build_url }}">{% translate "GitHub Actions run" %}</a>{% else %}{% translate "Not built by the CI" %}{% endif %}</td></tr>
+      <tr><th scope="row">{% translate "Code" %}</th><td><a href="{{ build.code_url }}">{% translate "The code of this version" %}</a></td></tr>
+    </table>
+  </section>
+</div>
+{% endblock %}

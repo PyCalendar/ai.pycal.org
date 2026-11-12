@@ -1,4 +1,4 @@
-"""The pages about the site: start, health, the icon and the colors."""
+"""The pages about the site: start, about, health, the icon and the colors."""
 
 from pathlib import Path
 
@@ -11,6 +11,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
 
+from ai_pycal import build_info
 from ai_pycal.checks import FAVICON_TYPES
 from ai_pycal.models import Repository, Signature
 from ai_pycal.theme import COOKIE, Theme
@@ -32,6 +33,22 @@ def home(request):
             "repositories": Repository.objects.filter(active=True).count(),
             "signatures": Signature.objects.count(),
         },
+    )
+
+
+def about(request):
+    """The About page: the links of the site, the version, its commit and its build.
+
+    Args:
+        request: The request.
+
+    Returns:
+        The page.
+    """
+    return render(
+        request,
+        "ai_pycal/about.html",
+        {"build": build_info.get(settings.SOURCE_URL), "time_zone": settings.TIME_ZONE},
     )
 
 

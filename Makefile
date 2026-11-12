@@ -83,8 +83,12 @@ reuse:  ## Check the licensing (REUSE)
 build:  ## Build the package into dist/
 	@uv build -o dist
 
+.PHONY: version
+version:  ## Write the build information (commit, message, time, CI run) into ai_pycal/version.json
+	@python3 docker/set_version.py
+
 .PHONY: docker-build
-docker-build:  ## Build the container
+docker-build: version  ## Build the container
 	docker build -t ai-pycal .
 
 .PHONY: docker-test

@@ -1,0 +1,8 @@
+{% load i18n %}<details class="theme-menu">
+  <summary title="{% translate "Colors of the page" %}" aria-label="{% translate "Colors of the page" %}">{% include "ai_pycal/_theme_icon.html" with icon=theme_choice %}</summary>
+  <form method="post" action="{% url 'theme' %}">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    {% for value, title in themes %}<button name="theme" value="{{ value }}" aria-pressed="{% if theme_choice == value %}true{% else %}false{% endif %}">{% include "ai_pycal/_theme_icon.html" with icon=value %} {{ title }}</button>
+    {% endfor %}
+  </form>
+</details>

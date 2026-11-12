@@ -13,3 +13,4 @@ __pycache__/
 /.coverage
 /.claude/settings.local.json
 /build/
+/ai_pycal/version.json

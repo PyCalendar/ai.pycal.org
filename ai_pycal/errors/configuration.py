@@ -70,3 +70,16 @@ class UnsupportedFavicon(ConfigurationError):
     title = _("The favicon has an unsupported format")
     guide = "how-to/brand.html"
     guide_title = _("Change the colors and the icon")
+
+
+class InvalidFooterLink(ConfigurationError):
+    """An entry of ``FOOTER_LINKS`` is not ``Title=URL``.
+
+    ``FOOTER_LINKS`` lists the extra links of the footer and the About page,
+    separated by commas, each as a title, ``=`` and an address that starts with
+    ``https://`` or ``http://``, such as
+    ``FOOTER_LINKS=pycal.org=https://pycal.org,Blog=https://example.org/blog/``.
+    Leave it empty for no extra links. See :doc:`/reference/settings`.
+    """
+
+    title = _("A link of the footer is invalid")

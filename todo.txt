@@ -254,4 +254,15 @@
 - [x] make docker-test: healthy. make docker-scan could not run locally (the sandbox refused it); it runs in CI.
 - [ ] The person: create the Sencho stack ai-pycal with .env and data/github-app.pem, the environment
       ai.pycal.org with SENCHO_TOKEN, and make the ghcr.io package public.
-- [ ] Commit, push and check CI.
+- [x] Commit, push and check CI: run 43245171349 green, image pushed; deploy skipped (no SENCHO_TOKEN yet).
+
+## 2026-11-12: about page, theme dropdown, footer links, settings
+
+- [x] About page (/about/): the links of the footer, version, commit with message, commit and build time
+      in TIME_ZONE, link to the CI run and the code; build information from make version (docker/set_version.py).
+- [x] Theme menu as a dropdown with icons (half circle, sun, moon) like the documentation; no JavaScript.
+- [x] FOOTER_LINKS for each site (Title=URL, comma separated), default pycal.org; InvalidFooterLink.
+- [x] .env.example: every setting, ordered by importance, explained, with links to the reference.
+- [x] Settings reference lists every environment variable; a test checks code, reference and example.
+- [x] Checked in the built image with Chromium: dropdown, 404 page and About page (dark).
+- [ ] Commit, push and check that CI pushes the image.

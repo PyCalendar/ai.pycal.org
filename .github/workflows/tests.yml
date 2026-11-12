@@ -76,6 +76,10 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           persist-credentials: false
+          # git describe needs the tags
+          fetch-depth: 0
+      - name: Write the build information for the About page
+        run: make version
       - name: Set up QEMU for arm64
         uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
       - name: Set up Docker Buildx

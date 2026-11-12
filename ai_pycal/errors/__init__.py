@@ -46,6 +46,7 @@ from .configuration import (
     ConfigurationError,
     FaviconNotFound,
     InvalidColor,
+    InvalidFooterLink,
     UnknownColor,
     UnsupportedFavicon,
 )
@@ -144,6 +145,7 @@ __all__ = [
     "InvalidAgreementId",
     "InvalidAgreementPath",
     "InvalidColor",
+    "InvalidFooterLink",
     "InvalidLabel",
     "InvalidNotificationEmail",
     "InvalidPrivateKey",

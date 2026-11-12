@@ -84,8 +84,11 @@ tools of the browser.
 Light and dark pages
 ====================
 
-The footer of every page has the switch *Colors*: *As the system*, *Light* and
-*Dark*. It works without JavaScript: the buttons send a form to ``/theme/``,
+The menu of every page has a button with the icon of the current colors, like
+the switch of this documentation: a half circle for *As the system*, a sun for
+*Light* and a moon for *Dark*. It opens a dropdown with the three choices. It
+works without JavaScript: the dropdown is a ``<details>`` element and the
+choices are the buttons of a form sent to ``/theme/``,
 which keeps *Light* or *Dark* for a year in the cookie ``theme`` and returns to
 the page. *As the system* removes the cookie, so that the browser chooses the
 light or the dark colors again. The site ignores unknown values of the cookie.

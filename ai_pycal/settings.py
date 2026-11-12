@@ -9,6 +9,8 @@ from pathlib import Path
 
 import environ
 
+from ai_pycal.footer_links import DEFAULT as DEFAULT_FOOTER_LINKS
+from ai_pycal.footer_links import parse_footer_links
 from ai_pycal.theme import Theme
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -168,6 +170,8 @@ FAVICON_FILE = env("FAVICON_FILE", default="")
 EXTRA_CSS_URL = env("EXTRA_CSS_URL", default="")
 SOURCE_URL = env("SOURCE_URL", default="https://github.com/PyCalendar/ai.pycal.org")
 DOCS_URL = env("DOCS_URL", default="https://ai-pycal-org.readthedocs.io/en/latest/")
+# the extra links of the footer and the About page: Title=URL, separated by commas
+FOOTER_LINKS = parse_footer_links(env("FOOTER_LINKS", default=DEFAULT_FOOTER_LINKS))
 
 EMAIL_HOST = env("EMAIL_HOST", default="")
 EMAIL_BACKEND = (
@@ -184,7 +188,7 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=f"agreements@{SITE_NAME}"
 
 LANGUAGE_CODE = "en"
 LANGUAGES = [("en", "English")]
-TIME_ZONE = "UTC"
+TIME_ZONE = env("TIME_ZONE", default="UTC")  # of the times on the pages, such as Europe/Berlin
 USE_I18N = True
 USE_TZ = True
 

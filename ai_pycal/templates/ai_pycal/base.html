@@ -31,6 +31,7 @@
       {% else %}
         <li><a class="button button-accent" href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}">{% translate "Sign in with GitHub" %}</a></li>
       {% endif %}
+        <li>{% include "ai_pycal/_theme_menu.html" %}</li>
       </ul>
     </nav>
   </div>
@@ -45,20 +46,13 @@
 {% if not focused %}<footer class="footer">
   <div class="wrap footer-row">
     <ul class="footer-links">
+      <li><a href="{% url 'about' %}">{% translate "About" %}</a></li>
       <li><a href="{{ links.documentation }}">{% translate "Documentation" %}</a></li>
       <li><a href="{{ links.changelog }}">{% translate "Changelog" %}</a></li>
       <li><a href="{{ links.source }}">{% translate "Source code" %}</a></li>
       <li><a href="{{ links.issues }}">{% translate "Report a bug" %}</a></li>
+      {% for title, url in footer_links %}<li><a href="{{ url }}">{{ title }}</a></li>{% endfor %}
     </ul>
-    <form class="theme-switch" method="post" action="{% url 'theme' %}">{% csrf_token %}
-      <input type="hidden" name="next" value="{{ request.get_full_path }}">
-      <span id="theme-label">{% translate "Colors" %}</span>
-      <span role="group" aria-labelledby="theme-label">
-        <button class="link-button" name="theme" value="auto" aria-pressed="{% if theme_choice == 'auto' %}true{% else %}false{% endif %}">{% translate "As the system" %}</button>
-        <button class="link-button" name="theme" value="light" aria-pressed="{% if theme_choice == 'light' %}true{% else %}false{% endif %}">{% translate "Light" %}</button>
-        <button class="link-button" name="theme" value="dark" aria-pressed="{% if theme_choice == 'dark' %}true{% else %}false{% endif %}">{% translate "Dark" %}</button>
-      </span>
-    </form>
     <small>AGPL-3.0-or-later</small>
   </div>
 </footer>{% endif %}

@@ -2,10 +2,14 @@
 
 from django.conf import settings
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 
 from .models import ProjectProblem
 from .services.identity import GitHubIdentity
 from .theme import COOKIE, Theme
+
+# the choices of the menu of the colors: value, title and icon (ai_pycal/_theme_icon.html)
+THEMES = (("auto", _("As the system")), ("light", _("Light")), ("dark", _("Dark")))
 
 
 def site(request) -> dict:
@@ -34,6 +38,7 @@ def site(request) -> dict:
     return {
         "site_name": settings.SITE_NAME,
         "theme_choice": theme,
+        "themes": THEMES,
         "color_scheme": "light dark" if theme == "auto" else theme,
         "theme_css": settings.THEME.stylesheet(theme),
         "extra_css_url": settings.EXTRA_CSS_URL,
@@ -50,6 +55,7 @@ def site(request) -> dict:
             "source": settings.SOURCE_URL,
             "issues": f"{settings.SOURCE_URL.rstrip('/')}/issues/new",
         },
+        "footer_links": settings.FOOTER_LINKS,
         "github": GitHubIdentity.of(getattr(request, "user", None)),
         "project_problems": problems,
         "focused": "/pulls/" in request.path

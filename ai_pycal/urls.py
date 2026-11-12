@@ -8,6 +8,7 @@ from .views import agreements, pages, policies, profile, setup, webhook
 
 urlpatterns = [
     path("", pages.home, name="home"),
+    path("about/", pages.about, name="about"),
     path("health/", pages.health, name="health"),
     path("favicon.ico", pages.favicon, name="favicon"),
     path("theme/", pages.theme, name="theme"),
