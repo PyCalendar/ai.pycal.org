@@ -1,0 +1,4 @@
+{% load i18n times %}{% if to_sign %}<ul class="list to-sign">{% for agreement in to_sign %}
+  <li data-to-sign="{{ agreement.version_id }}">{% include "ai_pycal/_agreement_path.html" %}{% if not agreement.mandatory %} <span class="badge muted">{% translate "optional" %}</span>{% endif %}
+    {% if agreement.signed_before %}<br><span class="muted" data-signed-before>{% when agreement.signed_before.signed as signed %}{% blocktranslate %}You signed an earlier version {{ signed }}. The agreement changed: read the changes and sign again.{% endblocktranslate %}</span>{% endif %}</li>
+{% endfor %}</ul>{% else %}<p>{% translate "Nothing to sign." %}</p>{% endif %}

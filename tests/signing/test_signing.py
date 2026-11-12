@@ -124,7 +124,7 @@ def test_my_agreements(client, github, repository, cla, alice):
     assert "AI Policy (example)" in page and "Contributor License Agreement (example)" in page
     sign_agreement(client, cla.pk, "alice")
     page = client.get("/my-agreements/").content.decode()
-    assert page.split("To sign")[1].split("My open pull requests")[0].count("<li>") == 1
+    assert page.count("data-to-sign=") == 1
 
 
 def test_a_person_without_github_sees_a_warning(client, db, django_user_model):

@@ -10,6 +10,7 @@ from .checks import is_url
 from .models import ProjectProblem
 from .services.app_registration import AppRegistration
 from .services.identity import GitHubIdentity
+from .services.todos import Todos
 from .theme import COOKIE, Theme
 
 # the choices of the menu of the colors: value, title and icon (ai_pycal/_theme_icon.html)
@@ -40,7 +41,9 @@ def site(request) -> dict:
     """
     docs = settings.DOCS_URL.rstrip("/") + "/"
     problems = []
+    todo_count = 0
     if getattr(request.user, "is_authenticated", False):
+        todo_count = Todos(request.user, GitHubIdentity.of(request.user)).count()
         problems = (
             ProjectProblem.objects.filter(
                 Q(repository__watchers=request.user)
@@ -83,6 +86,7 @@ def site(request) -> dict:
         "app_registration_obstacle": None if configured else AppRegistration.obstacle(),
         "github": GitHubIdentity.of(getattr(request, "user", None)),
         "project_problems": problems,
+        "todo_count": todo_count,
         "focused": "/pulls/" in request.path
         or "/pulls/" in request.GET.get("next", request.POST.get("next", "")),
     }

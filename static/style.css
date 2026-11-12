@@ -36,6 +36,18 @@ main.wrap { padding-top: 1.5rem; padding-bottom: 2rem; min-height: 60vh; }
 /* The menu of the colors, like the switch of the documentation: a dropdown with icons, without JavaScript. */
 .icon { display: inline-block; vertical-align: -.2em; flex: none; }
 .theme-menu { position: relative; }
+/* The menu of the account in the top bar, without JavaScript. */
+.account-menu { position: relative; }
+.account-menu summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: .4rem; padding: .3rem .6rem; border: 1px solid color-mix(in srgb, var(--nav-text) 50%, transparent); border-radius: .4rem; color: var(--nav-text); }
+.account-menu summary::-webkit-details-marker { display: none; }
+.account-menu summary::after { content: "▾"; font-size: .8em; }
+.account-menu summary:hover, .account-menu[open] summary { background: color-mix(in srgb, var(--nav-text) 18%, transparent); }
+.account-menu ul { position: absolute; right: 0; top: calc(100% + .35rem); z-index: 20; min-width: 13rem; list-style: none; margin: 0; padding: .3rem; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; box-shadow: 0 .4rem 1.2rem rgba(0, 0, 0, .2); }
+.nav .account-menu ul a, .account-menu ul button { display: flex; align-items: center; gap: .4rem; width: 100%; box-sizing: border-box; padding: .45rem .6rem; border: 0; border-radius: .3rem; background: none; color: var(--text); font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.nav .account-menu ul a:hover, .account-menu ul button:hover { background: var(--surface-tint); text-decoration: none; color: var(--text); }
+.account-menu form { margin: 0; }
+.account-menu .separator { height: 1px; margin: .3rem .2rem; background: var(--border); }
+.count { display: inline-block; min-width: 1.3em; padding: 0 .35em; border-radius: 1em; background: var(--accent); color: var(--accent-text); font-size: .8em; font-weight: 700; text-align: center; }
 /* Links to GitHub: the mark of GitHub, alone where it is clear what it links to. */
 /* The path of a page in the site: owner / repository / agreement, with a menu of the others. */
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; margin: 0 0 1rem; }

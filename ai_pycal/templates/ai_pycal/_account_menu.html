@@ -1,0 +1,14 @@
+{% load i18n %}<details class="account-menu">
+  <summary>{% if github %}@{{ github.login }}{% else %}{{ user.username }}{% endif %}{% if todo_count %} <span class="count" title="{% translate "To do" %}">{{ todo_count }}</span>{% endif %}</summary>
+  <ul>
+    <li><a href="{% url 'todos' %}">{% translate "Todos" %}{% if todo_count %} <span class="count">{{ todo_count }}</span>{% endif %}</a></li>
+    <li><a href="{% url 'mine' %}">{% translate "My agreements" %}</a></li>
+    <li><a href="{% url 'setup' %}">+ {% translate "Set up a repository" %}</a></li>
+    <li class="separator" role="separator"></li>
+    {% if github %}<li><a href="{% url 'contributor' github.login %}">{% translate "Dashboard" %}</a></li>{% endif %}
+    <li><a href="{% url 'profile' %}">{% translate "Preferences" %}</a></li>
+    {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">{% translate "Admin" %}</a></li>{% endif %}
+    <li class="separator" role="separator"></li>
+    <li><form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">{% translate "Sign out" %}</button></form></li>
+  </ul>
+</details>

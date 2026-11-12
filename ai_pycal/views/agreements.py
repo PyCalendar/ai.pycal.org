@@ -2,19 +2,19 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Prefetch, Q
+from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from ai_pycal.errors import AgreementNotFound, SigningError
-from ai_pycal.models import AgreementVersion, PullRequest, RequiredAgreement, Signature
+from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.identity import GitHubIdentity
-from ai_pycal.services.pull_request_check import PullRequestCheck
 from ai_pycal.services.rendering import render as render_agreement
 from ai_pycal.services.signer import Signer
+from ai_pycal.services.todos import Todos
 from ai_pycal.services.visibility import visible_projects
 
 
@@ -46,7 +46,7 @@ def version_or_404(pk: int, user=None) -> AgreementVersion:
 
 @login_required
 def mine(request):
-    """My agreements: what I signed and what my pull requests need.
+    """My agreements: what I signed and my open pull requests.
 
     Args:
         request: The request.
@@ -54,35 +54,29 @@ def mine(request):
     Returns:
         The page.
     """
-    identity = GitHubIdentity.of(request.user)
-    signatures = []
-    pulls = []
-    if identity:
-        signatures = list(
-            Signature.objects.filter(github_id=identity.github_id).select_related("version")
-        )
-        pulls = list(
-            PullRequest.objects.filter(
-                author_github_id=identity.github_id, open=True, repository__active=True
-            )
-            .select_related("repository")
-            .prefetch_related(
-                Prefetch(
-                    "repository__required_agreements",
-                    queryset=RequiredAgreement.objects.select_related("version"),
-                )
-            )
-        )
-    signed = {signature.version_id for signature in signatures}
-    to_sign: dict[int, RequiredAgreement] = {}
-    for pull in pulls:
-        for state in PullRequestCheck(pull).states():
-            if state.required and state.agreement.version_id not in signed:
-                to_sign.setdefault(state.agreement.version_id, state.agreement)
+    todos = Todos(request.user, GitHubIdentity.of(request.user))
     return render(
         request,
         "ai_pycal/mine.html",
-        {"signatures": signatures, "pulls": pulls, "to_sign": list(to_sign.values())},
+        {"signatures": todos.signatures(), "pulls": todos.open_pulls(), "to_sign": todos.to_sign()},
+    )
+
+
+@login_required
+def todos(request):
+    """Todos: the agreements I have to sign and the problems of my projects.
+
+    Args:
+        request: The request.
+
+    Returns:
+        The page.
+    """
+    found = Todos(request.user, GitHubIdentity.of(request.user))
+    return render(
+        request,
+        "ai_pycal/todos.html",
+        {"to_sign": found.to_sign(), "problems": found.problems()},
     )
 
 

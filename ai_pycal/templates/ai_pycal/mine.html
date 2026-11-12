@@ -6,9 +6,7 @@
 {% if not github %}<p class="message message-warning">{% translate "Your account is not connected to GitHub. Sign out and sign in with GitHub." %}</p>{% endif %}
 <section class="card">
   <h2>{% translate "To sign" %}</h2>
-  {% if to_sign %}<ul class="list">{% for agreement in to_sign %}
-    <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.name }}</a> <span class="muted">{{ agreement.version.path }} @ <code>{{ agreement.version.short_commit }}</code></span></li>
-  {% endfor %}</ul>{% else %}<p>{% translate "Your open pull requests need no more agreements." %}</p>{% endif %}
+  {% include "ai_pycal/_to_sign.html" %}
 </section>
 <section class="card">
   <h2>{% translate "My open pull requests" %}</h2>
@@ -21,7 +19,7 @@
   <h2>{% translate "Signed" %}</h2>
   {% if signatures %}<table class="table"><thead><tr><th>{% translate "Agreement" %}</th><th>{% translate "Commit" %}</th><th>{% translate "Signed" %}</th></tr></thead><tbody>
   {% for signature in signatures %}<tr>
-    <td><a href="{% url 'agreement' signature.version_id %}">{{ signature.version.source }}/{{ signature.version.path }}</a></td>
+    <td>{% if signature.agreement %}{% include "ai_pycal/_agreement_path.html" with agreement=signature.agreement version_id=signature.version_id %}{% else %}<a href="{% url 'agreement' signature.version_id %}">{{ signature.version.path }}</a>{% endif %}</td>
     <td><code>{{ signature.version.short_commit }}</code> {% github_link signature.version.url "This version on GitHub" %}</td>
     <td>{% when signature.signed %}</td>
   </tr>{% endfor %}</tbody></table>{% else %}<p>{% translate "You have not signed an agreement yet." %}</p>{% endif %}
