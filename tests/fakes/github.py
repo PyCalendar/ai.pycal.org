@@ -31,6 +31,7 @@ class FakeRepository:
     refs: dict[str, str] = field(default_factory=dict)  # ref: sha
     trees: dict[str, dict[str, bytes]] = field(default_factory=dict)  # sha: path: content
     parents: dict[str, str | None] = field(default_factory=dict)
+    dates: dict[str, str] = field(default_factory=dict)  # sha: time of the commit
 
     def as_json(self) -> dict:
         return {
@@ -87,6 +88,7 @@ class FakeGitHub:
         sha = new_sha(full_name)
         repo.parents[sha] = repo.refs.get(branch)
         repo.trees[sha] = tree
+        repo.dates[sha] = f"2026-11-{1 + len(repo.dates) % 28:02d}T09:30:00Z"
         repo.refs[branch] = sha
         if branch == repo.default_branch:
             repo.refs["HEAD"] = sha
@@ -312,7 +314,10 @@ class FakeGitHub:
             parent = found.parents.get(sha)
             previous = found.trees.get(parent, {})
             if found.trees[sha].get(path) != previous.get(path):
-                return httpx.Response(200, json=[{"sha": sha}])
+                date = found.dates.get(sha, "2026-11-01T09:30:00Z")
+                return httpx.Response(
+                    200, json=[{"sha": sha, "commit": {"committer": {"date": date}}}]
+                )
             sha = parent
         return httpx.Response(200, json=[])
 

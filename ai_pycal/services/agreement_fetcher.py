@@ -49,7 +49,7 @@ class AgreementFetcher:
                 f"agreements.{spec.id}: ref {spec.ref or '(default branch)'!r} in {source}"
             ) from error
         try:
-            commit = self.api.last_file_change(source, snapshot, spec.path)
+            commit, committed = self.api.file_change(source, snapshot, spec.path)
         except GitHubNotFound as error:
             raise AgreementFileNotFound(
                 f"agreements.{spec.id}: {spec.path} in {source} at {snapshot[:7]}"
@@ -58,6 +58,9 @@ class AgreementFetcher:
             source=source, commit=commit, path=spec.path
         ).first()
         if known:
+            if committed and not known.committed:  # read before the time was kept
+                known.committed = committed
+                known.save(update_fields=["committed"])
             return known
         try:
             content = self.api.file(source, commit, spec.path)
@@ -74,6 +77,9 @@ class AgreementFetcher:
         if "\0" in text:
             raise AgreementFileNotText(f"agreements.{spec.id}: {spec.path}")
         version, _ = AgreementVersion.objects.get_or_create(
-            source=source, commit=commit, path=spec.path, defaults={"text": text}
+            source=source,
+            commit=commit,
+            path=spec.path,
+            defaults={"text": text, "committed": committed},
         )
         return version

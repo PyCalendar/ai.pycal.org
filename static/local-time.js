@@ -35,6 +35,11 @@
 
   function update() {
     const now = Date.now();
+    // exact times, such as the version of an agreement: the local time, without "ago"
+    for (const element of document.querySelectorAll("time.when-exact[datetime]")) {
+      const time = new Date(element.getAttribute("datetime"));
+      if (!Number.isNaN(time.getTime())) element.textContent = exact.format(time);
+    }
     for (const element of document.querySelectorAll("time.when[datetime]")) {
       const time = new Date(element.getAttribute("datetime"));
       if (Number.isNaN(time.getTime())) continue;

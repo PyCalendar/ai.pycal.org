@@ -77,3 +77,29 @@ def when(value: datetime | None) -> str:
         utc.strftime("%Y-%m-%d %H:%M UTC"),
         ago(utc, timezone.now()),
     )
+
+
+@register.simple_tag
+def version(agreement_version) -> str:
+    """The version of an agreement for people: the time of its last change.
+
+    The text is the exact time in UTC; ``static/local-time.js`` shows it in the local time
+    of the browser. Versions read before the time of their commit was kept show when the
+    site read them, until they are read again.
+
+    Args:
+        agreement_version: An :class:`~ai_pycal.models.AgreementVersion`, or None.
+
+    Returns:
+        A ``<time>`` element; empty for None.
+    """
+    if agreement_version is None:
+        return ""
+    value = agreement_version.committed or agreement_version.fetched
+    utc = value.astimezone(UTC)
+    return format_html(
+        '<time class="when-exact" datetime="{}" title="{}">{}</time>',
+        utc.isoformat(timespec="seconds").replace("+00:00", "Z"),
+        gettext("The time of the last change of the agreement"),
+        utc.strftime("%Y-%m-%d %H:%M UTC"),
+    )

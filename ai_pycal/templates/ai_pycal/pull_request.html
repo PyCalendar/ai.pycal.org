@@ -1,5 +1,5 @@
 {% extends "ai_pycal/base.html" %}
-{% load github i18n %}
+{% load times github i18n %}
 {% block title %}{{ pull }} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{{ pull.repository.full_name }}#{{ pull.number }} {% github_link pull.url "The pull request on GitHub" %}</h1>
@@ -22,7 +22,7 @@
 <h3><a href="{% url 'agreement' row.state.agreement.version_id %}?next={{ here|urlencode }}">{{ row.state.agreement.name }}</a> {% if row.state.agreement.mandatory %}<small>Mandatory</small>{% else %}<small>Required by your choice</small>{% endif %}</h3>
 {{ row.description }}
 {% if row.state.signed %}<p class="badge badge-success">signed</p>{% else %}<p class="badge badge-warning">not signed</p>{% endif %}
-<details><summary>View agreement · {{ row.state.agreement.version.short_commit }}</summary><article class="agreement">{{ row.html }}</article></details>
+<details><summary>View agreement · Version {% version row.state.agreement.version %}</summary><article class="agreement">{{ row.html }}</article></details>
 {% if is_author and not row.state.signed %}<input type="hidden" name="shown_{{ row.state.agreement.version_id }}" value="{{ row.token }}"><p><label><input type="checkbox" name="accept_{{ row.state.agreement.version_id }}" value="yes" required> I accept this agreement.</label></p>{% endif %}
 </section>{% endif %}{% endfor %}
 {% if is_author and needs_signing %}<p><label>Type your GitHub handle to sign: <input name="handle" required autocomplete="off" placeholder="{{ github.login }}"></label></p><button class="button">Sign required agreements</button></form>{% endif %}

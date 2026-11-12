@@ -17,10 +17,10 @@
 </section>
 <section class="card">
   <h2>{% translate "Signed" %}</h2>
-  {% if signatures %}<table class="table"><thead><tr><th>{% translate "Agreement" %}</th><th>{% translate "Commit" %}</th><th>{% translate "Signed" %}</th></tr></thead><tbody>
+  {% if signatures %}<table class="table"><thead><tr><th>{% translate "Agreement" %}</th><th>{% translate "Version" %}</th><th>{% translate "Signed" %}</th></tr></thead><tbody>
   {% for signature in signatures %}<tr>
     <td>{% if signature.agreement %}{% include "ai_pycal/_agreement_path.html" with agreement=signature.agreement version_id=signature.version_id %}{% else %}<a href="{% url 'agreement' signature.version_id %}">{{ signature.version.path }}</a>{% endif %}</td>
-    <td><code>{{ signature.version.short_commit }}</code> {% github_link signature.version.url "This version on GitHub" %}</td>
+    <td>{% version signature.version %}</td>
     <td>{% when signature.signed %}</td>
   </tr>{% endfor %}</tbody></table>{% else %}<p>{% translate "You have not signed an agreement yet." %}</p>{% endif %}
 </section>

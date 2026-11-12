@@ -57,7 +57,10 @@ def test_new_version_invalidates_public_status_without_erasing_history(
     history = client.get(
         f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/"
     ).content.decode()
-    assert old.short_commit in history and result["agreement"]["commit"][:7] in history
+    new = policy_project.required_agreements.get(key="ai").version
+    assert f'href="/agreements/{old.pk}/">Version' in history
+    assert f'href="/agreements/{new.pk}/">Version' in history
+    assert old.short_commit not in history  # commits only in the technical details
     assert client.get(f"/agreements/{old.pk}/").status_code == 200
     assert "agreements/ai-policy.md" in client.get("/contributor/alice/").content.decode()
 
@@ -114,8 +117,8 @@ def test_public_pages_call_them_agreements(client, policy_project, alice):
     client.force_login(alice)
     for url, expected in [
         ("/", ">Browse projects</a>"),
-        (f"/project/{REPOSITORY}/", ">Agreement</a>"),
-        (f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/", "<p>Agreement</p>"),
+        (f"/project/{REPOSITORY}/", ">Earlier versions</a>"),
+        (f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/", "<p>Earlier versions</p>"),
     ]:
         response = client.get(url)
         assert response.status_code == 200

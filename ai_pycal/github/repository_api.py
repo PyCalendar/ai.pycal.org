@@ -2,6 +2,7 @@
 
 import base64
 import re
+from datetime import datetime
 from urllib.parse import quote
 
 from ai_pycal.errors import GitHubFileHistoryInvalid, GitHubNotFound
@@ -62,6 +63,19 @@ class RepositoryAPI:
         return b"\0" * (int(data.get("size", MAX_FILE_BYTES)) + 1)
 
     def last_file_change(self, full_name: str, commit: str, path: str) -> str:
+        """The SHA of the last edit of a file; see :meth:`file_change`.
+
+        Args:
+            full_name: The source repository, owner/name.
+            commit: An immutable SHA resolved from the configured reference.
+            path: The agreement file's path in that repository.
+
+        Returns:
+            The SHA of the last commit affecting this path.
+        """
+        return self.file_change(full_name, commit, path)[0]
+
+    def file_change(self, full_name: str, commit: str, path: str) -> tuple[str, datetime | None]:
         """Find the last edit of a file in the history of a resolved commit.
 
         Args:
@@ -70,7 +84,8 @@ class RepositoryAPI:
             path: The agreement file's path in that repository.
 
         Returns:
-            The SHA of the last commit affecting this path, including deletion.
+            The SHA of the last commit affecting this path, including deletion, and the
+            time of that commit (its committer), or None if GitHub did not say.
 
         Raises:
             GitHubNotFound: This path has no history at the selected commit.
@@ -91,7 +106,12 @@ class RepositoryAPI:
             or not re.fullmatch(r"[0-9a-f]{40}", data[0]["sha"])
         ):
             raise GitHubFileHistoryInvalid(f"{full_name}/{path} at {commit[:7]}")
-        return data[0]["sha"]
+        date = ((data[0].get("commit") or {}).get("committer") or {}).get("date")
+        try:
+            committed = datetime.fromisoformat(date) if isinstance(date, str) else None
+        except ValueError:
+            committed = None
+        return data[0]["sha"], committed
 
     def labels(self, full_name: str, number: int) -> list[str]:
         """The labels of a pull request.

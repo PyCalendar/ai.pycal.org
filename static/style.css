@@ -80,6 +80,14 @@ h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weig
 .tabs > .tab-changes { display: none; }
 #view-changes:checked ~ .tab-changes { display: block; }
 #view-changes:checked ~ .tab-agreement { display: none; }
+.version { font-size: .95rem; }
+.tech-menu { position: relative; }
+.tech-menu summary { list-style: none; cursor: pointer; display: flex; padding: .25rem; border-radius: .3rem; color: var(--text-muted); }
+.tech-menu summary::-webkit-details-marker { display: none; }
+.tech-menu summary:hover, .tech-menu[open] summary { color: var(--primary); background: var(--surface-tint); }
+.tech-menu dl { position: absolute; left: 0; top: calc(100% + .3rem); z-index: 20; width: max-content; max-width: min(90vw, 40rem); margin: 0; padding: .6rem .8rem; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; box-shadow: 0 .4rem 1.2rem rgba(0, 0, 0, .2); display: grid; grid-template-columns: auto 1fr; gap: .3rem .8rem; font-size: .9rem; }
+.tech-menu dt { color: var(--text-muted); font-weight: 600; }
+.tech-menu dd { margin: 0; overflow-wrap: anywhere; }
 .agreement-details { border-top: 1px solid var(--border); margin-top: 2rem; padding-top: .75rem; font-size: .9rem; }
 .github-link { display: inline-flex; align-items: center; gap: .35em; }
 .github-link .github-mark { width: 1em; height: 1em; }

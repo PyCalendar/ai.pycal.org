@@ -328,3 +328,27 @@
 - [x] Every link to GitHub has the mark of GitHub (Primer Octicons, MIT, REUSE.toml); next to titles and
       commits the mark alone is the link, with aria-label and title; a test finds links without it.
 - [x] Mandatory agreements first (ordering of RequiredAgreement, migration 0007, pull request checks).
+
+## 2026-11-12: pages for people (agreement, projects, menu, todos, versions)
+
+- [x] Agreement page: title is the path owner / project / agreement (each a link, the name to the
+      agreement page); a menu of the other agreements of the project; details moved off the page.
+- [x] Handle: the field has a pattern of the account (any case, optional @); errors of signing are
+      shown next to the form, not as an error page (HTTP 400 with the page).
+- [x] The list of all agreements (/agreements/) removed, with its menu entry and button.
+- [x] Projects page: each project with its status (checks pull requests / error) and a dropdown of
+      its agreements, mandatory first; /projects/<owner>/ is the page of an owner.
+- [x] Account menu: Todos (with number), My agreements, + Set up a repository, Dashboard (contributor
+      page), Preferences (profile), Sign out; Admin for staff.
+- [x] Todos page: agreements to sign (also those changed since signed) and problems of my projects.
+- [x] My agreements: changed agreements are "to sign" with "You signed an earlier version"; signed
+      agreements are named owner / project / agreement, never by path.
+- [x] Agreement signed before: whole agreement first, a tab with the colored changes (no JavaScript).
+- [x] Project page: badges Mandatory/Optional and Signed/Outdated signature/Unsigned; unsigned
+      mandatory and outdated signatures listed as needing attention.
+- [x] Version = time of the last change of the agreement (commit time kept, migration 0008, filled in
+      at the next reading for older versions), shown in the local time of the browser.
+- [x] Technical details (file on GitHub, commit, repository on GitHub) only behind the gear icon next
+      to the title of the agreement; no commit hashes or paths elsewhere.
+- [ ] The rest of the message "Make sure that" of the account menu was cut off: ask the person.
+- [ ] /repository/<owner>/<repo>/ and /project/<owner>/<repo>/ show the same project: merge them.

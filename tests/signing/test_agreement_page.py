@@ -41,12 +41,29 @@ def test_one_agreement_has_no_menu(client, cla, repository):
     assert 'class="crumb-menu"' not in client.get(f"/agreements/{cla.version_id}/").content.decode()
 
 
-def test_the_details_are_at_the_bottom(client, cla):
+def test_the_technical_details_are_behind_the_gear(client, cla):
     page = client.get(f"/agreements/{cla.version_id}/").content.decode()
-    assert page.index('id="agreement"') < page.index("data-details")
-    details = page.split("data-details")[1]
-    assert "agreements/cla.md of PyCalendar/ai.pycal.org-example" in details
-    assert "asked for by" in details
+    version = cla.version
+    technical = page.split("data-technical")[1].split("</details>")[0]
+    assert 'aria-label="Technical details"' in technical
+    assert (
+        f"https://github.com/{version.source}/blob/{version.commit}/agreements/cla.md" in technical
+    )
+    assert f"<code>{version.commit}</code>" in technical
+    assert f'href="https://github.com/{version.source}"' in technical
+    outside = page.replace(page.split("data-technical")[1].split("</details>")[0], "")
+    assert version.commit[:7] not in outside
+    assert "agreements/cla.md" not in outside
+
+
+def test_the_version_is_the_time_of_the_last_change(client, cla, github):
+    version = cla.version
+    page = client.get(f"/agreements/{version.pk}/").content.decode()
+    shown = page.split("data-version>")[1].split("</span>")[0]
+    assert version.committed is not None
+    stamp = version.committed.strftime("%Y-%m-%dT%H:%M:%SZ")
+    assert f'<time class="when-exact" datetime="{stamp}"' in shown
+    assert version.committed.strftime("%Y-%m-%d %H:%M UTC") in shown
 
 
 def test_the_owner_page_lists_the_projects_of_the_owner(client, repository):
@@ -79,3 +96,14 @@ def test_a_wrong_handle_shows_the_page_again_with_the_reason(client, cla, alice)
 
 def test_a_handle_with_regex_characters_is_escaped():
     assert handle_pattern("a-1") == r"\s*@?[aA]-1\s*"
+
+
+def test_versions_read_before_get_their_time_at_the_next_reading(repository, cla):
+    from ai_pycal.services.repository_sync import RepositorySync
+
+    version = cla.version
+    version.committed = None
+    version.save()
+    RepositorySync(repository).sync()
+    version.refresh_from_db()
+    assert version.committed is not None

@@ -18,6 +18,8 @@ class AgreementVersion(models.Model):
     source = models.CharField(max_length=200)
     text = models.TextField()
     fetched = models.DateTimeField(auto_now_add=True)
+    # the time of the commit: people see it as the version; None if not known yet
+    committed = models.DateTimeField(null=True, blank=True)
     projects = models.ManyToManyField("Repository", related_name="agreement_history", blank=True)
 
     class Meta:

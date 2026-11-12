@@ -165,6 +165,12 @@ def contributor(request, handle: str):
         signature.projects = visible.filter(
             required_agreements__version=signature.version
         ).distinct()
+        # the agreement of a project, to name it for people instead of its file
+        signature.agreement = (
+            RequiredAgreement.objects.filter(version=signature.version, repository__in=visible)
+            .select_related("repository")
+            .first()
+        )
     engaged = (
         visible.filter(
             Q(pull_requests__author_github_id=github_id)
@@ -225,7 +231,18 @@ def history(request, owner: str, repo: str, agreement_path: str):
     return render(
         request,
         "ai_pycal/history.html",
-        {"source": f"{owner}/{repo}", "path": agreement_path, "versions": rows},
+        {
+            "source": f"{owner}/{repo}",
+            "path": agreement_path,
+            "versions": rows,
+            "agreement": RequiredAgreement.objects.filter(
+                version__source__iexact=f"{owner}/{repo}",
+                version__path=agreement_path,
+                repository__in=visible,
+            )
+            .select_related("repository")
+            .first(),
+        },
     )
 
 

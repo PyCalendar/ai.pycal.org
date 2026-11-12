@@ -7,7 +7,7 @@
 {% if project.error %}<section class="message message-error" data-error="{{ project.error_code }}"><h2>{{ project.error.title }}</h2><p>{{ project.error_detail }}</p><a href="{{ project.error.docs_url }}">How to resolve</a></section>{% endif %}
 <h2>Agreements and signatures</h2>
 {% for policy in policies %}<section class="card" data-policy="{{ policy.key }}"><h3><a href="{% url 'agreement' policy.version_id %}">{{ policy.name }}</a> {% include "ai_pycal/_agreement_badges.html" %}</h3>{{ policy.description_html }}
-<p><a href="/agreements/history/{{ policy.version.source }}/{{ policy.version.path }}/">Agreement</a> · <code>{{ policy.version.short_commit }}</code> {% github_link policy.version.url "This version on GitHub" %}</p>
+<p>{% translate "Version" %} {% version policy.version %} · <a href="/agreements/history/{{ policy.version.source }}/{{ policy.version.path }}/">{% translate "Earlier versions" %}</a></p>
 {% if policy.labels %}<p>PR labels: {% for label in policy.labels %}<code>{{ label }}</code> {% endfor %}</p>{% endif %}
 <ul>{% for signature in policy.signers %}<li><a href="{% url 'contributor' signature.login %}">@{{ signature.login }}</a> · {% when signature.signed %}</li>{% empty %}<li>No signatures yet for this version.</li>{% endfor %}</ul></section>{% endfor %}
 {% if choices %}<h2>Policy choices</h2>{% if github %}<form method="post" action="/project/{{ project.full_name }}/default/">{% csrf_token %}{% endif %}
