@@ -172,3 +172,11 @@ def test_the_path_of_a_log_navigates_the_logs_and_back(client, github, repositor
     assert f'href="/project/{REPOSITORY}/pulls/1/">← Back to the pull request' in page
     owner = client.get("/logs/PyCalendar/").content.decode()
     assert "Pull request #1 opened" in owner
+
+
+def test_handles_in_the_log_link_to_the_people(client, github, repository, alice):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    client.force_login(alice)
+    sign_agreement(client, versions(repository)["cla"], "alice")
+    page = client.get(f"/logs/{REPOSITORY}/").content.decode()
+    assert '<a href="/contributor/alice/">@alice</a>' in page

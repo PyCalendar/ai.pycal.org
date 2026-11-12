@@ -16,7 +16,7 @@
   {% github_link pull.url "The pull request on GitHub" %}
 </div>
 <p class="lead">{{ pull.title }} <span class="muted">#{{ pull.number }}</span> · {% translate "by" %} <a href="{% url 'contributor' pull.author_login %}">@{{ pull.author_login }}</a></p>
-{% if user.is_authenticated and not is_author %}<p>{% blocktranslate with author=pull.author_login %}This is the public agreement record for @{{ author }}. Only the author of the pull request can change its choice.{% endblocktranslate %}</p>{% endif %}
+{% if user.is_authenticated and not is_author %}<p>{% url 'contributor' pull.author_login as author_url %}{% blocktranslate with author=pull.author_login %}This is the public agreement record for <a href="{{ author_url }}">@{{ author }}</a>. Only the author of the pull request can change its choice.{% endblocktranslate %}</p>{% endif %}
 {% if choices %}
 <section class="card"><h2>{% translate "Policy choice" %}</h2>
 {% if choice %}<p>{% translate "Current choice:" %} <strong>{{ choice.name }}</strong></p>{% else %}<p>{% translate "No choice selected. The author of the pull request must choose one." %}</p>{% endif %}
