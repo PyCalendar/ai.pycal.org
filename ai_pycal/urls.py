@@ -18,6 +18,7 @@ urlpatterns = [
     path("profile/", profile.profile, name="profile"),
     path("my-agreements/", agreements.mine, name="mine"),
     path("todos/", agreements.todos, name="todos"),
+    path("todos/<int:pk>/dismiss/", agreements.dismiss, name="dismiss"),
     path(
         "agreements/history/<str:owner>/<str:repo>/<path:agreement_path>/",
         policies.history,

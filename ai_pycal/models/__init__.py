@@ -10,6 +10,7 @@ from .pull_request import PullRequest
 from .repository import Repository
 from .required_agreement import RequiredAgreement
 from .signature import Signature
+from .todo_dismissal import TodoDismissal
 
 __all__ = [
     "AgreementVersion",
@@ -22,4 +23,5 @@ __all__ = [
     "ContributorPreference",
     "Profile",
     "ProjectProblem",
+    "TodoDismissal",
 ]

@@ -2,7 +2,13 @@
 
 from django.db.models import Prefetch, Q
 
-from ai_pycal.models import ProjectProblem, PullRequest, RequiredAgreement, Signature
+from ai_pycal.models import (
+    ProjectProblem,
+    PullRequest,
+    RequiredAgreement,
+    Signature,
+    TodoDismissal,
+)
 from ai_pycal.services.pull_request_check import PullRequestCheck
 from ai_pycal.services.visibility import visible_projects
 
@@ -61,23 +67,32 @@ class Todos:
             )
         )
 
-    def to_sign(self) -> list[RequiredAgreement]:
-        """The agreements to sign, each once, mandatory first.
+    def to_sign(self, dismissed: bool = False) -> list[RequiredAgreement]:
+        """The agreements to sign, each once: required first, then optional ones.
 
-        An agreement is to sign if an open pull request of the person needs it, or if the
-        person signed an earlier version of it and a project now asks for a newer one. Such
-        an agreement has ``signed_before``: the signature of the earlier version.
+        An agreement is to sign if a pull request of the person needs it, if it is an
+        optional agreement of a project where the person has an open pull request, or if
+        the person signed an earlier version and a project now asks for a newer one.
+
+        Args:
+            dismissed: Also the optional agreements that the person dismissed.
 
         Returns:
-            The agreements of projects, with ``signed_before`` (a signature or None).
+            The agreements of projects, with ``signed_before`` (the signature of an earlier
+            version, or None), ``required_for_me`` (a pull request needs it, or it is
+            mandatory; only the others can be dismissed) and ``dismissed``.
         """
         signatures = self.signatures()
         signed = {signature.version_id for signature in signatures}
         found: dict[int, RequiredAgreement] = {}
+        required: set[int] = set()
         for pull in self.open_pulls():
             for state in PullRequestCheck(pull).states():
-                if state.required and state.agreement.version_id not in signed:
-                    found.setdefault(state.agreement.version_id, state.agreement)
+                if state.agreement.version_id in signed:
+                    continue
+                found.setdefault(state.agreement.version_id, state.agreement)
+                if state.required:
+                    required.add(state.agreement.version_id)
         latest: dict[tuple[str, str], Signature] = {}
         for signature in signatures:
             latest.setdefault((signature.version.source, signature.version.path), signature)
@@ -96,9 +111,34 @@ class Todos:
             )
             for agreement in updated:
                 found.setdefault(agreement.version_id, agreement)
+        hidden = set(
+            TodoDismissal.objects.filter(user=self.user, version_id__in=found).values_list(
+                "version_id", flat=True
+            )
+        )
+        result = []
         for agreement in found.values():
             agreement.signed_before = latest.get((agreement.version.source, agreement.version.path))
-        return sorted(found.values(), key=lambda a: (not a.mandatory, a.name.lower()))
+            agreement.required_for_me = agreement.mandatory or agreement.version_id in required
+            agreement.dismissed = not agreement.required_for_me and agreement.version_id in hidden
+            if dismissed or not agreement.dismissed:
+                result.append(agreement)
+        return sorted(result, key=lambda a: (not a.required_for_me, a.name.lower()))
+
+    def dismiss(self, version_id: int) -> bool:
+        """Remove an optional agreement from the todos, until it changes.
+
+        Args:
+            version_id: The version of the agreement.
+
+        Returns:
+            True if it was dismissed; False if it is not an optional todo of the person.
+        """
+        for agreement in self.to_sign(dismissed=True):
+            if agreement.version_id == version_id and not agreement.required_for_me:
+                TodoDismissal.objects.get_or_create(user=self.user, version_id=version_id)
+                return True
+        return False
 
     def problems(self) -> list[ProjectProblem]:
         """The active problems of the projects that the person watches or administers."""

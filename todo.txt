@@ -352,3 +352,24 @@
       to the title of the agreement; no commit hashes or paths elsewhere.
 - [ ] The rest of the message "Make sure that" of the account menu was cut off: ask the person.
 - [ ] /repository/<owner>/<repo>/ and /project/<owner>/<repo>/ show the same project: merge them.
+
+## 2026-11-12: settings hidden, labels while unsigned, update, PR page, colors, help links
+
+- [x] PR labels and other settings of agreements are behind a gear; /repository/ shows the same page.
+- [x] pr.unsigned-labels (format 2.1.0): labels while an agreement is not signed; the example uses
+      cla-missing (the person removed agreements-signed); both repositories committed and pushed.
+- [x] Update button below Pull requests for administrators: reads the configuration again and checks
+      the open pull requests.
+- [x] Pull request page: title owner / project / #number with a menu of my pull requests (highest first,
+      filter by title or #number); "Project agreements" link removed; all agreements listed.
+- [x] Colors as backgrounds of agreements: signed green, unsigned mandatory red, unsigned optional yellow
+      (outdated = unsigned), theme colors with contrast >= 4.5:1; Mandatory badge in the text color,
+      Optional gray; dark text a little less white.
+- [x] Labels are renewed for open pull requests when the configuration or an agreement file of the
+      repository changes, and when a pull request is reopened; closed ones are not touched.
+- [ ] An agreement file in another repository: a push there does not renew labels (Update does).
+- [x] The footer only links to About; the About page has the other links.
+- [x] Setup: numbered list has room for its numbers.
+- [x] Links to the documentation next to things: ? in a circle, new tab; Email for new permissions
+      explained in the tutorial.
+- [x] Todos list optional agreements too; they can be dismissed until they change.

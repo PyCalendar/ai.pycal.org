@@ -63,6 +63,25 @@ def mine(request):
 
 
 @login_required
+@require_POST
+def dismiss(request, pk: int):
+    """Remove an optional agreement from my todos, until it changes.
+
+    Args:
+        request: The request.
+        pk: The number of the version of the agreement.
+
+    Returns:
+        Back to the todos, with a message.
+    """
+    if Todos(request.user, GitHubIdentity.of(request.user)).dismiss(pk):
+        messages.info(request, _("The optional agreement is no longer in your todos."))
+    else:
+        messages.error(request, _("Only optional agreements can be dismissed."))
+    return redirect("todos")
+
+
+@login_required
 def todos(request):
     """Todos: the agreements I have to sign and the problems of my projects.
 
