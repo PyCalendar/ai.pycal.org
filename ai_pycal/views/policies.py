@@ -27,6 +27,7 @@ from ai_pycal.models import (
     Signature,
 )
 from ai_pycal.services.agreement_diff import AgreementDiff
+from ai_pycal.services.email_addresses import verified_address
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.pull_request_check import PullRequestCheck
 from ai_pycal.services.pull_state import PullState
@@ -101,6 +102,43 @@ def projects(request, owner: str = ""):
             "setup_url": reverse("setup"),
         },
     )
+
+
+@login_required
+@require_POST
+@Trigger.view("watch", "@{login} changes the watching of a project", public=False)
+def watch(request, owner: str, repo: str):
+    """Watch a project, to get an email when it has a problem, or stop watching it.
+
+    Watching needs a verified email address; the emails go to the primary address if it is
+    verified, otherwise to another verified one.
+
+    Args:
+        request: The request; POST with ``watch`` (``yes`` or ``no``).
+        owner: The owner of the repository.
+        repo: The name of the repository.
+
+    Returns:
+        Back to the project, with a message.
+    """
+    repository = project_for(request, owner, repo)
+    if request.POST.get("watch") == "no":
+        repository.watchers.remove(request.user)
+        messages.info(request, "You no longer watch this project.")
+    elif not verified_address(request.user):
+        messages.error(
+            request,
+            "Verify an email address first: the emails about problems of the project go "
+            "to a verified address.",
+        )
+    else:
+        repository.watchers.add(request.user)
+        messages.success(
+            request,
+            f"You watch this project. Emails about its problems go to "
+            f"{verified_address(request.user)}.",
+        )
+    return redirect(f"/project/{repository.full_name}/")
 
 
 def project_status(request, owner: str, repo: str):
@@ -183,6 +221,9 @@ def project(request, owner: str, repo: str):
             "policies": policies,
             "attention": [policy for policy in policies if policy.attention],
             "can_update": may_update(request.user, repository),
+            "watching": request.user.is_authenticated
+            and repository.watchers.filter(pk=request.user.pk).exists(),
+            "watch_address": verified_address(request.user),
             "show_all": request.GET.get("pulls") == "all",
             "pulls": PullState.annotate(
                 repository.pull_requests.select_related("repository").order_by("-number")

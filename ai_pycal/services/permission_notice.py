@@ -2,13 +2,13 @@
 
 import logging
 
-from allauth.account.models import EmailAddress
 from django.conf import settings
 from django.template.loader import render_to_string
 
 from ai_pycal.actions import EmailSent
 from ai_pycal.github import permissions
-from ai_pycal.models import Installation, Profile
+from ai_pycal.models import Installation
+from ai_pycal.services.email_addresses import notification_addresses
 
 log = logging.getLogger(__name__)
 
@@ -39,14 +39,7 @@ class PermissionNotice:
             The addresses, without duplicates.
         """
         addresses = [self.installation.notify_email]
-        opted_out = Profile.objects.filter(email_notifications=False).values_list(
-            "user_id", flat=True
-        )
-        addresses += list(
-            EmailAddress.objects.filter(user__in=self.installation.admins.all(), verified=True)
-            .exclude(user_id__in=opted_out)
-            .values_list("email", flat=True)
-        )
+        addresses += notification_addresses(self.installation.admins.values_list("pk", flat=True))
         return sorted({address for address in addresses if address})
 
     def send_if_needed(self) -> bool:

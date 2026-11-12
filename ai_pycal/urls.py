@@ -46,6 +46,7 @@ urlpatterns = [
     path("project/<str:owner>/<str:repo>/", policies.project, name="project"),
     path("project/<str:owner>/<str:repo>/default/", policies.default_choice, name="default_choice"),
     path("project/<str:owner>/<str:repo>/status/", policies.project_status, name="project_status"),
+    path("project/<str:owner>/<str:repo>/watch/", policies.watch, name="watch_project"),
     path("project/<str:owner>/<str:repo>/update/", setup.update_project, name="update_project"),
     path("project/<str:owner>/<str:repo>/pulls/<int:number>/", policies.pull, name="project_pull"),
     path(

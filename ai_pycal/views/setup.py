@@ -203,7 +203,7 @@ def remove_repository(request, installation_id: int, repository_id: int):
 
 @login_required
 @require_POST
-@Trigger.view("setup", "Email for new permissions changed by @{login}", public=False)
+@Trigger.view("setup", "Email of the installation changed by @{login}", public=False)
 def notify_email(request, installation_id: int):
     """Set the address that is told when the app needs new permissions.
 

@@ -72,16 +72,27 @@ people who signed get the labels of ``pr.labels``.
 
 .. _permission-email:
 
-5. Enter an email address
-=========================
+5. Emails: permissions and problems
+===================================
 
-When a new version of the site needs more permissions, the site writes to the
-address of the installation and to its administrators who have an email address
-on GitHub. Enter the address in **Email for new permissions** next to the
-installation on the page **Setup**. The email links to the page of GitHub where
-the owners of the installation accept the permissions; until then, the site
-keeps working with the permissions it has. The permissions are listed in
-:doc:`/reference/permissions`.
+The site writes two kinds of email:
+
+New permissions
+   When a new version of the site needs more permissions, the address in
+   **Email of the installation** next to the installation on the page
+   **Setup**, and the administrators of the installation, get the link to the
+   page of GitHub where the owners accept them. Until then the site keeps
+   working with the permissions it has. The permissions are listed in
+   :doc:`/reference/permissions`.
+Problems of a project
+   On the page of a project, **Watch this project** sends you an email when
+   the project has a problem, such as a configuration that cannot be read.
+   Administrators who set up a repository watch it already.
+
+Emails go to one address per person: your primary address on the site if it is
+verified, otherwise your newest verified address, never one that is not
+verified. Watching therefore needs a verified address. You can turn the emails
+off in your preferences.
 
 Update by hand
 ==============

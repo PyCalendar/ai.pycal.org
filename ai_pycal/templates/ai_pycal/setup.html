@@ -44,7 +44,7 @@ GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
   <h2>{{ item.github.account.login }}</h2>
   {% if item.missing %}<p class="message message-warning" data-missing-permissions>{% blocktranslate with missing=item.missing %}The app needs new permissions: {{ missing }}.{% endblocktranslate %} {% translate "Accept them on GitHub" as accept %}{% github_link item.github.html_url accept accept %}</p>{% endif %}
   <form method="post" action="{% url 'notify_email' item.github.id %}" class="inline-form">{% csrf_token %}
-    <label for="email-{{ item.github.id }}">{% translate "Email for new permissions" %}</label> {% help_link links.permission_email "Email for new permissions" %}
+    <label for="email-{{ item.github.id }}">{% translate "Email of the installation" %}</label> {% help_link links.permission_email "Email of the installation" %} <small class="muted">{% translate "When a new version of the site needs more permissions, this address and the administrators get the link to accept them." %}</small>
     <input id="email-{{ item.github.id }}" type="email" name="email" value="{{ item.stored.notify_email|default:'' }}">
     <button class="button button-small">{% translate "Save" %}</button>
   </form>

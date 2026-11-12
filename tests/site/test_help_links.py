@@ -21,7 +21,7 @@ def test_the_question_mark_opens_a_new_tab():
 def test_the_email_for_new_permissions_is_explained(client, repository, maintainer, github):
     client.force_login(maintainer)
     page = client.get("/setup/").content.decode()
-    label = page.split("Email for new permissions</label>")[1].split("</a>")[0]
+    label = page.split("Email of the installation</label>")[1].split("</a>")[0]
     assert "tutorial/admin.html#permission-email" in label
     assert 'class="help-link"' in label
 

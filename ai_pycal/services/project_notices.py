@@ -2,13 +2,12 @@
 
 import logging
 
-from allauth.account.models import EmailAddress
 from django.conf import settings
-from django.db.models import Q
 
 from ai_pycal.actions import EmailSent
 from ai_pycal.errors import ConfigFileError
-from ai_pycal.models import Profile, ProjectProblem
+from ai_pycal.models import ProjectProblem
+from ai_pycal.services.email_addresses import notification_addresses
 
 log = logging.getLogger(__name__)
 
@@ -40,20 +39,9 @@ class ProjectNotices:
         problem.save()
         if problem.notified:
             return
-        users = self.repository.watchers.values_list("pk", flat=True)
-        admins = self.repository.installation.admins.values_list("pk", flat=True)
-        opted_out = Profile.objects.filter(email_notifications=False).values_list(
-            "user_id", flat=True
-        )
-        addresses = sorted(
-            set(
-                EmailAddress.objects.filter(
-                    Q(user_id__in=users) | Q(user_id__in=admins), verified=True
-                )
-                .exclude(user_id__in=opted_out)
-                .values_list("email", flat=True)
-            )
-        )
+        users = set(self.repository.watchers.values_list("pk", flat=True))
+        users |= set(self.repository.installation.admins.values_list("pk", flat=True))
+        addresses = notification_addresses(users)
         if not addresses:
             return
         url = f"{settings.SITE_URL}/project/{self.repository.full_name}/"
