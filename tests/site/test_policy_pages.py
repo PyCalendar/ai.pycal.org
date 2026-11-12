@@ -53,8 +53,7 @@ def test_new_version_invalidates_public_status_without_erasing_history(
     result = client.get(f"/project/{REPOSITORY}/contributor/alice/ai.json").json()
     assert not result["signed"]
     assert result["agreement"]["commit"] != old.commit
-    histories = client.get("/agreements/").content.decode()
-    assert f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/" in histories
+    assert client.get("/agreements/").status_code == 404  # the list of agreements is gone
     history = client.get(
         f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/"
     ).content.decode()
@@ -106,17 +105,15 @@ def test_unknown_contributor_and_history_are_well_defined(client, policy_project
     assert client.get(f"/agreements/history/{REPOSITORY}/missing.md/").status_code == 404
 
 
-def test_home_links_to_public_directories(client):
+def test_home_links_to_the_projects(client):
     page = client.get("/").content.decode()
-    assert 'href="/projects/"' in page and 'href="/agreements/"' in page
-    assert ">Browse agreements</a>" in page
+    assert 'href="/projects/"' in page and 'href="/agreements/"' not in page
 
 
 def test_public_pages_call_them_agreements(client, policy_project, alice):
     client.force_login(alice)
     for url, expected in [
-        ("/", ">Browse agreements</a>"),
-        ("/agreements/", "<h1>Agreements</h1>"),
+        ("/", ">Browse projects</a>"),
         (f"/project/{REPOSITORY}/", ">Agreement</a>"),
         (f"/agreements/history/{REPOSITORY}/agreements/ai-policy.md/", "<p>Agreement</p>"),
     ]:
@@ -124,7 +121,6 @@ def test_public_pages_call_them_agreements(client, policy_project, alice):
         assert response.status_code == 200
         page = response.content.decode()
         assert expected in page
-        assert ">Agreements</a>" in page
         assert "Agreement history" not in page
         assert "Agreement histories" not in page
 
@@ -151,3 +147,23 @@ def test_mandatory_agreements_come_first(client, repository):
     assert list(repository.required_agreements.all()) == [second, first]
     page = client.get(f"/project/{repository.full_name}/").content.decode()
     assert page.index(second.name) < page.index(first.name)
+
+
+def test_the_projects_page_shows_the_status_and_the_agreements(client, policy_project):
+    page = client.get("/projects/").content.decode()
+    project = page.split(f'data-project="{REPOSITORY}"')[1].split("</details>")[0]
+    assert 'data-status="working"' in project
+    for agreement in policy_project.required_agreements.all():
+        assert f'href="/agreements/{agreement.version_id}/">{agreement.name}</a>' in project
+    assert 'href="/projects/PyCalendar/">PyCalendar</a>' in project
+    assert f'href="/project/{REPOSITORY}/">' in project
+
+
+def test_a_project_with_an_error_shows_it(client, policy_project):
+    policy_project.error_code = "ConfigFileNotFound"
+    policy_project.error_detail = ".github/agreements.yml"
+    policy_project.save()
+    page = client.get("/projects/").content.decode()
+    project = page.split(f'data-project="{REPOSITORY}"')[1].split("</details>")[0]
+    assert 'data-status="error"' in project
+    assert "The configuration file was not found" in project or "Error:" in project

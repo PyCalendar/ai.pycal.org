@@ -42,6 +42,16 @@ class Repository(models.Model):
         return self.full_name
 
     @property
+    def owner(self) -> str:
+        """The organization or person that owns the repository, such as ``PyCalendar``."""
+        return self.full_name.split("/", 1)[0]
+
+    @property
+    def name(self) -> str:
+        """The name of the repository without its owner, such as ``icalendar``."""
+        return self.full_name.split("/", 1)[-1]
+
+    @property
     def url(self) -> str:
         """The page of the repository on GitHub."""
         return f"https://github.com/{self.full_name}"

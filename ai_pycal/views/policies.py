@@ -4,7 +4,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -22,6 +22,7 @@ from ai_pycal.models import (
     AgreementVersion,
     ContributorPreference,
     PullRequest,
+    RequiredAgreement,
     Signature,
 )
 from ai_pycal.services.identity import GitHubIdentity
@@ -70,7 +71,16 @@ def projects(request, owner: str = ""):
     Returns:
         The page.
     """
-    found = visible_projects(request.user).filter(active=True)
+    found = (
+        visible_projects(request.user)
+        .filter(active=True)
+        .prefetch_related(
+            Prefetch(
+                "required_agreements",
+                queryset=RequiredAgreement.objects.select_related("version"),
+            )
+        )
+    )
     if owner:
         found = found.filter(full_name__istartswith=f"{owner}/")
     return render(request, "ai_pycal/projects.html", {"projects": found, "owner": owner})
@@ -146,18 +156,6 @@ def contributor(request, handle: str):
             "is_self": identity is not None and identity.github_id == github_id,
         },
     )
-
-
-def histories(request):
-    """List agreement histories grouped by source repository and path."""
-    versions = AgreementVersion.objects.filter(
-        projects__in=visible_projects(request.user).filter(active=True)
-    ).order_by("source", "path", "-fetched")
-    groups = {}
-    for version in versions:
-        key = (version.source, version.path)
-        groups.setdefault(key, version)
-    return render(request, "ai_pycal/histories.html", {"histories": groups.values()})
 
 
 def history(request, owner: str, repo: str, agreement_path: str):

@@ -1,2 +1,0 @@
-{% extends "ai_pycal/base.html" %}
-{% block main %}<h1>Agreements</h1><p>Each agreement follows one file in a source repository. Projects may use different versions at the same time.</p><ul>{% for history in histories %}<li><a href="/agreements/history/{{ history.source }}/{{ history.path }}/">{{ history.source }} · {{ history.path }}</a></li>{% empty %}<li>No agreements yet.</li>{% endfor %}</ul>{% endblock %}

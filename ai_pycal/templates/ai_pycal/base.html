@@ -21,7 +21,6 @@
       {% if user.is_authenticated %}
         {% if not focused %}
         <li><a href="{% url 'projects' %}">Projects</a></li>
-        <li><a href="{% url 'histories' %}">Agreements</a></li>
         <li><a href="{% url 'mine' %}">{% translate "My agreements" %}</a></li>
         <li><a href="{% url 'setup' %}">{% translate "Setup" %}</a></li>
         {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">{% translate "Admin" %}</a></li>{% endif %}

@@ -2,10 +2,16 @@
 Contributor pages, choices and profiles
 =======================================
 
-The home page links to ``/projects/`` and ``/agreements/``. The first lists
-projects; the second lists agreements, grouped by source repository
-and path. An agreement page shows each visible version and the projects currently
-using its exact commit.
+The home page links to ``/projects/``, which lists the projects with their
+status: whether the site checks their pull requests, or the error of their
+configuration. The arrow of a project opens its agreements, mandatory ones
+first. ``/projects/<owner>/`` lists the projects of one owner.
+
+An agreement page such as ``/agreements/2/`` has the path of the agreement in
+the site as its title: owner, project and agreement, each a link, with a menu
+of the other agreements of the project. Its source and version are at the
+bottom. The history of an agreement, ``/agreements/history/<source>/<path>/``,
+shows each visible version and the projects using it.
 
 A project page such as ``/project/collective/icalendar/`` lists policies,
 choices and dated signatures. Contributors can set their default for future
