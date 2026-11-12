@@ -105,3 +105,15 @@ def test_the_older_repository_addresses_redirect(client, repository, old, new):
 @pytest.mark.parametrize("page", ["/accounts/signup/", "/nobody/nothing/", "/a/b/pull/1/"])
 def test_other_addresses_of_two_parts_are_not_found(client, page):
     assert client.get(page).status_code == 404
+
+
+def test_the_start_names_site_admins_without_an_account(settings, capsys, db):
+    from django.core.management import call_command
+
+    person(1, "niccokunzmann")
+    settings.SITE_ADMINS = ["nicokunzmann", "niccokunzmann"]
+    call_command("prepare")
+    out = capsys.readouterr().out
+    assert "SITE_ADMINS without an account on this site" in out
+    assert "nicokunzmann" in out.split("SITE_ADMINS without")[1].split("\n")[0]
+    assert "niccokunzmann" not in out.split("SITE_ADMINS without")[1].split("\n")[0]

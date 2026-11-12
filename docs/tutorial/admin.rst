@@ -14,9 +14,9 @@ that app and activate repositories.
 1. Write the agreements
 =======================
 
-An agreement is a file in a repository on GitHub, such as
-``agreements/ai-policy.md``. Markdown files are shown formatted, other files as
-text. The agreements can be in the repository itself or in another repository,
+An agreement is a Markdown file in a repository on GitHub, such as
+``agreements/ai-policy.md``. It starts with its title as a heading of level 1,
+such as ``# AI Policy``: the site names the agreement by this title. The agreements can be in the repository itself or in another repository,
 for example one repository with the agreements of all projects of an
 organization.
 

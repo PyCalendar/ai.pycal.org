@@ -177,3 +177,20 @@ def test_unknown_keys_of_pr_are_still_refused():
             "version: 2.1.0\nagreements:\n  a:\n    name: A\n    path: A.md\n"
             "    pr: {labels: x, unsinged-labels: y}\n"
         )
+
+
+def test_an_agreement_needs_a_title(client, github, repository):
+    from ai_pycal.services.repository_sync import RepositorySync
+    from tests.conftest import REPOSITORY
+
+    github.push(REPOSITORY, {"agreements/cla.md": "No heading, only text."})
+    with pytest.raises(errors.AgreementTitleMissing):
+        RepositorySync(repository).sync()
+    repository.refresh_from_db()
+    assert repository.error_code == "AgreementTitleMissing"
+
+
+def test_the_title_is_kept_with_the_version(repository):
+    cla = repository.required_agreements.get(key="cla")
+    assert cla.version.title == "Contributor License Agreement (example)"
+    assert cla.title == cla.version.title

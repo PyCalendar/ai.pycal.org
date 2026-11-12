@@ -17,6 +17,8 @@ class AgreementVersion(models.Model):
     # the source repository, owner/name
     source = models.CharField(max_length=200)
     text = models.TextField()
+    # the first heading of level 1: the name of the agreement for people
+    title = models.CharField(max_length=200, blank=True)
     fetched = models.DateTimeField(auto_now_add=True)
     # the time of the commit: people see it as the version; None if not known yet
     committed = models.DateTimeField(null=True, blank=True)

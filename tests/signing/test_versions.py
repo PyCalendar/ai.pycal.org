@@ -157,7 +157,7 @@ def test_the_same_path_in_another_commit_is_another_agreement(client, github, re
         other,
         {
             ".github/agreements.yml": "version: 1.0.0\nagreements:\n  cla: {name: CLA, path: agreements/cla.md, pr: {tags: cla}}\n",
-            "agreements/cla.md": "Another CLA",
+            "agreements/cla.md": "# Another CLA",
         },
     )
     github.installation_repositories[1].append(other)
@@ -168,7 +168,7 @@ def test_the_same_path_in_another_commit_is_another_agreement(client, github, re
     )
     RepositorySetup(second).add()
     assert version_of(second) != version_of(repository)
-    assert version_of(second).text == "Another CLA"
+    assert version_of(second).text == "# Another CLA"
 
 
 @pytest.mark.parametrize("ref_kind", ["branch", "tag", "commit"])

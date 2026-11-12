@@ -157,7 +157,7 @@ def test_the_projects_page_shows_the_status_and_the_agreements(client, policy_pr
     project = page.split(f'data-project="{REPOSITORY}"')[1].split("</details>")[0]
     assert 'data-status="working"' in project
     for agreement in policy_project.required_agreements.all():
-        assert f'href="/agreements/{agreement.version_id}/">{agreement.name}</a>' in project
+        assert f'href="/agreements/{agreement.version_id}/">{agreement.title}</a>' in project
     assert 'href="/projects/PyCalendar/">PyCalendar</a>' in project
     assert f'href="/project/{REPOSITORY}/">' in project
 

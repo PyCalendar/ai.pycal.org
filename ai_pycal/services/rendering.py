@@ -28,3 +28,30 @@ def render(text: str, path: str) -> SafeString:
     if path.lower().endswith(MARKDOWN):
         return mark_safe(_markdown.render(text))  # noqa: S308 - html is off
     return mark_safe(f'<pre class="agreement-text">{escape(text)}</pre>')  # noqa: S308
+
+
+def markdown_title(text: str) -> str:
+    r"""The title of an agreement: the text of its first heading of level 1.
+
+    Args:
+        text: The Markdown of the agreement.
+
+    Returns:
+        The title, without formatting; "" if there is none.
+
+    Examples:
+        >>> markdown_title("Intro\n\n# Contributor *License* Agreement\n\nText")
+        'Contributor License Agreement'
+        >>> markdown_title("## Only a subheading")
+        ''
+    """
+    tokens = _markdown.parse(text)
+    for index, token in enumerate(tokens):
+        if token.type == "heading_open" and token.tag == "h1":
+            inline = tokens[index + 1]
+            return "".join(
+                child.content
+                for child in inline.children or []
+                if child.type in ("text", "code_inline")
+            ).strip()[:200]
+    return ""

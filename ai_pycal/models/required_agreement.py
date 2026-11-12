@@ -35,5 +35,10 @@ class RequiredAgreement(models.Model):
         ]
         ordering = ["repository", "-mandatory", "position"]  # mandatory first
 
+    @property
+    def title(self) -> str:
+        """The name of the agreement for people: the title of its file, else its name."""
+        return self.version.title or self.name
+
     def __str__(self) -> str:
         return f"{self.repository}: {self.key}"

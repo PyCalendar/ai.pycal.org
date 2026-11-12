@@ -216,6 +216,17 @@ class AgreementFileTooLarge(ConfigFileError):
     title = _("The file of an agreement is too large")
 
 
+class AgreementTitleMissing(ConfigFileError):
+    """The file of an agreement has no title.
+
+    An agreement is Markdown and starts with its title as a heading of level 1,
+    such as ``# Contributor License Agreement``. The site shows the agreement by
+    this title everywhere. Add the heading to the file.
+    """
+
+    title = _("The agreement has no title")
+
+
 class AgreementFileNotText(ConfigFileError):
     """The file of an agreement is not text in UTF-8.
 

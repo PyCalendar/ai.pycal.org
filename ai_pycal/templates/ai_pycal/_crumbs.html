@@ -1,8 +1,8 @@
 {% load i18n github times %}<div class="crumbs">
-  <{{ tag|default:"h1" }} class="crumbs-path"><a href="{% url 'owner_projects' crumbs.owner %}">{{ crumbs.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ crumbs.full_name }}/">{{ crumbs.repo }}</a><span class="crumbs-sep">/</span><a href="{% url 'agreement' crumbs.agreement.version_id %}">{{ crumbs.agreement.name }}</a></{{ tag|default:"h1" }}>
+  <{{ tag|default:"h1" }} class="crumbs-path"><a href="{% url 'owner_projects' crumbs.owner %}">{{ crumbs.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ crumbs.full_name }}/">{{ crumbs.repo }}</a><span class="crumbs-sep">/</span><a href="{% url 'agreement' crumbs.agreement.version_id %}">{{ crumbs.agreement.title }}</a></{{ tag|default:"h1" }}>
   {% if crumbs.others %}<details class="crumb-menu">
     <summary title="{% translate "Other agreements of this project" %}" aria-label="{% translate "Other agreements of this project" %}">▾</summary>
-    <ul>{% for other in crumbs.others %}<li><a href="{% url 'agreement' other.version_id %}">{{ other.name }}</a>{% if not other.mandatory %} <span class="muted">({% translate "optional" %})</span>{% endif %}</li>{% endfor %}</ul>
+    <ul>{% for other in crumbs.others %}<li><a href="{% url 'agreement' other.version_id %}">{{ other.title }}</a>{% if not other.mandatory %} <span class="muted">({% translate "optional" %})</span>{% endif %}</li>{% endfor %}</ul>
   </details>{% endif %}
   {% if version %}<span class="version muted" data-version>{% translate "Version" %} {% version version %}</span>
   <details class="tech-menu" data-technical>

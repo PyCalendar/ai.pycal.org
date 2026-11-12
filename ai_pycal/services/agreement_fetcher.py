@@ -6,10 +6,12 @@ from ai_pycal.errors import (
     AgreementFileNotText,
     AgreementFileTooLarge,
     AgreementRefNotFound,
+    AgreementTitleMissing,
     GitHubNotFound,
 )
 from ai_pycal.github.repository_api import MAX_FILE_BYTES, RepositoryAPI
 from ai_pycal.models import AgreementVersion
+from ai_pycal.services.rendering import markdown_title
 
 
 class AgreementFetcher:
@@ -76,10 +78,13 @@ class AgreementFetcher:
             raise AgreementFileNotText(f"agreements.{spec.id}: {spec.path}") from error
         if "\0" in text:
             raise AgreementFileNotText(f"agreements.{spec.id}: {spec.path}")
+        title = markdown_title(text)
+        if not title:
+            raise AgreementTitleMissing(f"agreements.{spec.id}: {spec.path} has no # heading")
         version, _ = AgreementVersion.objects.get_or_create(
             source=source,
             commit=commit,
             path=spec.path,
-            defaults={"text": text, "committed": committed},
+            defaults={"text": text, "committed": committed, "title": title},
         )
         return version

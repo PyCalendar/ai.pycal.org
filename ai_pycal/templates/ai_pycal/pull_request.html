@@ -29,7 +29,7 @@
 {% if is_author and needs_signing %}<form method="post" action="{{ here }}sign/">{% csrf_token %}{% endif %}
 {% for row in rows %}
 <section class="card agreement-state {% if row.state.signed %}state-signed{% elif row.state.required %}state-missing{% else %}state-optional{% endif %}" data-agreement="{{ row.state.agreement.key }}" data-state="{% if row.state.signed %}signed{% elif row.state.required %}missing{% else %}optional{% endif %}">
-<h3><a href="{% url 'agreement' row.state.agreement.version_id %}?next={{ here|urlencode }}">{{ row.state.agreement.name }}</a>
+<h3><a href="{% url 'agreement' row.state.agreement.version_id %}?next={{ here|urlencode }}">{{ row.state.agreement.title }}</a>
   <span class="badges">{% if row.state.agreement.mandatory %}<span class="badge badge-strong">{% translate "Mandatory" %}</span>{% elif row.state.required %}<span class="badge badge-strong">{% translate "Required by your choice" %}</span>{% else %}<span class="badge muted">{% translate "Optional" %}</span>{% endif %}
   {% if row.state.signed %}<span class="badge badge-success">{% translate "Signed" %}</span>{% else %}<span class="badge {% if row.state.required %}badge-error{% else %}badge-warning{% endif %}">{% translate "Unsigned" %}</span>{% endif %}</span></h3>
 {{ row.description }}

@@ -63,7 +63,7 @@ def test_a_changed_agreement_is_to_sign_again(client, github, repository, cla, a
         page = client.get(url).content.decode()
         item = page.split(f'data-to-sign="{new.version_id}"')[1].split("</li>")[0]
         assert "data-signed-before" in item and "You signed an earlier version" in item
-        assert f'href="/agreements/{new.version_id}/">{new.name}</a>' in item
+        assert f'href="/agreements/{new.version_id}/">{new.title}</a>' in item
         assert 'href="/projects/PyCalendar/">PyCalendar</a>' in item
 
 

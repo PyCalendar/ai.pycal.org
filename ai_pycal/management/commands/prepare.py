@@ -28,6 +28,12 @@ class Command(BaseCommand):
             pk=settings.SITE_ID, defaults={"domain": domain, "name": settings.SITE_NAME}
         )
         self.stdout.write(f"prepared {domain}")
+        unknown = self.unknown_admins()
+        if unknown:
+            self.stdout.write(
+                "SITE_ADMINS without an account on this site (a typo, or they never signed "
+                f"in): {', '.join(unknown)}"
+            )
         obstacle = None if AppRegistration.source() else AppRegistration.obstacle()
         if obstacle:
             self.stdout.write(
@@ -40,3 +46,18 @@ class Command(BaseCommand):
                 f"{settings.SITE_URL}/setup/github-app/ with the setup code "
                 f"{AppRegistration.setup_code()}"
             )
+
+    @staticmethod
+    def unknown_admins() -> list[str]:
+        """The handles of ``SITE_ADMINS`` that no account of the site has.
+
+        Returns:
+            The handles, such as a misspelled one; they get admin rights when they sign in.
+        """
+        from allauth.socialaccount.models import SocialAccount
+
+        known = {
+            str(account.extra_data.get("login", "")).lower()
+            for account in SocialAccount.objects.filter(provider="github")
+        }
+        return [login for login in settings.SITE_ADMINS if login not in known]

@@ -77,7 +77,11 @@ GitHub check names and the contributor JSON and badge endpoints.
 
 ``path``
    Required. A relative path without ``..`` in the source repository. The file
-   must be UTF-8 and at most 200 KB. Markdown files are rendered safely.
+   must be Markdown in UTF-8, at most 200 KB, and start with its title as a
+   heading of level 1, such as ``# Contributor License Agreement``. The site
+   names the agreement by this title everywhere; a file without one stops the
+   configuration with :class:`~ai_pycal.errors.config_file.AgreementTitleMissing`.
+   Markdown is rendered safely.
 
 ``repository``
    The source repository as ``owner/name``, an HTTPS GitHub URL or an SSH Git

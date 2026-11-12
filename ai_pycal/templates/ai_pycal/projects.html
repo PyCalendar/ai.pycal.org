@@ -14,7 +14,7 @@
       <span class="muted">{% blocktranslate count counter=project.required_agreements.all|length %}{{ counter }} agreement{% plural %}{{ counter }} agreements{% endblocktranslate %}</span>
     </summary>
     <ul class="list">{% for agreement in project.required_agreements.all %}
-      <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.name }}</a> {% if agreement.mandatory %}<span class="badge">{% translate "mandatory" %}</span>{% else %}<span class="badge muted">{% translate "optional" %}</span>{% endif %}</li>
+      <li><a href="{% url 'agreement' agreement.version_id %}">{{ agreement.title }}</a> {% if agreement.mandatory %}<span class="badge">{% translate "mandatory" %}</span>{% else %}<span class="badge muted">{% translate "optional" %}</span>{% endif %}</li>
     {% empty %}<li class="muted">{% translate "No agreements." %}</li>{% endfor %}</ul>
     {% if project.error_code %}<p class="message message-error">{{ project.error.title }}: <code>{{ project.error_detail }}</code> {% help_link project.error.docs_url project.error.title %}</p>{% endif %}
   </details></li>
