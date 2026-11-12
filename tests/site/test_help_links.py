@@ -18,14 +18,6 @@ def test_the_question_mark_opens_a_new_tab():
     assert '<span aria-hidden="true">?</span>' in html
 
 
-def test_the_email_for_new_permissions_is_explained(client, repository, maintainer, github):
-    client.force_login(maintainer)
-    page = client.get("/setup/").content.decode()
-    label = page.split("Email of the installation</label>")[1].split("</a>")[0]
-    assert "tutorial/admin.html#permission-email" in label
-    assert 'class="help-link"' in label
-
-
 def test_errors_of_projects_link_their_description_as_help(client, repository):
     repository.error_code = "ConfigFileNotFound"
     repository.save()

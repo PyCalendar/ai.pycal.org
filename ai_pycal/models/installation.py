@@ -17,7 +17,6 @@ class Installation(models.Model):
     permissions = models.JSONField(default=dict, blank=True)
     # people of this site who manage the installation: they get the emails
     admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
-    notify_email = models.EmailField(blank=True)
     # the missing permissions the administrators were told about, such as "statuses:write"
     permissions_notified = models.CharField(max_length=500, blank=True)
     removed = models.BooleanField(default=False)

@@ -20,7 +20,6 @@ def old_installation(example, maintainer):
         account_login="PyCalendar",
         account_type="Organization",
         permissions=dict(OLD),
-        notify_email="maintainers@example.org",
     )
     maintainer.email = "maintainer@example.org"
     maintainer.save()
@@ -43,7 +42,7 @@ def test_an_update_that_needs_more_permissions_sends_one_email(old_installation,
     call_command("check_permissions")
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert sorted(mail.to) == ["maintainer@example.org", "maintainers@example.org"]
+    assert mail.to == ["maintainer@example.org"]
     assert "statuses: write" in mail.body
     assert "https://github.com/organizations/PyCalendar/settings/installations/1" in mail.body
     call_command("check_permissions")
@@ -122,3 +121,23 @@ def test_the_permissions_are_the_minimal_set():
     found = manifest("a", "https://sign.example.org")
     assert found["default_permissions"] == permissions.REQUIRED
     assert found["request_oauth_on_install"] is False
+
+
+def test_the_people_who_watch_its_projects_get_the_email(old_installation, alice, mailoutbox):
+    from ai_pycal.models import Repository
+
+    EmailAddress.objects.create(user=alice, email="alice@example.org", verified=True)
+    project = Repository.objects.create(
+        installation=old_installation, github_id=5, full_name=REPOSITORY
+    )
+    project.watchers.add(alice)
+    call_command("check_permissions")
+    assert sorted(mailoutbox[0].to) == ["alice@example.org", "maintainer@example.org"]
+
+
+def test_setup_asks_for_no_extra_address(client, repository, maintainer):
+    client.force_login(maintainer)
+    page = client.get("/setup/").content.decode()
+    assert "Email of the installation" not in page
+    assert 'type="email"' not in page
+    assert client.post("/setup/1/email/", {"email": "a@example.org"}).status_code == 404

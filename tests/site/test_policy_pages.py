@@ -241,3 +241,23 @@ def test_mandatory_or_optional_is_kept_per_version(client, github, repository):
     older = page.split(f'data-version-row="{old.pk}"')[1].split("</section>")[0]
     assert "Optional" in newer and "current" in newer
     assert "Mandatory" in older and "current" not in older
+
+
+def test_the_projects_page_shows_all_projects_open(client, repository):
+    from ai_pycal.models import Installation, Repository
+
+    other = Installation.objects.create(github_id=2, account_login="other")
+    Repository.objects.create(installation=other, github_id=77, full_name="other/x", active=True)
+    page = client.get("/projects/").content.decode()
+    assert '<details class="owner" open data-owner="PyCalendar">' in page
+    assert '<details class="owner" open data-owner="other">' in page
+
+
+def test_visitors_learn_that_private_projects_need_signing_in(client, repository, alice):
+    repository.private = True
+    repository.save()
+    page = client.get("/projects/").content.decode()
+    assert "data-no-projects" in page and "data-private-hint" in page
+    assert 'href="/accounts/login/?next=/projects/"' in page
+    client.force_login(alice)
+    assert "data-private-hint" not in client.get("/projects/").content.decode()

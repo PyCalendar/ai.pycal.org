@@ -87,18 +87,19 @@ only by **Add**.
 The site writes two kinds of email:
 
 New permissions
-   When a new version of the site needs more permissions, the address in
-   **Email of the installation** next to the installation on the page
-   **Setup**, and the administrators of the installation, get the link to the
-   page of GitHub where the owners accept them. Until then the site keeps
+   When a new version of the site needs more permissions, the administrators
+   of the installation and the people who watch its projects get the link to
+   the page of GitHub where the owners accept them. Until then the site keeps
    working with the permissions it has. The permissions are listed in
    :doc:`/reference/permissions`.
 Problems of a project
    On the page of a project, **Watch this project** sends you an email when
    the project has a problem, such as a configuration that cannot be read.
-   Administrators who set up a repository watch it already.
+   Administrators who set up a repository watch it already. The page lists the
+   GitHub handles of the people who watch it; their addresses stay private.
 
-Emails go to one address per person: your primary address on the site if it is
+No extra address is needed. Emails go to one address per person, the one you
+have on the site: your primary address if it is
 verified, otherwise your newest verified address, never one that is not
 verified. Watching therefore needs a verified address. You can turn the emails
 off in your preferences.

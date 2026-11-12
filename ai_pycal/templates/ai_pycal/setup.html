@@ -11,7 +11,6 @@
     <ul>{% for name, level in required %}<li><code>{{ name }}: {{ level }}</code></li>{% endfor %}</ul>
     {% if install_url %}<p>{% translate "Install the GitHub App" as install %}{% github_link install_url install install "button" %}</p>{% endif %}</li>
   <li>{% translate "That is all: the repositories you chose that have the file are set up, and their open pull requests are checked and labelled. Below, you can remove a repository or add it again." %}</li>
-  <li>{% translate "Enter an email address: when a new version of this site needs more permissions, you are asked there to accept them." %}</li>
 </ol>
 <p><a href="{{ links.admin_tutorial }}">{% translate "The whole tutorial" %}</a></p>
 
@@ -43,11 +42,6 @@ GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
 <section class="card installation">
   <h2>{{ item.github.account.login }}</h2>
   {% if item.missing %}<p class="message message-warning" data-missing-permissions>{% blocktranslate with missing=item.missing %}The app needs new permissions: {{ missing }}.{% endblocktranslate %} {% translate "Accept them on GitHub" as accept %}{% github_link item.github.html_url accept accept %}</p>{% endif %}
-  <form method="post" action="{% url 'notify_email' item.github.id %}" class="inline-form">{% csrf_token %}
-    <label for="email-{{ item.github.id }}">{% translate "Email of the installation" %}</label> {% help_link links.permission_email "Email of the installation" %} <small class="muted">{% translate "When a new version of the site needs more permissions, this address and the administrators get the link to accept them." %}</small>
-    <input id="email-{{ item.github.id }}" type="email" name="email" value="{{ item.stored.notify_email|default:'' }}">
-    <button class="button button-small">{% translate "Save" %}</button>
-  </form>
   <table class="table"><tbody>
   {% for repo in item.repositories %}<tr>
     <td>{% if repo.stored %}<a href="/project/{{ repo.full_name }}/">{{ repo.full_name }}</a>{% else %}{{ repo.full_name }}{% endif %}</td>

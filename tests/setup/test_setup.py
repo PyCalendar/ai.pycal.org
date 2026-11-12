@@ -130,14 +130,6 @@ def test_removing_a_repository(client, repository, maintainer):
     assert not repository.active
 
 
-def test_the_email_for_permissions(client, example, maintainer):
-    client.force_login(maintainer)
-    client.post("/setup/1/email/", {"email": "maintainers@example.org"})
-    assert Installation.objects.get(github_id=1).notify_email == "maintainers@example.org"
-    response = client.post("/setup/1/email/", {"email": "no address"})
-    assert error_of(response) == "InvalidNotificationEmail"
-
-
 def test_an_unknown_repository(client, db):
     assert client.get("/nobody/nothing/").status_code == 404  # the older address
     assert client.get("/repository/nobody/nothing/").status_code == 404

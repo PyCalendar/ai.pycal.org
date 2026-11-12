@@ -77,7 +77,6 @@ urlpatterns = [
     path("setup/github-app/", registration.register_app, name="register_app"),
     path("setup/oauth-app/", oauth_app.oauth_app, name="oauth_app"),
     path("setup/github-app/registered/", registration.app_registered, name="app_registered"),
-    path("setup/<int:installation_id>/email/", setup.notify_email, name="notify_email"),
     path(
         "setup/<int:installation_id>/<int:repository_id>/add/",
         setup.add_repository,

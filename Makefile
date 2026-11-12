@@ -98,6 +98,12 @@ docker-test: docker-build  ## Run the container and check that Docker sees it he
 	@for i in $$(seq 60); do [ "$$(docker inspect -f '{{.State.Health.Status}}' ai-pycal-test)" = healthy ] && break; sleep 1; done; \
 	status=$$(docker inspect -f '{{.State.Health.Status}}' ai-pycal-test); echo $$status; \
 	[ "$$status" = healthy ] || docker logs ai-pycal-test; docker rm -f ai-pycal-test >/dev/null; [ "$$status" = healthy ]
+	@# nginx alone, as while the database is prepared: the page that the site is starting
+	@docker rm -f ai-pycal-starting >/dev/null 2>&1 || true
+	@docker run -d --name ai-pycal-starting -p 5099:5000 --entrypoint sh ai-pycal -c \
+	  'sed "s/LISTEN_PORT/5000/g" /app/docker/nginx.conf > /tmp/nginx.conf && nginx -c /tmp/nginx.conf -g "daemon off;"' >/dev/null
+	@sleep 2; page=$$(curl -s -w ' %{http_code}' http://127.0.0.1:5099/); docker rm -f ai-pycal-starting >/dev/null; \
+	echo "$$page" | grep -q "The site is starting" && echo "$$page" | grep -q " 503$$" && echo "starting page: 503"
 
 TRIVY = aquasec/trivy:0.58.1
 .PHONY: docker-scan

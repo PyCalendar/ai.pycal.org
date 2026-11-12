@@ -1,12 +1,13 @@
 {% extends "ai_pycal/base.html" %}
 {% load github i18n %}
-{% block title %}{% if owner %}{{ owner }}{% else %}{% translate "Projects" %}{% endif %} · {{ site_name }}{% endblock %}
+{% block title %}{% if owner %}{{ owner }}{% else %}{% translate "Projects" %}{% endif %} · {{ site_name }}{% if not user.is_authenticated %}<p class="muted" data-private-hint>{% translate "Projects in private repositories are only listed for the people who work on them:" %} <a href="{% url 'account_login' %}?next={{ request.path|urlencode }}">{% translate "Sign in" %}</a></p>{% endif %}
+{% endblock %}
 {% block main %}
 <h1 class="crumbs-path">{% if owner %}<a href="{% url 'projects' %}">{% translate "Projects" %}</a><span class="crumbs-sep">/</span><a href="{% url 'owner_projects' owner %}">{{ owner }}</a>{% else %}{% translate "Projects" %}{% endif %}</h1>
-{% if owners %}<p class="muted">{% translate "Open an organization to see its projects, and a project to see the agreements it asks of its contributors." %}</p>
+{% if owners %}<p class="muted">{% translate "Open a project to see the agreements it asks of its contributors." %}</p>
 <ul class="owners">
 {% for name, projects in owners %}
-  <li><details class="owner"{% if owner or owners|length == 1 %} open{% endif %} data-owner="{{ name }}">
+  <li><details class="owner" open data-owner="{{ name }}">
     <summary><span class="owner-name"><a href="{% url 'owner_projects' name %}">{{ name }}</a></span> {% github_link "https://github.com/"|add:name name|add:" on GitHub" %} <span class="muted">{% blocktranslate count counter=projects|length %}{{ counter }} project{% plural %}{{ counter }} projects{% endblocktranslate %}</span></summary>
     <ul class="projects">
     {% for project in projects %}
@@ -27,4 +28,5 @@
 {% endfor %}
 </ul>
 {% else %}<p data-no-projects>{% translate "No projects yet." %} {% blocktranslate with setup=setup_url %}Administrators of a repository add it on the page <a href="{{ setup }}">Setup</a>, after installing the GitHub App.{% endblocktranslate %}</p>{% endif %}
+{% if not user.is_authenticated %}<p class="muted" data-private-hint>{% translate "Projects in private repositories are only listed for the people who work on them:" %} <a href="{% url 'account_login' %}?next={{ request.path|urlencode }}">{% translate "Sign in" %}</a></p>{% endif %}
 {% endblock %}

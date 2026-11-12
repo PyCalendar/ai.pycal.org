@@ -28,16 +28,6 @@ class RepositoryNotFound(SetupError):
     status = 404
 
 
-class InvalidNotificationEmail(SetupError):
-    """The email address for notifications is not valid.
-
-    The site writes to this address when the GitHub App needs new permissions.
-    Enter an address such as ``maintainers@example.org``, or leave it empty.
-    """
-
-    title = _("The email address is invalid")
-
-
 class NotRepositoryAdmin(SetupError):
     """You do not administer this repository on GitHub.
 

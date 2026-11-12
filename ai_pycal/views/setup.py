@@ -8,8 +8,7 @@ from urllib.parse import urlencode
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied, ValidationError
-from django.core.validators import validate_email
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -21,7 +20,6 @@ from ai_pycal.actions import Trigger
 from ai_pycal.errors import (
     AgreementError,
     ConfigFileError,
-    InvalidNotificationEmail,
     RepositoryNotFound,
 )
 from ai_pycal.github import permissions
@@ -214,32 +212,6 @@ def remove_repository(request, installation_id: int, repository_id: int):
     repository.paused = True
     repository.save(update_fields=["active", "paused"])
     messages.info(request, _("%s is no longer checked.") % repository)
-    return redirect("setup")
-
-
-@login_required
-@require_POST
-@Trigger.view("setup", "Email of the installation changed by @{login}", public=False)
-def notify_email(request, installation_id: int):
-    """Set the address that is told when the app needs new permissions.
-
-    Args:
-        request: The request, with ``email``.
-        installation_id: The id of the installation on GitHub.
-
-    Returns:
-        To the page Setup, or the page of the error.
-    """
-    email = request.POST.get("email", "").strip()
-    if email:
-        try:
-            validate_email(email)
-        except ValidationError:
-            return error_page(request, InvalidNotificationEmail(email))
-    installation = AdminAccess(request.user).installation(installation_id)
-    installation.notify_email = email
-    installation.save(update_fields=["notify_email", "updated"])
-    messages.success(request, _("The email address was saved."))
     return redirect("setup")
 
 

@@ -83,7 +83,6 @@ from .registration import (
     SetupCodeWrong,
 )
 from .setup import (
-    InvalidNotificationEmail,
     NotRepositoryAdmin,
     RepositoryNotFound,
     SetupError,
@@ -162,7 +161,6 @@ __all__ = [
     "InvalidLabel",
     "InvalidSignMinSeconds",
     "InvalidMandatory",
-    "InvalidNotificationEmail",
     "InvalidOrganization",
     "InvalidPrivateKey",
     "ManifestConversionFailed",

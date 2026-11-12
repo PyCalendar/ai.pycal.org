@@ -25,7 +25,10 @@ def test_watch_and_stop(client, repository, alice):
     client.post(f"{URL}watch/", {"watch": "yes"})
     assert repository.watchers.filter(pk=alice.pk).exists()
     page = client.get(URL).content.decode()
-    assert "Emails about problems of this project go to alice@example.org" in page
+    watchers = page.split("data-watchers>")[1].split("</span>")[0]
+    assert "go to the people who watch it:" in watchers
+    assert '<a href="/contributor/alice/">@alice</a>' in watchers
+    assert "alice@example.org" not in watchers  # the addresses are private
     client.post(f"{URL}watch/", {"watch": "no"})
     assert not repository.watchers.filter(pk=alice.pk).exists()
 
@@ -61,3 +64,17 @@ def test_watchers_get_the_email_of_a_problem(client, github, repository, alice, 
     with pytest.raises(Exception):
         RepositorySync(repository).sync()
     assert any("alice@example.org" in mail.to for mail in mailoutbox)
+
+
+def test_the_handles_of_all_watchers_are_listed(client, repository, alice, bob, maintainer):
+    repository.watchers.add(alice, bob)
+    client.force_login(bob)
+    watchers = client.get(URL).content.decode().split("data-watchers>")[1].split("</span>")[0]
+    assert "@alice</a>, " in watchers and "@bob</a>" in watchers
+    assert "@maintainer" not in watchers
+    assert "You have no verified email address yet." in watchers  # bob has none
+
+
+def test_the_page_of_a_project_lists_no_watchers_to_visitors(client, repository, alice):
+    repository.watchers.add(alice)
+    assert "data-watchers" not in client.get(URL).content.decode()

@@ -29,7 +29,7 @@ COPY LICENSES LICENSES
 COPY ai_pycal ai_pycal
 COPY static static
 COPY docker/start-service.sh docker/healthcheck.py ./
-COPY docker/nginx.conf docker/nginx.conf
+COPY docker/nginx.conf docker/starting.html docker/
 # throwaway key: nothing secret is written into the image
 RUN SECRET_KEY=build python manage.py collectstatic --noinput
 

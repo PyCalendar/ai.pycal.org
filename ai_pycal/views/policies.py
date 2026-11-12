@@ -224,6 +224,7 @@ def project(request, owner: str, repo: str):
             "watching": request.user.is_authenticated
             and repository.watchers.filter(pk=request.user.pk).exists(),
             "watch_address": verified_address(request.user),
+            "watchers": watcher_handles(repository) if request.user.is_authenticated else [],
             "show_all": request.GET.get("pulls") == "all",
             "pulls": PullState.annotate(
                 repository.pull_requests.select_related("repository").order_by("-number")
@@ -559,3 +560,23 @@ def policy_status(request, owner: str, repo: str, handle: str, policy: str, badg
         )
     response["Cache-Control"] = "no-store"
     return response
+
+
+def watcher_handles(repository) -> list[str]:
+    """The GitHub handles of the people who watch a project, who get its emails.
+
+    Args:
+        repository: The project.
+
+    Returns:
+        The handles, sorted; each person chooses their own address on the site.
+    """
+    from allauth.socialaccount.models import SocialAccount
+
+    accounts = SocialAccount.objects.filter(
+        provider="github", user__in=repository.watchers.all()
+    ).select_related("user")
+    return sorted(
+        (str(account.extra_data.get("login") or account.user.username) for account in accounts),
+        key=str.lower,
+    )

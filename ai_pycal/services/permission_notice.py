@@ -33,14 +33,20 @@ class PermissionNotice:
         return permissions.missing(self.installation.permissions or {})
 
     def recipients(self) -> list[str]:
-        """Who gets the email: the address of the installation and its administrators.
+        """Who gets the email: the administrators and the people who watch its projects.
+
+        Each person gets it at the address they have on the site (no extra address).
 
         Returns:
             The addresses, without duplicates.
         """
-        addresses = [self.installation.notify_email]
-        addresses += notification_addresses(self.installation.admins.values_list("pk", flat=True))
-        return sorted({address for address in addresses if address})
+        people = set(self.installation.admins.values_list("pk", flat=True))
+        people |= set(
+            self.installation.repositories.filter(watchers__isnull=False).values_list(
+                "watchers", flat=True
+            )
+        )
+        return sorted(set(notification_addresses(people)))
 
     def send_if_needed(self) -> bool:
         """Send the email if permissions are missing and nobody was told about them yet.
