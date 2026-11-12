@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from django.conf import settings
 from django.urls import reverse
 
+from ai_pycal.actions import LabelAdded, LabelRemoved, StatusSet
 from ai_pycal.errors import CannotWriteLabels, GitHubError, MissingPermissions
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.github.repository_api import RepositoryAPI
@@ -112,6 +113,33 @@ class PullRequestCheck:
         }
         return (wanted - unwanted) | unsigned, unwanted - unsigned
 
+    @staticmethod
+    def reason(label: str, states: list[AgreementState], choice, adding: bool) -> str:
+        """Why a label is added or removed, for the log.
+
+        Args:
+            label: The label.
+            states: The agreements and their signatures.
+            choice: The policy choice of the pull request, or None.
+            adding: Whether the label is added.
+
+        Returns:
+            Such as ``CLA is signed`` or ``CLA is not signed``.
+        """
+        for state in states:
+            name = state.agreement.name
+            if label in state.agreement.labels:
+                if not state.required:
+                    return f"{name} is not required for this choice"
+                return f"{name} is signed" if state.signed else f"{name} is not signed"
+            if label in state.agreement.unsigned_labels:
+                if not state.required:
+                    return f"{name} is not required for this choice"
+                return f"{name} is not signed" if not state.signed else f"{name} is signed"
+        if choice and label in choice.labels:
+            return f"the choice is {choice.name}" if adding else "another label blocks it"
+        return "the configuration no longer asks for it" if not adding else "the configuration"
+
     def run(self) -> list[AgreementState]:
         """Freeze an initial default, update GitHub and persist the current result."""
         pull = self.pull
@@ -145,9 +173,10 @@ class PullRequestCheck:
         notice = ProjectNotices(pull.repository)
         try:
             present = set(self.api.labels(name, pull.number))
-            self.api.add_labels(name, pull.number, sorted(add - present))
+            for label in sorted(add - present):
+                LabelAdded(self.api, pull, label, self.reason(label, states, choice, True)).run()
             for label in sorted((managed - add) & present):
-                self.api.remove_label(name, pull.number, label)
+                LabelRemoved(self.api, pull, label, self.reason(label, states, choice, False)).run()
         except (GitHubError, MissingPermissions) as error:
             if error.status not in (403, 404):
                 raise
@@ -160,16 +189,16 @@ class PullRequestCheck:
             "project_pull", kwargs={"owner": owner, "repo": repo, "number": pull.number}
         )
         checks = set()
-        self.api.set_status(
-            name,
-            pull.head_sha,
+        StatusSet(
+            self.api,
+            pull,
             f"{settings.STATUS_CONTEXT}/configuration/setup",
             "error" if pull.repository.error_code else "success",
             f"Project setup needs attention: {pull.repository.error_code}"
             if pull.repository.error_code
             else "Project configuration is valid",
             details,
-        )
+        ).run()
         for state in states:
             agreement = state.agreement
             checks.add(agreement.key)
@@ -179,31 +208,31 @@ class PullRequestCheck:
                 status, text = "success", f"@{pull.author_login} signed {agreement.name}"
             else:
                 status, text = "pending", f"@{pull.author_login}: please sign {agreement.name}"
-            self.api.set_status(
-                name,
-                pull.head_sha,
+            StatusSet(
+                self.api,
+                pull,
                 f"{settings.STATUS_CONTEXT}/{agreement.key}",
                 status,
                 text,
                 details,
-            )
+            ).run()
         if has_choices:
             checks.add("choices/selection")
-            self.api.set_status(
-                name,
-                pull.head_sha,
+            StatusSet(
+                self.api,
+                pull,
                 f"{settings.STATUS_CONTEXT}/choices/selection",
                 "success" if all_signed else "pending",
                 f"Choice: {choice.name}" if choice else "Please select a policy choice",
                 details,
-            )
+            ).run()
         for obsolete in set(pull.repository.managed_checks) - checks:
-            self.api.set_status(
-                name,
-                pull.head_sha,
+            StatusSet(
+                self.api,
+                pull,
                 f"{settings.STATUS_CONTEXT}/{obsolete}",
                 "success",
                 "This check is no longer required by the project",
                 details,
-            )
+            ).run()
         return states

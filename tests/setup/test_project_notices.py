@@ -70,7 +70,7 @@ def test_email_delivery_failure_preserves_problem_for_retry(
         raise OSError("mail unavailable")
 
     with monkeypatch.context() as patch:
-        patch.setattr("ai_pycal.services.project_notices.send_mail", fail)
+        patch.setattr("ai_pycal.actions.email_sent.send_mail", fail)
         ProjectNotices(repository).record(CannotWriteLabels("missing permission"))
     assert not ProjectProblem.objects.get().notified
     ProjectNotices(repository).record(CannotWriteLabels("missing permission"))

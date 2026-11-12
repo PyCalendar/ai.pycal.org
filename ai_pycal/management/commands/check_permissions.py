@@ -2,6 +2,7 @@
 
 from django.core.management.base import BaseCommand
 
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementError
 from ai_pycal.github.app import GitHubApp
 from ai_pycal.models import Installation
@@ -25,6 +26,19 @@ class Command(BaseCommand):
             self.stdout.write("no GitHub App configured")
             return
         sent = 0
+        with Trigger.start(
+            "permissions", "Check of the permissions of the installations", public=False
+        ):
+            sent = self.check_all()
+        self.stdout.write(f"{sent} emails sent")
+
+    def check_all(self) -> int:
+        """Check every installation that is not removed.
+
+        Returns:
+            How many emails were sent.
+        """
+        sent = 0
         for installation in Installation.objects.filter(removed=False):
             try:
                 installation = WebhookHandler.store_installation(
@@ -34,4 +48,4 @@ class Command(BaseCommand):
                 self.stderr.write(f"{installation}: {error.code} {error}")
                 continue
             sent += PermissionNotice(installation).send_if_needed()
-        self.stdout.write(f"{sent} emails sent")
+        return sent

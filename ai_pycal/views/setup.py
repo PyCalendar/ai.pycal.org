@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import (
     AgreementError,
     ConfigFileError,
@@ -121,6 +122,7 @@ def installed(request):
 
 @login_required
 @require_POST
+@Trigger.view("setup", "Repository added by @{login}")
 def add_repository(request, installation_id: int, repository_id: int):
     """Add a repository: read its configuration file and check its pull requests.
 
@@ -147,6 +149,7 @@ def add_repository(request, installation_id: int, repository_id: int):
 
 @login_required
 @require_POST
+@Trigger.view("setup", "Repository removed by @{login}")
 def remove_repository(request, installation_id: int, repository_id: int):
     """Stop checking the pull requests of a repository; the signatures stay.
 
@@ -167,6 +170,7 @@ def remove_repository(request, installation_id: int, repository_id: int):
 
 @login_required
 @require_POST
+@Trigger.view("setup", "Email for new permissions changed by @{login}", public=False)
 def notify_email(request, installation_id: int):
     """Set the address that is told when the app needs new permissions.
 
@@ -228,6 +232,7 @@ def may_update(user, repository: Repository) -> bool:
 
 @login_required
 @require_POST
+@Trigger.view("update", "Repository configuration updated by @{login}")
 def update_project(request, owner: str, repo: str):
     """Read the configuration and the agreements of a project again, and check its pull requests.
 

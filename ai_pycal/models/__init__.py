@@ -3,6 +3,8 @@
 from .agreement_version import AgreementVersion
 from .contributor_preference import ContributorPreference
 from .installation import Installation
+from .log_action import LogAction
+from .log_trigger import LogTrigger
 from .policy_choice import PolicyChoice
 from .profile import Profile
 from .project_problem import ProjectProblem
@@ -24,4 +26,6 @@ __all__ = [
     "Profile",
     "ProjectProblem",
     "TodoDismissal",
+    "LogTrigger",
+    "LogAction",
 ]

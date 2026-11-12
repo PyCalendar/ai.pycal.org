@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils.html import escape
 from django.views.decorators.http import require_POST
 
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import (
     AgreementNotFound,
     ChoiceNotFound,
@@ -353,6 +354,7 @@ def pull(request, owner: str, repo: str, number: int):
 
 @login_required
 @require_POST
+@Trigger.view("choice", "@{login} chooses the policy of #{number}")
 def choose(request, owner: str, repo: str, number: int):
     """Change only this PR's choice, optionally saving a default for future PRs."""
     item = pull_for(request, owner, repo, number)
@@ -377,6 +379,7 @@ def choose(request, owner: str, repo: str, number: int):
 
 @login_required
 @require_POST
+@Trigger.view("choice", "@{login} sets a default policy for future pull requests")
 def default_choice(request, owner: str, repo: str):
     """Set the contributor's project default without changing any existing PR."""
     repository = project_for(request, owner, repo)
@@ -398,6 +401,7 @@ def default_choice(request, owner: str, repo: str):
 
 @login_required
 @require_POST
+@Trigger.view("signed", "@{login} signs the agreements of #{number}")
 def sign_pull(request, owner: str, repo: str, number: int):
     """Accept the displayed required agreements after validating every form token."""
     item = pull_for(request, owner, repo, number)

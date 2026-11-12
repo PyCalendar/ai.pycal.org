@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from ai_pycal.actions import Trigger, WebhookTrigger
 from ai_pycal.errors import AgreementError, WebhookError, WebhookPayloadInvalid
 from ai_pycal.github.webhook_signature import verify
 from ai_pycal.services.webhook_handler import WebhookHandler
@@ -26,24 +27,32 @@ def webhook(request):
     Returns:
         JSON with what was done, or the error with its link to the documentation.
     """
-    try:
-        verify(
-            settings.GITHUB_WEBHOOK_SECRET,
-            request.body,
-            request.headers.get("X-Hub-Signature-256"),
-        )
+    event = request.headers.get("X-GitHub-Event", "")
+    delivery = request.headers.get("X-GitHub-Delivery", "")[:100]
+    # every webhook is a trigger of the log; refused ones only in the global log
+    with Trigger.start("webhook", f"Webhook {event}", delivery=delivery, public=False) as trigger:
         try:
-            payload = json.loads(request.body)
-        except ValueError as error:
-            raise WebhookPayloadInvalid(str(error)) from error
-        done = WebhookHandler(request.headers.get("X-GitHub-Event", ""), payload).handle()
-    except WebhookError as error:
-        return error_json(error)
-    except AgreementError as error:
-        # GitHub answered with an error or the configuration is broken: the pull request
-        # is checked again on its next change; the delivery shows why
-        log.warning("webhook: %s %s", error.code, error)
-        return error_json(error, status=200)
+            verify(
+                settings.GITHUB_WEBHOOK_SECRET,
+                request.body,
+                request.headers.get("X-Hub-Signature-256"),
+            )
+            try:
+                payload = json.loads(request.body)
+            except ValueError as error:
+                raise WebhookPayloadInvalid(str(error)) from error
+            done = WebhookHandler(event, payload).handle()
+        except WebhookError as error:
+            trigger.summary = f"Refused webhook {event}: {error.code}"[:300]
+            trigger.save(update_fields=["summary"])
+            return error_json(error)
+        except AgreementError as error:
+            # GitHub answered with an error or the configuration is broken: the pull request
+            # is checked again on its next change; the delivery shows why
+            log.warning("webhook: %s %s", error.code, error)
+            WebhookTrigger.complete(trigger, event, payload, error.code)
+            return error_json(error, status=200)
+        WebhookTrigger.complete(trigger, event, payload, done)
     return JsonResponse({"done": done})
 
 

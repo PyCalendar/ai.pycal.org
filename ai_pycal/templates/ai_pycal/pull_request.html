@@ -1,6 +1,7 @@
 {% extends "ai_pycal/base.html" %}
 {% load times github i18n %}
-{% block title %}{{ pull.title }} #{{ pull.number }} · {{ site_name }}{% endblock %}
+{% block title %}{{ pull.title }} #{{ pull.number }} · {{ site_name }}<p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
+{% endblock %}
 {% block main %}
 <div class="crumbs">
   <h1 class="crumbs-path"><a href="{% url 'owner_projects' pull.repository.owner %}">{{ pull.repository.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ pull.repository.full_name }}/">{{ pull.repository.name }}</a><span class="crumbs-sep">/</span><a href="{{ here }}">#{{ pull.number }}</a></h1>
@@ -36,4 +37,5 @@
 {% if is_author and not row.state.signed %}<input type="hidden" name="shown_{{ row.state.agreement.version_id }}" value="{{ row.token }}"><p><label><input type="checkbox" name="accept_{{ row.state.agreement.version_id }}" value="yes"{% if row.state.required %} required{% endif %}> {% translate "I have read and accept this agreement." %}{% if not row.state.required %} <span class="muted">({% translate "optional" %})</span>{% endif %}</label></p>{% endif %}
 </section>{% endfor %}
 {% if is_author and needs_signing %}<p><label for="handle">{% translate "Type your GitHub handle to sign:" %}</label> <input id="handle" name="handle" required autocomplete="off" spellcheck="false" placeholder="{{ github.login }}" pattern="{{ handle_pattern }}" title="{% blocktranslate with login=github.login %}Your GitHub handle: {{ login }}{% endblocktranslate %}"></p><button class="button">{% translate "Sign the ticked agreements" %}</button></form>{% endif %}
+<p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
 {% endblock %}

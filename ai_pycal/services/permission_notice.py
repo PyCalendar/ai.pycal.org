@@ -4,9 +4,9 @@ import logging
 
 from allauth.account.models import EmailAddress
 from django.conf import settings
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+from ai_pycal.actions import EmailSent
 from ai_pycal.github import permissions
 from ai_pycal.models import Installation, Profile
 
@@ -76,12 +76,11 @@ class PermissionNotice:
             "site_url": settings.SITE_URL,
             "docs_url": settings.DOCS_URL.rstrip("/") + "/",
         }
-        send_mail(
+        EmailSent(
             render_to_string("ai_pycal/email/permissions_subject.txt", context).strip(),
             render_to_string("ai_pycal/email/permissions.txt", context),
-            settings.DEFAULT_FROM_EMAIL,
             recipients,
-        )
+        ).run()
         installation.permissions_notified = described
         installation.save(update_fields=["permissions_notified", "updated"])
         return True

@@ -15,6 +15,21 @@ class GitHubIdentity:
     login: str
 
     @classmethod
+    def is_site_admin(cls, user) -> bool:
+        """Whether a person administers the site: their GitHub handle is in ``SITE_ADMINS``.
+
+        Args:
+            user: The user.
+
+        Returns:
+            True for administrators of the site.
+        """
+        from django.conf import settings
+
+        identity = cls.of(user)
+        return bool(identity and identity.login.lower() in settings.SITE_ADMINS)
+
+    @classmethod
     def of(cls, user) -> "GitHubIdentity | None":
         """The GitHub account of a user of the site.
 

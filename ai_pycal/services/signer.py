@@ -6,6 +6,7 @@ import time
 from django.conf import settings
 from django.core import signing
 
+from ai_pycal.actions import SignatureAdded
 from ai_pycal.errors import (
     AgreementError,
     AgreementNotShown,
@@ -106,6 +107,8 @@ class Signer:
             defaults={"login": self.identity.login, "user": self.user},
         )
         if created:
+            named = version.required_by.first()
+            SignatureAdded(signature, named.name if named else version.path).run()
             self.update_pull_requests(version)
         return signature, created
 

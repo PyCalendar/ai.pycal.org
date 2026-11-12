@@ -1,0 +1,19 @@
+{% extends "ai_pycal/base.html" %}
+{% load i18n times %}
+{% block title %}{% translate "Log" %} · {{ site_name }}{% endblock %}
+{% block main %}
+<h1 class="crumbs-path">{% if scope == "all" %}{% translate "Global log" %}{% elif scope == "contributor" %}<a href="{% url 'contributor' handle %}">@{{ handle }}</a><span class="crumbs-sep">/</span>{% translate "Log" %}{% else %}<a href="{% url 'owner_projects' project.owner %}">{{ project.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ project.full_name }}/">{{ project.name }}</a><span class="crumbs-sep">/</span>{% if scope == "pull" %}<a href="/project/{{ project.full_name }}/pulls/{{ pull.number }}/">#{{ pull.number }}</a><span class="crumbs-sep">/</span>{% endif %}{% translate "Log" %}{% endif %}</h1>
+<p class="muted">{% if scope == "all" %}{% translate "Every trigger and action of the site, also those that are not public." %}{% else %}{% translate "What happened here, newest first. Open a trigger to see the actions that followed from it." %}{% endif %}</p>
+<ol class="log">
+{% for trigger in page %}
+  <li id="trigger-{{ trigger.pk }}" class="log-trigger{% if not trigger.shown %} log-empty{% endif %}" data-trigger="{{ trigger.kind }}">
+    {% if trigger.shown %}<details{% if opened == trigger.pk %} open{% endif %}>
+      <summary><span class="log-summary">{{ trigger.summary }}</span> <span class="muted">{% when trigger.created %}{% if trigger.actor_login %} · @{{ trigger.actor_login }}{% endif %} · {% blocktranslate count counter=trigger.shown|length %}{{ counter }} action{% plural %}{{ counter }} actions{% endblocktranslate %}</span>{% if not trigger.public %} <span class="badge muted">{% translate "not public" %}</span>{% endif %}</summary>
+      <ul class="log-actions">{% for action in trigger.shown %}<li data-action="{{ action.kind }}">{{ action.text }}{% if not action.public %} <span class="badge muted">{% translate "not public" %}</span>{% endif %}</li>{% endfor %}</ul>
+    </details>{% else %}<div class="log-row"><span class="log-summary">{{ trigger.summary }}</span> <span class="muted">{% when trigger.created %}{% if trigger.actor_login %} · @{{ trigger.actor_login }}{% endif %} · {% translate "no actions" %}</span>{% if not trigger.public %} <span class="badge muted">{% translate "not public" %}</span>{% endif %}</div>{% endif %}
+    {% if site_admin and scope != "all" %}<a class="log-global" href="{% url 'all_logs' %}?trigger={{ trigger.pk }}#trigger-{{ trigger.pk }}" title="{% translate "Open in the global log" %}" aria-label="{% translate "Open in the global log" %}">⤢</a>{% endif %}
+  </li>
+{% empty %}<li class="muted">{% translate "Nothing happened yet." %}</li>{% endfor %}
+</ol>
+{% if page.has_other_pages %}<p class="pages">{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">{% translate "Newer" %}</a>{% endif %} <span class="muted">{{ page.number }} / {{ page.paginator.num_pages }}</span> {% if page.has_next %}<a href="?page={{ page.next_page_number }}">{% translate "Older" %}</a>{% endif %}</p>{% endif %}
+{% endblock %}

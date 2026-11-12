@@ -4,9 +4,9 @@ import logging
 
 from allauth.account.models import EmailAddress
 from django.conf import settings
-from django.core.mail import send_mail
 from django.db.models import Q
 
+from ai_pycal.actions import EmailSent
 from ai_pycal.errors import ConfigFileError
 from ai_pycal.models import Profile, ProjectProblem
 
@@ -63,11 +63,15 @@ class ProjectNotices:
         )
         # Keep signatures and webhook processing usable when email delivery fails.
         try:
-            sent = send_mail(
-                f"[{settings.SITE_NAME}] {self.repository}: {error.title}",
-                body,
-                settings.DEFAULT_FROM_EMAIL,
-                addresses,
+            sent = (
+                EmailSent(
+                    f"[{settings.SITE_NAME}] {self.repository}: {error.title}",
+                    body,
+                    addresses,
+                    repository=self.repository,
+                )
+                .run()
+                .sent
             )
         except Exception:
             log.exception("Could not send project problem notice for %s", self.repository)

@@ -88,6 +88,7 @@ def site(request) -> dict:
         "github": GitHubIdentity.of(getattr(request, "user", None)),
         "project_problems": problems,
         "todo_count": todo_count,
+        "site_admin": GitHubIdentity.is_site_admin(request.user),
         "focused": "/pulls/" in request.path
         or "/pulls/" in request.GET.get("next", request.POST.get("next", "")),
     }

@@ -68,3 +68,26 @@ individual contributor's preference.
 Private projects and their agreement records are excluded from public
 responses. Signed-in contributors associated with a private project can
 view its records. Email addresses and email preferences are never public.
+
+Logs
+====
+
+Every webhook that GitHub sends to the site, and every action of a person such
+as signing or **Update**, is a *trigger*. What follows from it is recorded as
+*actions*, each with its reason: labels added to or removed from pull
+requests, checks, the configuration read, new versions of agreements, emails.
+A page only shows the triggers and actions that concern it, newest first; a
+trigger opens to its actions, and triggers without actions are gray.
+
+``/logs/project/<owner>/<repo>/``
+   The log of a project, linked from the page of the project.
+``/logs/project/<owner>/<repo>/pulls/<number>/``
+   The log of a pull request, linked from its page.
+``/logs/contributor/<handle>/``
+   The log of a person: their signatures and their pull requests.
+``/logs/all/``
+   The global log, only for the administrators in ``SITE_ADMINS``, in the
+   section *Administration* of the menu. It also shows what is not public:
+   emails (without addresses), sign-ups, the registration of the app, refused
+   webhooks and webhooks of repositories that the site does not know. On the
+   other logs, administrators open a trigger in the global log with ⤢.

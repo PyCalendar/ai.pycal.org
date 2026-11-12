@@ -8,6 +8,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementNotFound, SigningError
 from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
@@ -215,6 +216,7 @@ def show(request, pk: int):
 
 @login_required
 @require_POST
+@Trigger.view("signed", "@{login} signs an agreement")
 def sign(request, pk: int):
     """Sign an agreement with the form of its page.
 

@@ -11,6 +11,7 @@ import logging
 from django.conf import settings
 from django.shortcuts import render
 
+from ai_pycal.actions import Trigger
 from ai_pycal.errors import AgreementError, RegistrationError
 from ai_pycal.middleware import error_page
 from ai_pycal.services.app_registration import AppRegistration
@@ -65,9 +66,10 @@ def app_registered(request):
         The page of the new app, or the page of the error with details to copy.
     """
     try:
-        app = AppRegistration.finish(
-            request.session, request.GET.get("code", ""), request.GET.get("state", "")
-        )
+        with Trigger.start("registration", "GitHub App registered on the site", public=False):
+            app = AppRegistration.finish(
+                request.session, request.GET.get("code", ""), request.GET.get("state", "")
+            )
     except AgreementError as error:
         log.warning("registration of the GitHub App: %s %s", error.code, error)
         return error_page(request, error)

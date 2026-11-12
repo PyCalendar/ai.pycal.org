@@ -5,6 +5,7 @@ import logging
 from django.db import transaction
 from django.utils import timezone
 
+from ai_pycal.actions import AgreementChanged, ConfigurationRead
 from ai_pycal.config import CONFIG_PATH, GitHubRemote, RepositoryConfig
 from ai_pycal.errors import AgreementError, ConfigFileNotFound, GitHubNotFound
 from ai_pycal.github.app import GitHubApp
@@ -74,8 +75,10 @@ class RepositorySync:
             repository.save(update_fields=["error_code", "error_detail", "checked"])
             from .project_notices import ProjectNotices
 
+            ConfigurationRead(repository, error=error).run()
             ProjectNotices(repository).record(error)
             raise
+        before = dict(repository.required_agreements.values_list("key", "version_id"))
         with transaction.atomic():
             required = []
             for position, (spec, version) in enumerate(versions):
@@ -128,5 +131,9 @@ class RepositorySync:
             repository.save()
         from .project_notices import ProjectNotices
 
+        ConfigurationRead(repository, str(config.version), len(required)).run()
+        for agreement in required:
+            if agreement.key in before and before[agreement.key] != agreement.version_id:
+                AgreementChanged(repository, agreement.name, agreement.version).run()
         ProjectNotices(repository).resolve_configuration()
         return required

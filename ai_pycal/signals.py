@@ -1,6 +1,6 @@
 """Who signs in with GitHub: the handle becomes the user name; SITE_ADMINS administer."""
 
-from allauth.account.signals import user_logged_in
+from allauth.account.signals import user_logged_in, user_signed_up
 from django.conf import settings
 from django.dispatch import receiver
 
@@ -25,3 +25,27 @@ def update_user(sender, request, user, **kwargs) -> None:
     user.is_staff = user.is_superuser = admin
     if changed:
         user.save(update_fields=["is_staff", "is_superuser"])
+
+
+@receiver(user_signed_up)
+def record_sign_up(sender, request, user, **kwargs) -> None:
+    """Record that a person signed up, in the global log of the administrators.
+
+    Args:
+        sender: The sender of the signal.
+        request: The request.
+        user: The new user.
+        **kwargs: More of allauth.
+    """
+    from .actions import Trigger
+
+    identity = GitHubIdentity.of(user)
+    login = identity.login if identity else user.username
+    with Trigger.start(
+        "sign-up",
+        f"@{login} signed up",
+        contributor_github_id=identity.github_id if identity else None,
+        actor_login=login,
+        public=False,
+    ):
+        pass
