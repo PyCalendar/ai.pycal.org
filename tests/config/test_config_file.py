@@ -15,7 +15,7 @@ def parse(text: str) -> RepositoryConfig:
 
 def test_the_test_configuration_has_two_agreements():
     config = parse((DATA / "agreements.yml").read_text())
-    assert str(config.version) == "2.0.0"
+    assert str(config.version) == "2.1.0"
     assert not config.newer
     ai, cla = config.agreements
     assert (ai.id, ai.name, ai.tag, ai.path) == (
@@ -26,7 +26,8 @@ def test_the_test_configuration_has_two_agreements():
     )
     assert ai.repository == GitHubRemote("PyCalendar", "ai.pycal.org-example")
     assert ai.labels == ("ai-policy-accepted",)
-    assert cla.labels == ("cla-signed", "agreements-signed")
+    assert cla.labels == ("cla-signed",)
+    assert cla.unsigned_labels == ("cla-missing",)
     assert cla.repository.full_name == "PyCalendar/ai.pycal.org-example"
 
 
@@ -159,3 +160,20 @@ def test_remotes_of_github(remote):
 def test_other_remotes_are_refused(remote):
     with pytest.raises(errors.UnsupportedRemote):
         GitHubRemote.parse(remote)
+
+
+def test_unsigned_labels_are_read_since_2_1_0():
+    config = parse(
+        "version: 2.1.0\nagreements:\n  a:\n    name: A\n    path: A.md\n"
+        "    pr: {labels: signed, unsigned-labels: [missing, also-missing]}\n"
+    )
+    assert config.agreements[0].labels == ("signed",)
+    assert config.agreements[0].unsigned_labels == ("missing", "also-missing")
+
+
+def test_unknown_keys_of_pr_are_still_refused():
+    with pytest.raises(errors.UnknownConfigKey):
+        parse(
+            "version: 2.1.0\nagreements:\n  a:\n    name: A\n    path: A.md\n"
+            "    pr: {labels: x, unsinged-labels: y}\n"
+        )

@@ -1,6 +1,6 @@
 # The agreements that contributors sign on https://ai.pycal.org before their pull
 # requests are labelled. The format: https://docs.ai.pycal.org/reference/config-file.html
-version: 2.0.0
+version: 2.1.0
 agreements:
   ai-policy:
     name: AI Policy (example)
@@ -20,6 +20,7 @@ agreements:
     repository: git@github.com:PyCalendar/ai.pycal.org-example.git
     path: agreements/cla.md
     pr:
+      # while the agreement is not signed, since version 2.1.0
+      unsigned-labels: cla-missing
       labels:
         - cla-signed
-        - agreements-signed

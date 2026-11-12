@@ -71,4 +71,4 @@ class FormatVersion:
         return self.minor > (0 if self.major == 1 else newest.minor)
 
 
-SUPPORTED = FormatVersion(2, 0, 0)
+SUPPORTED = FormatVersion(2, 1, 0)  # 2.1.0: pr.unsigned-labels

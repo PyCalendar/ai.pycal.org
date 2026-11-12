@@ -25,7 +25,8 @@ class AgreementSpec:
     """An agreement as a configuration file asks for it.
 
     The agreement is the file ``path`` of ``repository`` at ``tag``. Who signs it gets
-    the labels ``labels`` on their pull requests.
+    the labels ``labels`` on their pull requests; while a required agreement is not
+    signed, the pull request has the labels ``unsigned_labels`` (format 2.1.0).
     """
 
     id: str
@@ -36,6 +37,7 @@ class AgreementSpec:
     labels: tuple[str, ...]
     mandatory: bool = True
     description: str = ""
+    unsigned_labels: tuple[str, ...] = ()
 
     @property
     def tag(self) -> str:
@@ -110,6 +112,9 @@ class AgreementSpec:
             repository=GitHubRemote.parse(remote) if remote else home,
             path=path,
             labels=cls._labels(data.get("pr"), where, strict, legacy),
+            unsigned_labels=(
+                () if legacy else cls._labels(data.get("pr"), where, False, field="unsigned-labels")
+            ),
             mandatory=mandatory,
             description=description,
         )
@@ -166,7 +171,9 @@ class AgreementSpec:
         return path
 
     @staticmethod
-    def _labels(pr: object, where: str, strict: bool, legacy: bool = False) -> tuple[str, ...]:
+    def _labels(
+        pr: object, where: str, strict: bool, legacy: bool = False, field: str = ""
+    ) -> tuple[str, ...]:
         """The pull request labels: one label or a list of labels.
 
         Args:
@@ -174,6 +181,8 @@ class AgreementSpec:
             where: The agreement, for the errors.
             strict: Refuse unknown keys.
             legacy: Read tags instead of labels.
+            field: The field of ``pr`` to read: ``labels`` (labels of signed agreements,
+                the default) or ``unsigned-labels`` (labels while unsigned).
 
         Returns:
             The labels, without duplicates.
@@ -187,8 +196,10 @@ class AgreementSpec:
         Examples:
             >>> AgreementSpec._labels({"labels": ["a", "b", "a"]}, "x", True)
             ('a', 'b')
+            >>> AgreementSpec._labels({"unsigned-labels": "x"}, "x", True, field="unsigned-labels")
+            ('x',)
         """
-        field = "tags" if legacy else "labels"
+        field = field or ("tags" if legacy else "labels")
         if pr is None and not legacy:
             return ()
         if pr is None:
@@ -196,11 +207,12 @@ class AgreementSpec:
         if not isinstance(pr, dict):
             raise InvalidAgreementField(f"{where}.pr: expected a mapping with tags")
         if strict:
+            known = {"tags"} if legacy else {"labels", "unsigned-labels"}
             for key in pr:
-                if key != field:
+                if key not in known:
                     raise UnknownConfigKey(f"{where}.pr.{key}")
         tags = pr.get(field)
-        if not legacy and tags == []:
+        if not legacy and (tags is None or tags == []):
             return ()
         if tags is None or tags == []:
             raise MissingAgreementField(f"{where}.pr.{field}")

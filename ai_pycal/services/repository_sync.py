@@ -90,6 +90,7 @@ class RepositorySync:
                         "mandatory": spec.mandatory,
                         "version": version,
                         "labels": list(spec.labels),
+                        "unsigned_labels": list(spec.unsigned_labels),
                         "position": position,
                     },
                 )
@@ -110,7 +111,9 @@ class RepositorySync:
                 )
                 choice.agreements.set([by_key[key] for key in spec.agreements])
             repository.choices.exclude(key__in=[spec.key for spec in config.choices]).delete()
-            labels = {label for spec in config.agreements for label in spec.labels}
+            labels = {
+                label for spec in config.agreements for label in spec.labels + spec.unsigned_labels
+            }
             labels.update(label for spec in config.choices for label in spec.labels)
             repository.managed_labels = sorted(set(repository.managed_labels) | labels)
             checks = {spec.id for spec in config.agreements}

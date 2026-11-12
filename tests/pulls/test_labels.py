@@ -30,7 +30,8 @@ def test_a_new_pull_request_asks_for_the_agreements(client, github, repository):
         assert status["state"] == "pending"
         assert "@alice: please sign" in status["description"]
         assert status["target_url"] == f"https://ai.example.org/project/{REPOSITORY}/pulls/1/"
-    assert github.labels.get((REPOSITORY, 1), []) == []
+    # the CLA is not signed yet: pr.unsigned-labels of the configuration
+    assert github.labels.get((REPOSITORY, 1), []) == ["cla-missing"]
 
 
 def test_signing_labels_the_open_pull_requests(client, github, repository, alice):
@@ -41,19 +42,15 @@ def test_signing_labels_the_open_pull_requests(client, github, repository, alice
 
     response = sign_agreement(client, ids["ai-policy"], "alice")
     assert response.status_code == 302
-    assert github.labels[(REPOSITORY, 1)] == ["ai-policy-accepted"]
-    assert (REPOSITORY, 2) not in github.labels  # bob did not sign
+    assert sorted(github.labels[(REPOSITORY, 1)]) == ["ai-policy-accepted", "cla-missing"]
+    assert github.labels[(REPOSITORY, 2)] == ["cla-missing"]  # bob did not sign
     sha = github.pulls[REPOSITORY][0]["head"]["sha"]
     assert github.status(REPOSITORY, sha, "ai.example.org/ai-policy")["state"] == "success"
     assert github.status(REPOSITORY, sha, "ai.example.org/cla")["state"] == "pending"
     assert not PullRequest.objects.get(number=1).all_signed
 
     sign_agreement(client, ids["cla"], "@Alice")
-    assert github.labels[(REPOSITORY, 1)] == [
-        "ai-policy-accepted",
-        "agreements-signed",
-        "cla-signed",
-    ]
+    assert sorted(github.labels[(REPOSITORY, 1)]) == ["ai-policy-accepted", "cla-signed"]
     assert PullRequest.objects.get(number=1).all_signed
 
 
@@ -65,11 +62,7 @@ def test_a_pull_request_of_someone_who_signed_is_labelled_at_once(
     for pk in versions(repository).values():
         sign_agreement(client, pk, "alice")
     send_webhook(client, "pull_request", pull_payload(github, 3))
-    assert set(github.labels[(REPOSITORY, 3)]) == {
-        "ai-policy-accepted",
-        "cla-signed",
-        "agreements-signed",
-    }
+    assert set(github.labels[(REPOSITORY, 3)]) == {"ai-policy-accepted", "cla-signed"}
 
 
 def test_a_label_of_several_agreements_needs_all_of_them(client, github, repository, alice):
@@ -152,3 +145,20 @@ def test_the_check_of_open_pull_requests_when_the_repository_is_added(client, ex
     assert response.status_code == 302
     sha = example.pulls[REPOSITORY][0]["head"]["sha"]
     assert example.status(REPOSITORY, sha, "ai.example.org/cla")["state"] == "pending"
+
+
+def test_an_unsigned_label_shared_by_agreements_stays_until_all_are_signed():
+    from types import SimpleNamespace
+
+    from ai_pycal.services.pull_request_check import PullRequestCheck
+
+    def state(signed, labels=(), unsigned=()):
+        agreement = SimpleNamespace(labels=list(labels), unsigned_labels=list(unsigned))
+        return SimpleNamespace(agreement=agreement, signed=signed, required=True)
+
+    states = [state(True, ["a"], ["missing"]), state(False, ["b"], ["missing"])]
+    add, remove = PullRequestCheck.labels(states)
+    assert "missing" in add and "missing" not in remove
+    assert "a" in add and "b" in remove
+    add, remove = PullRequestCheck.labels([state(True, ["a"], ["missing"])])
+    assert add == {"a"} and remove == {"missing"}

@@ -3,12 +3,13 @@ The configuration file
 ======================
 
 Projects define policies in ``.github/agreements.yml`` on their default branch.
-The site reads the file on setup and on relevant pushes. Version ``2.0.0``
-uses ``ref`` and ``pr.labels`` and supports mandatory agreements and choices.
+The site reads the file on setup, on relevant pushes and with **Update** on the
+page of the project. Version ``2.1.0`` uses ``ref``, ``pr.labels`` and
+``pr.unsigned-labels`` and supports mandatory agreements and choices.
 
 .. code-block:: yaml
 
-   version: 2.0.0
+   version: 2.1.0
    agreements:
      cla:
        name: Contributor agreement
@@ -18,6 +19,7 @@ uses ``ref`` and ``pr.labels`` and supports mandatory agreements and choices.
        mandatory: true
        pr:
          labels: [cla-signed]
+         unsigned-labels: [cla-missing]
      disclosed-ai:
        name: AI use with disclosure
        description: Explain which tools assisted your contribution.
@@ -54,6 +56,9 @@ Version ``1.0.0`` uses ``tag`` and required ``pr.tags`` fields and treats every
 agreement as mandatory. Existing configurations continue to work. To migrate,
 set ``version: 2.0.0``, rename ``tag`` to ``ref`` and ``pr.tags`` to
 ``pr.labels``. Version 2 rejects the old names to expose typing errors.
+
+Version ``2.1.0`` adds ``pr.unsigned-labels``. Files of version ``2.0.0`` keep
+working unchanged.
 
 Agreements
 ==========
@@ -96,6 +101,12 @@ GitHub check names and the contributor JSON and badge endpoints.
    Omit ``pr`` or use ``labels: []`` if the agreement grants no labels. An
    agreement's labels apply when it is required on the PR and signed. Shared
    labels require all applicable agreements that grant them to be signed.
+
+``pr.unsigned-labels``
+   Optional label or list of labels, since version ``2.1.0``. They are set
+   while the agreement is required on the PR and not signed, and removed when it
+   is signed, such as ``cla-missing``. A label shared by several agreements
+   stays while any of them is unsigned.
 
 Choices
 ========

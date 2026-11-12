@@ -64,7 +64,7 @@ def test_adding_a_repository(client, example, maintainer):
     assert response.status_code == 302
     repository = Repository.objects.get(github_id=repo_id)
     assert repository.active
-    assert repository.config_version == "2.0.0"
+    assert repository.config_version == "2.1.0"
     assert [a.key for a in repository.required_agreements.all()] == ["ai-policy", "cla"]
     page = client.get(f"/repository/{REPOSITORY}/").content.decode()
     assert "AI Policy (example)" in page and "cla-signed" in page

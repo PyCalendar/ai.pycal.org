@@ -96,13 +96,21 @@ class PullRequestCheck:
             states: The agreements and their signatures.
 
         Returns:
-            The wanted and unwanted labels for agreements required on this PR.
+            The wanted and unwanted labels for agreements required on this PR: the labels of
+            signed agreements, and the unsigned labels of agreements not signed yet.
         """
         wanted, unwanted = set(), set()
         for state in states:
             if state.required:
                 (wanted if state.signed else unwanted).update(state.agreement.labels)
-        return wanted - unwanted, unwanted
+                (unwanted if state.signed else wanted).update(state.agreement.unsigned_labels)
+        unsigned = {
+            label
+            for state in states
+            if state.required and not state.signed
+            for label in state.agreement.unsigned_labels
+        }
+        return (wanted - unwanted) | unsigned, unwanted - unsigned
 
     def run(self) -> list[AgreementState]:
         """Freeze an initial default, update GitHub and persist the current result."""
@@ -125,7 +133,9 @@ class PullRequestCheck:
         pull.save(update_fields=["all_signed", "updated"])
         add, blocked = self.labels(states)
         managed = set(pull.repository.managed_labels)
-        managed.update(label for s in states for label in s.agreement.labels)
+        managed.update(
+            label for s in states for label in s.agreement.labels + s.agreement.unsigned_labels
+        )
         for offered in pull.repository.choices.all():
             managed.update(offered.labels)
         if choice:

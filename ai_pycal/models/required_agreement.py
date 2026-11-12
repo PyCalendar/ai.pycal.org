@@ -25,6 +25,8 @@ class RequiredAgreement(models.Model):
         AgreementVersion, on_delete=models.PROTECT, related_name="required_by"
     )
     labels = models.JSONField(default=list)
+    # the labels of a pull request while this agreement is required and not signed
+    unsigned_labels = models.JSONField(default=list, blank=True)
     position = models.PositiveIntegerField(default=0)
 
     class Meta:
