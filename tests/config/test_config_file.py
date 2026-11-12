@@ -24,11 +24,11 @@ def test_the_test_configuration_has_two_agreements():
         "main",
         "agreements/ai-policy.md",
     )
-    assert ai.repository == GitHubRemote("PyCalendar", "ai.pycal.org-example")
+    assert ai.repository == GitHubRemote("PyCalendar", "sign.pycal.org-example")
     assert ai.labels == ("ai-policy-accepted",)
     assert cla.labels == ("cla-signed",)
     assert cla.unsigned_labels == ("cla-missing",)
-    assert cla.repository.full_name == "PyCalendar/ai.pycal.org-example"
+    assert cla.repository.full_name == "PyCalendar/sign.pycal.org-example"
 
 
 def test_repository_and_tag_are_optional():

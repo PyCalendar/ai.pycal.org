@@ -176,8 +176,8 @@ class UnsupportedRemote(ConfigFileError):
     """The repository of an agreement is not on GitHub.
 
     The agreements are read from GitHub. Use the address of a repository on
-    GitHub, such as ``https://github.com/PyCalendar/ai.pycal.org-example.git`` or
-    ``git@github.com:PyCalendar/ai.pycal.org-example.git``.
+    GitHub, such as ``https://github.com/PyCalendar/sign.pycal.org-example.git`` or
+    ``git@github.com:PyCalendar/sign.pycal.org-example.git``.
     """
 
     title = _("The repository of an agreement is not on GitHub")

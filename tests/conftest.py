@@ -23,7 +23,7 @@ WEBHOOK_SECRET = "webhook-secret"
 ALICE = (42, "alice")
 BOB = (43, "bob")
 MAINTAINER = (7, "maintainer")
-REPOSITORY = "PyCalendar/ai.pycal.org-example"
+REPOSITORY = "PyCalendar/sign.pycal.org-example"
 
 
 @pytest.fixture(scope="session")

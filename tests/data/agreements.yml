@@ -8,7 +8,7 @@ agreements:
     mandatory: true
     # a tag, a branch or a commit; a tag keeps the agreement stable
     ref: main
-    repository: https://github.com/PyCalendar/ai.pycal.org-example.git
+    repository: https://github.com/PyCalendar/sign.pycal.org-example.git
     path: agreements/ai-policy.md
     pr:
       labels: ai-policy-accepted
@@ -17,7 +17,7 @@ agreements:
     description: Give the project permission to distribute your contributions.
     mandatory: true
     ref: main
-    repository: git@github.com:PyCalendar/ai.pycal.org-example.git
+    repository: git@github.com:PyCalendar/sign.pycal.org-example.git
     path: agreements/cla.md
     pr:
       # while the agreement is not signed, since version 2.1.0

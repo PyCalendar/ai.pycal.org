@@ -36,8 +36,8 @@ class GitHubRemote:
             UnsupportedRemote: The remote is not on GitHub.
 
         Examples:
-            >>> GitHubRemote.parse("https://github.com/PyCalendar/ai.pycal.org-example.git")
-            GitHubRemote(owner='PyCalendar', name='ai.pycal.org-example')
+            >>> GitHubRemote.parse("https://github.com/PyCalendar/sign.pycal.org-example.git")
+            GitHubRemote(owner='PyCalendar', name='sign.pycal.org-example')
             >>> GitHubRemote.parse("git@github.com:PyCalendar/icalendar.git").full_name
             'PyCalendar/icalendar'
             >>> GitHubRemote.parse("PyCalendar/icalendar").url

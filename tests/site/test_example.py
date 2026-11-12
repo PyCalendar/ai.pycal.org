@@ -13,7 +13,7 @@ pytestmark = pytest.mark.skipif(
 
 def test_the_example_configuration_is_valid():
     text = (EXAMPLE / ".github" / "agreements.yml").read_text()
-    config = RepositoryConfig.parse(text, GitHubRemote("PyCalendar", "ai.pycal.org-example"))
+    config = RepositoryConfig.parse(text, GitHubRemote("PyCalendar", "sign.pycal.org-example"))
     for spec in config.agreements:
         assert (EXAMPLE / spec.path).is_file(), spec.path
 

@@ -23,7 +23,7 @@ agreements:
   ai-policy:
     name: AI Policy (example)
     ref: main
-    repository: https://github.com/PyCalendar/ai.pycal.org-example.git
+    repository: https://github.com/PyCalendar/sign.pycal.org-example.git
     path: agreements/ai-policy.md
     pr:
       labels: ai-policy-accepted

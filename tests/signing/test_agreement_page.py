@@ -22,7 +22,7 @@ def test_the_path_of_the_agreement_is_the_title(client, cla):
     title = page.split("data-title>")[1].split("</h1>")[0]
     owner = title.index('<a href="/projects/PyCalendar/">PyCalendar</a>')
     repo = title.index(
-        '<a href="/project/PyCalendar/ai.pycal.org-example/">ai.pycal.org-example</a>'
+        '<a href="/project/PyCalendar/sign.pycal.org-example/">sign.pycal.org-example</a>'
     )
     menu = title.index('<details class="crumb-menu">')
     name = title.index(

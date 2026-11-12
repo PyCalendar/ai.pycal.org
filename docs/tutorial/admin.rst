@@ -39,14 +39,14 @@ Add ``.github/agreements.yml`` to the default branch of the repository:
      ai-policy:
        name: AI Policy
        ref: ai-policy-v1
-       repository: https://github.com/PyCalendar/ai.pycal.org-example.git
+       repository: https://github.com/PyCalendar/sign.pycal.org-example.git
        path: agreements/ai-policy.md
        pr:
          labels: ai-policy-accepted
 
 All fields are described in :doc:`/reference/config-file`. The example
-repository `PyCalendar/ai.pycal.org-example
-<https://github.com/PyCalendar/ai.pycal.org-example>`_ contains two test
+repository `PyCalendar/sign.pycal.org-example
+<https://github.com/PyCalendar/sign.pycal.org-example>`_ contains two test
 agreements.
 
 3. Install the GitHub App
