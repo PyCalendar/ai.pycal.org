@@ -2,10 +2,11 @@
 Contributor pages, choices and profiles
 =======================================
 
-The home page links to ``/projects/``, which lists the projects with their
-status: whether the site checks their pull requests, or the error of their
-configuration. The arrow of a project opens its agreements, mandatory ones
-first. ``/projects/<owner>/`` lists the projects of one owner.
+The home page links to ``/projects/``, which lists the organizations and people
+whose projects use the site. An organization opens to its projects, each with
+its status (up to date, or the error of its configuration), and a project opens
+to its agreements, mandatory ones first. ``/projects/<owner>/`` shows one owner.
+A repository appears once an administrator added it on **Setup**.
 
 An agreement page such as ``/agreements/2/`` has the path of the agreement in
 the site as its title: owner, project and agreement, each a link, with a menu

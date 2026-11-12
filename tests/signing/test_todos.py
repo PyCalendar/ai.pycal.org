@@ -83,3 +83,15 @@ def test_nothing_to_do_is_said_once(client, alice):
     assert "data-nothing" in main and "Nothing to do." in main
     assert "Agreements to sign" not in main and "Nothing to sign" not in main
     assert "message-success" not in main
+
+
+def test_my_agreements_hide_an_empty_to_sign_and_link_pull_requests(
+    client, github, repository, alice
+):
+    client.force_login(alice)
+    page = client.get("/my-agreements/").content.decode()
+    assert "data-to-sign-section" not in page and "Nothing to sign" not in page
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    page = client.get("/my-agreements/").content.decode()
+    item = page.split('data-pull="1"')[1].split("</li>")[0]
+    assert f'href="https://github.com/{REPOSITORY}/pull/1"' in item and "github-mark" in item

@@ -89,7 +89,18 @@ def projects(request, owner: str = ""):
     )
     if owner:
         found = found.filter(full_name__istartswith=f"{owner}/")
-    return render(request, "ai_pycal/projects.html", {"projects": found, "owner": owner})
+    owners: dict[str, list] = {}
+    for project in found.order_by("full_name"):
+        owners.setdefault(project.owner, []).append(project)
+    return render(
+        request,
+        "ai_pycal/projects.html",
+        {
+            "owners": sorted(owners.items(), key=lambda item: item[0].lower()),
+            "owner": owner,
+            "setup_url": reverse("setup"),
+        },
+    )
 
 
 def signing_state(policy, github_id: int | None) -> str:

@@ -159,7 +159,7 @@ def test_the_projects_page_shows_the_status_and_the_agreements(client, policy_pr
     assert 'data-status="working"' in project
     for agreement in policy_project.required_agreements.all():
         assert f'href="/agreements/{agreement.version_id}/">{agreement.title}</a>' in project
-    assert 'href="/projects/PyCalendar/">PyCalendar</a>' in project
+    assert 'href="/projects/PyCalendar/">PyCalendar</a>' in page  # the organization
     assert f'href="/project/{REPOSITORY}/">' in project
 
 
@@ -171,3 +171,15 @@ def test_a_project_with_an_error_shows_it(client, policy_project):
     project = page.split(f'data-project="{REPOSITORY}"')[1].split("</details>")[0]
     assert 'data-status="error"' in project
     assert "The configuration file was not found" in project or "Error:" in project
+
+
+def test_projects_are_grouped_by_organization(client, policy_project):
+    page = client.get("/projects/").content.decode()
+    owner = page.split('data-owner="PyCalendar"')[1].split("</details></li>\n</ul>")[0]
+    assert f'data-project="{REPOSITORY}"' in owner
+    assert "1 project" in page
+
+
+def test_no_projects_says_how_to_add_one(client, db):
+    page = client.get("/projects/").content.decode()
+    assert "data-no-projects" in page and 'href="/setup/">Setup</a>' in page

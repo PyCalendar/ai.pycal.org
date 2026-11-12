@@ -13,6 +13,7 @@ from ai_pycal.errors import AgreementNotFound, SigningError
 from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.identity import GitHubIdentity
+from ai_pycal.services.pull_state import PullState
 from ai_pycal.services.rendering import render as render_agreement
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.todos import Todos
@@ -59,7 +60,11 @@ def mine(request):
     return render(
         request,
         "ai_pycal/mine.html",
-        {"signatures": todos.signatures(), "pulls": todos.open_pulls(), "to_sign": todos.to_sign()},
+        {
+            "signatures": todos.signatures(),
+            "pulls": PullState.annotate(todos.open_pulls()),
+            "to_sign": todos.to_sign(),
+        },
     )
 
 

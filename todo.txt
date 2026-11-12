@@ -419,3 +419,6 @@
       engaged with".
 - [ ] Local times without the time zone; a version shows only its date if it is the only one that day.
 - [ ] Handles link to contributor pages wherever it does not distract.
+- [x] /projects/ lists organizations that open to their projects and these to their agreements; empty
+      only without added repositories (production: the example repository must be added on Setup).
+- [x] My agreements: no empty "To sign"; pull requests colored with the GitHub mark.

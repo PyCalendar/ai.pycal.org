@@ -4,16 +4,13 @@
 {% block main %}
 <h1>{% translate "My agreements" %}</h1>
 {% if not github %}<p class="message message-warning">{% translate "Your account is not connected to GitHub. Sign out and sign in with GitHub." %}</p>{% endif %}
-<section class="card">
+{% if to_sign %}<section class="card" data-to-sign-section>
   <h2>{% translate "To sign" %}</h2>
   {% include "ai_pycal/_to_sign.html" %}
-</section>
+</section>{% endif %}
 <section class="card">
   <h2>{% translate "My open pull requests" %}</h2>
-  {% if pulls %}<ul class="list">{% for pull in pulls %}
-    <li>{% if pull.all_signed %}<span class="badge badge-success">{% translate "signed" %}</span>{% else %}<span class="badge badge-warning">{% translate "to sign" %}</span>{% endif %}
-      <a href="/repository/{{ pull.repository.full_name }}/pull/{{ pull.number }}/">{{ pull.repository.full_name }}#{{ pull.number }}</a> {{ pull.title }}</li>
-  {% endfor %}</ul>{% else %}<p>{% translate "The site knows no open pull requests of yours." %}</p>{% endif %}
+  {% if pulls %}<ul class="pulls">{% for pull in pulls %}{% include "ai_pycal/_pull_item.html" with show_repository=True %}{% endfor %}</ul>{% else %}<p>{% translate "The site knows no open pull requests of yours." %}</p>{% endif %}
 </section>
 <section class="card">
   <h2>{% translate "Signed" %}</h2>

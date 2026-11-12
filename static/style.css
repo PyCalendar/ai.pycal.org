@@ -82,6 +82,12 @@ h1.crumbs-path a:not(:last-child), h2.crumbs-path a:not(:last-child) { font-weig
 .crumb-menu li a { display: block; padding: .4rem .6rem; border-radius: .3rem; }
 .crumb-menu li a:hover { background: var(--surface-tint); }
 .projects { list-style: none; padding: 0; margin: 0; }
+.owners { list-style: none; padding: 0; margin: 0; }
+.owner { margin: 0 0 .8rem; }
+.owner > summary { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; padding: .5rem 0; cursor: pointer; font-size: 1.15rem; }
+.owner-name { font-weight: 700; }
+.owner-name a { text-decoration: none; }
+.owner > .projects { margin-left: 1.25rem; }
 .project { border: 1px solid var(--border); border-radius: .5rem; margin: 0 0 .6rem; background: var(--surface); }
 .project summary { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .75rem; padding: .7rem 1rem; cursor: pointer; font-weight: 400; }
 .project[open] summary { border-bottom: 1px solid var(--border); }
