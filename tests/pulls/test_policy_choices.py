@@ -301,8 +301,9 @@ def test_the_title_has_the_path_and_a_menu_of_my_pull_requests(
     open_pull(client, github, 2)
     client.force_login(alice)
     page = client.get(page_url(1)).content.decode()
-    title = page.split('<h1 class="crumbs-path">')[1].split("</h1>")[0]
+    title = page.split("data-title>")[1].split("</h1>")[0]
     assert '<a href="/projects/PyCalendar/">PyCalendar</a>' in title and ">#1</a>" in title
+    assert title.index("pull-menu") < title.index(">#1</a>")
     menu = page.split('class="crumb-menu pull-menu"')[1].split("</details>")[0]
     assert menu.index("#2</span>") < menu.index("#1</span>")  # the highest number first
     filtered = client.get(page_url(1) + "?q=%232").content.decode()

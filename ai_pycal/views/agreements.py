@@ -184,13 +184,18 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
         .order_by("repository__full_name")
     )
     here = request.POST.get("next", request.GET.get("next", ""))
+    crumbs = breadcrumb(names, here)
+    if crumbs and identity:
+        crumbs["agreement"].state = (
+            "signed" if signature else "outdated" if previous else "unsigned"
+        )
     return render(
         request,
         "ai_pycal/agreement.html",
         {
             "version": version,
             "required_by": names,
-            "crumbs": breadcrumb(names, here),
+            "crumbs": crumbs,
             "title": names[0].name if names else version.path,
             "html": render_agreement(version.text, version.path),
             "signature": signature,

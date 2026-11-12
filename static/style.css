@@ -70,6 +70,13 @@ main.wrap { padding-top: 1.5rem; padding-bottom: 2rem; min-height: 60vh; }
 /* The path of a page in the site: owner / repository / agreement, with a menu of the others. */
 .crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; margin: 0 0 1rem; }
 .crumbs-path { margin: 0; overflow-wrap: anywhere; }
+/* the path stays, the dropdown changes the part after it: owner / repo / [▾] name */
+.crumbs-start { font-size: 2em; line-height: 1.2; overflow-wrap: anywhere; }
+.crumbs-start a { text-decoration: none; color: var(--primary); }
+.crumbs-start a:hover { text-decoration: underline; }
+.crumbs-current { margin: 0; overflow-wrap: anywhere; }
+.crumbs-current a { color: var(--text); text-decoration: none; }
+.crumb-menu li a { white-space: nowrap; }
 .crumbs-path a { text-decoration: none; }
 .crumbs-path a:hover { text-decoration: underline; }
 .crumbs-path a:last-child { color: var(--text); }

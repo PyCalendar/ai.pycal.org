@@ -1,9 +1,11 @@
-{% load i18n github times %}<div class="crumbs">
-  <{{ tag|default:"h1" }} class="crumbs-path"><a href="{% url 'owner_projects' crumbs.owner %}">{{ crumbs.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ crumbs.full_name }}/">{{ crumbs.repo }}</a><span class="crumbs-sep">/</span><a href="{% url 'agreement' crumbs.agreement.version_id %}">{{ crumbs.agreement.title }}</a></{{ tag|default:"h1" }}>
+{% load i18n github times %}<div class="crumbs" data-title>
+  <nav class="crumbs-start" aria-label="{% translate "Path" %}"><a href="{% url 'owner_projects' crumbs.owner %}">{{ crumbs.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ crumbs.full_name }}/">{{ crumbs.repo }}</a><span class="crumbs-sep">/</span></nav>
   {% if crumbs.others %}<details class="crumb-menu">
     <summary title="{% translate "Other agreements of this project" %}" aria-label="{% translate "Other agreements of this project" %}">▾</summary>
-    <ul>{% for other in crumbs.others %}<li><a href="{% url 'agreement' other.version_id %}">{{ other.title }}</a>{% if not other.mandatory %} <span class="muted">({% translate "optional" %})</span>{% endif %}</li>{% endfor %}</ul>
+    <ul>{% for other in crumbs.others %}<li><a href="{% url 'agreement' other.version_id %}">{{ other.title }}{% if not other.mandatory %} <span class="badge muted">{% translate "Optional" %}</span>{% endif %}</a></li>{% endfor %}</ul>
   </details>{% endif %}
+  <h1 class="crumbs-current"><a href="{% url 'agreement' crumbs.agreement.version_id %}">{{ crumbs.agreement.title }}</a></h1>
+  {% include "ai_pycal/_agreement_badges.html" with policy=crumbs.agreement %}
   {% if version %}<span class="version muted" data-version>{% translate "Version" %} {% version version %}</span>
   {% include "ai_pycal/_agreement_gear.html" with agreement=crumbs.agreement %}{% endif %}
 </div>

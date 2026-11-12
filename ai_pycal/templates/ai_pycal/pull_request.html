@@ -3,8 +3,8 @@
 {% block title %}{{ pull.title }} #{{ pull.number }} · {{ site_name }}<p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
 {% endblock %}
 {% block main %}
-<div class="crumbs">
-  <h1 class="crumbs-path"><a href="{% url 'owner_projects' pull.repository.owner %}">{{ pull.repository.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ pull.repository.full_name }}/">{{ pull.repository.name }}</a><span class="crumbs-sep">/</span><a href="{{ here }}">#{{ pull.number }}</a></h1>
+<div class="crumbs" data-title>
+  <nav class="crumbs-start" aria-label="{% translate "Path" %}"><a href="{% url 'owner_projects' pull.repository.owner %}">{{ pull.repository.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ pull.repository.full_name }}/">{{ pull.repository.name }}</a><span class="crumbs-sep">/</span></nav>
   {% if my_pulls or query %}<details class="crumb-menu pull-menu"{% if query %} open{% endif %}>
     <summary title="{% translate "My pull requests in this project" %}" aria-label="{% translate "My pull requests in this project" %}">▾</summary>
     <div class="menu-panel">
@@ -12,6 +12,7 @@
       <ul>{% for mine in my_pulls %}<li><a href="/project/{{ pull.repository.full_name }}/pulls/{{ mine.number }}/"{% if mine.pk == pull.pk %} aria-current="page"{% endif %}>{{ mine.title }} <span class="muted">#{{ mine.number }}</span></a></li>{% empty %}<li class="muted">{% translate "No pull request matches." %}</li>{% endfor %}</ul>
     </div>
   </details>{% endif %}
+  <h1 class="crumbs-current"><a href="{{ here }}">#{{ pull.number }}</a></h1>
   {% github_link pull.url "The pull request on GitHub" %}
 </div>
 <p class="lead">{{ pull.title }} <span class="muted">#{{ pull.number }}</span> · {% translate "by" %} <a href="{% url 'contributor' pull.author_login %}">@{{ pull.author_login }}</a></p>

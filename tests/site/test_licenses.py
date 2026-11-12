@@ -5,9 +5,11 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-def test_the_footer_links_the_license_to_the_page(client):
+def test_the_about_page_links_the_licenses_not_the_footer(client):
     footer = client.get("/").content.decode().split('<footer class="footer">')[1]
-    assert '<a href="/licenses/">AGPL-3.0-or-later</a>' in footer
+    assert 'href="/licenses/"' not in footer
+    about = client.get("/about/").content.decode().split("<main")[1].split("</main>")[0]
+    assert '<a href="/licenses/">AGPL-3.0-or-later</a>' in about
 
 
 def test_the_page_lists_the_licenses(client):

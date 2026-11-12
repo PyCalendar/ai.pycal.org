@@ -19,13 +19,17 @@ def cla(repository):
 
 def test_the_path_of_the_agreement_is_the_title(client, cla):
     page = client.get(f"/agreements/{cla.version_id}/").content.decode()
-    title = page.split('<h1 class="crumbs-path">')[1].split("</h1>")[0]
-    assert title == (
-        '<a href="/projects/PyCalendar/">PyCalendar</a><span class="crumbs-sep">/</span>'
+    title = page.split("data-title>")[1].split("</h1>")[0]
+    owner = title.index('<a href="/projects/PyCalendar/">PyCalendar</a>')
+    repo = title.index(
         '<a href="/project/PyCalendar/ai.pycal.org-example/">ai.pycal.org-example</a>'
-        '<span class="crumbs-sep">/</span>'
-        f'<a href="/agreements/{cla.version_id}/">Contributor License Agreement (example)</a>'
     )
+    menu = title.index('<details class="crumb-menu">')
+    name = title.index(
+        f'<h1 class="crumbs-current"><a href="/agreements/{cla.version_id}/">'
+        "Contributor License Agreement (example)</a>"
+    )
+    assert owner < repo < menu < name  # the dropdown changes the part right of it
 
 
 def test_the_other_agreements_of_the_project_are_in_a_menu(client, cla, repository):
@@ -62,8 +66,9 @@ def test_the_version_is_the_time_of_the_last_change(client, cla, github):
     shown = page.split("data-version>")[1].split("</span>")[0]
     assert version.committed is not None
     stamp = version.committed.strftime("%Y-%m-%dT%H:%M:%SZ")
-    assert f'<time class="when-exact" datetime="{stamp}"' in shown
-    assert version.committed.strftime("%Y-%m-%d %H:%M UTC") in shown
+    # the only version of its day: the date alone, local in the browser
+    assert f'<time class="when-exact" datetime="{stamp}" data-date-only' in shown
+    assert f">{version.committed.strftime('%Y-%m-%d')}</time>" in shown
 
 
 def test_the_owner_page_lists_the_projects_of_the_owner(client, repository):
@@ -107,3 +112,41 @@ def test_versions_read_before_get_their_time_at_the_next_reading(repository, cla
     RepositorySync(repository).sync()
     version.refresh_from_db()
     assert version.committed is not None
+
+
+def test_the_title_has_the_badges(client, cla, alice):
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    title = page.split("data-title>")[1].split("data-version")[0]
+    assert 'data-kind="mandatory"' in title and "data-state" not in title
+    client.force_login(alice)
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    assert 'data-state="unsigned"' in page.split("data-title>")[1].split("data-version")[0]
+    sign_agreement(client, cla.version_id, "alice")
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    assert 'data-state="signed"' in page.split("data-title>")[1].split("data-version")[0]
+
+
+def test_optional_in_the_menu_is_a_badge(client, cla, repository):
+    ai = repository.required_agreements.get(key="ai-policy")
+    ai.mandatory = False
+    ai.save()
+    page = client.get(f"/agreements/{cla.version_id}/").content.decode()
+    menu = page.split('<details class="crumb-menu">')[1].split("</details>")[0]
+    assert '<span class="badge muted">Optional</span>' in menu and "(optional)" not in menu
+
+
+def test_two_versions_of_a_day_show_their_time(cla):
+    from django.template import Context, Template
+
+    from ai_pycal.models import AgreementVersion
+
+    version = cla.version
+    AgreementVersion.objects.create(
+        source=version.source,
+        path=version.path,
+        commit="f" * 40,
+        text="# Other",
+        committed=version.committed.replace(hour=1),
+    )
+    html = Template("{% load times %}{% version v %}").render(Context({"v": version}))
+    assert "data-date-only" not in html and " UTC</time>" in html

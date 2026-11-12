@@ -81,11 +81,12 @@ def when(value: datetime | None) -> str:
 
 @register.simple_tag
 def version(agreement_version) -> str:
-    """The version of an agreement for people: the time of its last change.
+    """The version of an agreement for people: the date of its last change.
 
-    The text is the exact time in UTC; ``static/local-time.js`` shows it in the local time
-    of the browser. Versions read before the time of their commit was kept show when the
-    site read them, until they are read again.
+    The date alone, unless another version of the same file has the same date: then the
+    time too. Without JavaScript it is in UTC; ``static/local-time.js`` shows it in the
+    local time of the browser, without the time zone. Versions read before the time of
+    their commit was kept show when the site read them, until they are read again.
 
     Args:
         agreement_version: An :class:`~ai_pycal.models.AgreementVersion`, or None.
@@ -97,9 +98,26 @@ def version(agreement_version) -> str:
         return ""
     value = agreement_version.committed or agreement_version.fetched
     utc = value.astimezone(UTC)
+    same_day = (
+        type(agreement_version)
+        .objects.filter(
+            source=agreement_version.source,
+            path=agreement_version.path,
+            committed__date=utc.date(),
+        )
+        .exclude(pk=agreement_version.pk)
+        .exists()
+    )
+    if same_day:
+        return format_html(
+            '<time class="when-exact" datetime="{}" title="{}">{}</time>',
+            utc.isoformat(timespec="seconds").replace("+00:00", "Z"),
+            gettext("The time of the last change of the agreement"),
+            utc.strftime("%Y-%m-%d %H:%M UTC"),
+        )
     return format_html(
-        '<time class="when-exact" datetime="{}" title="{}">{}</time>',
+        '<time class="when-exact" datetime="{}" data-date-only title="{}">{}</time>',
         utc.isoformat(timespec="seconds").replace("+00:00", "Z"),
-        gettext("The time of the last change of the agreement"),
-        utc.strftime("%Y-%m-%d %H:%M UTC"),
+        gettext("The date of the last change of the agreement"),
+        utc.strftime("%Y-%m-%d"),
     )

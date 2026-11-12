@@ -13,7 +13,8 @@ from django.views.decorators.http import require_POST
 
 from ai_pycal import build_info, licenses
 from ai_pycal.checks import FAVICON_TYPES, is_url
-from ai_pycal.models import Repository, Signature
+from ai_pycal.models import Signature
+from ai_pycal.services.visibility import visible_projects
 from ai_pycal.theme import COOKIE, Theme
 
 
@@ -30,7 +31,8 @@ def home(request):
         request,
         "ai_pycal/home.html",
         {
-            "repositories": Repository.objects.filter(active=True).count(),
+            # what the visitor can see: private projects only for their people
+            "repositories": visible_projects(request.user).filter(active=True).count(),
             "signatures": Signature.objects.count(),
         },
     )

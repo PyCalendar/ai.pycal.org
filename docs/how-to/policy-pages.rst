@@ -9,8 +9,11 @@ to its agreements, mandatory ones first. ``/projects/<owner>/`` shows one owner.
 A repository appears once an administrator added it on **Setup**.
 
 An agreement page such as ``/agreements/2/`` has the path of the agreement in
-the site as its title: owner, project and agreement, each a link, with a menu
-of the other agreements of the project. Its source and version are at the
+the site as its title: owner, project and agreement, each a link. The arrow
+between the project and the agreement opens the other agreements of the
+project. Badges say whether the agreement is mandatory and whether you signed
+it. Its version is the date of its last change, with the time only if the file
+changed twice that day; times are in your local time. Its source and version are at the
 bottom. The history of an agreement, ``/agreements/history/<source>/<path>/``,
 shows each visible version and the projects using it.
 

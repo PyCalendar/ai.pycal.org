@@ -10,9 +10,11 @@ on:
     tags: ["v*"]
   pull_request:
 
+# a newer push cancels the checks of a pull request, but never a run of main: each push to
+# main must reach the image and the deployment (the deploy job runs one at a time)
 concurrency:
   group: tests-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

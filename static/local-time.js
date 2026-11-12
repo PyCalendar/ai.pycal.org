@@ -16,8 +16,7 @@
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-    timeZoneName: "short",
-  });
+  });  // the local time of the viewer: no time zone
   const day = new Intl.DateTimeFormat(language, { dateStyle: "medium" });
   const relative = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
 
@@ -38,7 +37,11 @@
     // exact times, such as the version of an agreement: the local time, without "ago"
     for (const element of document.querySelectorAll("time.when-exact[datetime]")) {
       const time = new Date(element.getAttribute("datetime"));
-      if (!Number.isNaN(time.getTime())) element.textContent = exact.format(time);
+      if (Number.isNaN(time.getTime())) continue;
+      // versions show their date only, unless another version has the same date
+      element.textContent = element.hasAttribute("data-date-only")
+        ? day.format(time)
+        : exact.format(time);
     }
     for (const element of document.querySelectorAll("time.when[datetime]")) {
       const time = new Date(element.getAttribute("datetime"));

@@ -117,3 +117,46 @@ def test_the_start_names_site_admins_without_an_account(settings, capsys, db):
     assert "SITE_ADMINS without an account on this site" in out
     assert "nicokunzmann" in out.split("SITE_ADMINS without")[1].split("\n")[0]
     assert "niccokunzmann" not in out.split("SITE_ADMINS without")[1].split("\n")[0]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "/",
+        "/projects/",
+        "/projects/PyCalendar/",
+        "/about/",
+        "/licenses/",
+        "/contributor/alice/",
+        "/logs/PyCalendar/",
+    ],
+)
+def test_public_pages_need_no_sign_in(client, url, db):
+    assert client.get(url).status_code == 200
+
+
+def test_public_pages_of_a_project_need_no_sign_in(client, repository):
+    from tests.conftest import REPOSITORY
+
+    cla = repository.required_agreements.get(key="cla")
+    for url in (
+        f"/project/{REPOSITORY}/",
+        f"/logs/{REPOSITORY}/",
+        f"/agreements/{cla.version_id}/",
+    ):
+        assert client.get(url).status_code == 200, url
+
+
+@pytest.mark.parametrize("url", ["/my-agreements/", "/todos/", "/profile/", "/setup/"])
+def test_personal_pages_ask_to_sign_in(client, url, db):
+    response = client.get(url)
+    assert response.status_code == 302 and response["Location"].startswith("/accounts/login/")
+
+
+def test_the_start_page_counts_only_visible_projects(client, repository):
+    repository.private = True
+    repository.save()
+    assert "0 repositories" in client.get("/").content.decode()
+    repository.private = False
+    repository.save()
+    assert "1 repository" in client.get("/").content.decode()
