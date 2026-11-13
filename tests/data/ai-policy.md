@@ -15,5 +15,6 @@ open in a repository that asks for this agreement:
 4. **I respect licenses.** I do not submit generated code or text that I have
    reason to believe copies work under an incompatible license.
 5. **I test.** Changes come with tests, and I have run them.
+6. **I keep secrets out of prompts.** No passwords, tokens or keys of mine or others.
 
 Maintainers may close pull requests that do not follow this policy.

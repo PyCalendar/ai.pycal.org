@@ -25,7 +25,8 @@ def error_of(response) -> str:
 def test_the_agreement_is_shown_as_markdown(client, cla, alice):
     client.force_login(alice)
     page = client.get(f"/agreements/{cla.pk}/").content.decode()
-    assert "<h1>Contributor License Agreement (example)</h1>" in page
+    assert "<strong>" in page  # Markdown, rendered
+    assert "<h1>Contributor License Agreement (example)</h1>" not in page  # shown once
     assert "I have read and accept this agreement." in page
     assert f"https://github.com/{cla.source}/blob/{cla.commit}/agreements/cla.md" in page
 

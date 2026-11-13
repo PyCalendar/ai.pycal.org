@@ -578,3 +578,15 @@
       push; the changes and the translations show; #2 asks for the new signature (state
       missing, ai-policy-accepted removed).
 - [ ] Sign version 4 on #2 again (a person signs, on the page of the agreement).
+
+## 2026-11-13: the title of an agreement once
+
+- [x] "AI Policy (example)" was shown twice in the signing flow and on the agreement page: the
+      first heading of the text is left out if it matches the title above it (spaces and case
+      ignored); a different first heading stays. Also for translations with the same title.
+- [x] Front matter (--- ... --- at the start) is not shown and its YAML comments do not become
+      the title. Tests.
+- [x] Labels: "added ai-disclosed ai-policy-accepted and removed ai-policy-accepted" on #2 is how
+      GitHub groups three updates hours apart (11:01 signed, 13:07 version 3 made the signature
+      outdated, 13:17 signed version 4). Each update is minimal already: it reads the labels and
+      adds only the missing ones, removes only the wrong ones. A test pins it down.

@@ -1,5 +1,7 @@
 """Pull requests show which agreements their authors signed: labels and checks."""
 
+import json
+
 import pytest
 
 from ai_pycal.models import PullRequest, RequiredAgreement
@@ -177,3 +179,31 @@ def test_a_reopened_pull_request_gets_the_labels_of_the_changed_agreement(
     send_webhook(client, "pull_request", pull_payload(github, 1, action="reopened"))
     labels = github.labels[(REPOSITORY, 1)]
     assert "cla-signed" not in labels and "cla-missing" in labels
+
+
+def label_writes(github, start: int) -> list[tuple[str, str]]:
+    """The changes of labels sent to GitHub after the request number *start*."""
+    found = []
+    for request in github.requests[start:]:
+        if "/labels" not in request.url.path or request.method == "GET":
+            continue
+        if request.method == "POST":
+            found += [("add", name) for name in json.loads(request.content)["labels"]]
+        else:
+            found.append(("remove", request.url.path.rsplit("/", 1)[1]))
+    return found
+
+
+def test_the_labels_change_minimally(client, github, repository, alice):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    client.force_login(alice)
+    ids = versions(repository)
+    sign_agreement(client, ids["ai-policy"], "alice")
+    start = len(github.requests)
+    sign_agreement(client, ids["cla"], "alice")
+    # only what differs: no label is removed and added again
+    assert sorted(label_writes(github, start)) == [("add", "cla-signed"), ("remove", "cla-missing")]
+    start = len(github.requests)
+    send_webhook(client, "pull_request", pull_payload(github, 1, action="synchronize"))
+    assert label_writes(github, start) == []  # the labels are right: nothing to write
+    assert sorted(github.labels[(REPOSITORY, 1)]) == ["ai-policy-accepted", "cla-signed"]

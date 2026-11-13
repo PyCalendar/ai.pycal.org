@@ -137,7 +137,7 @@ def flow(request, owner: str, repo: str, number: int):
             "position": ordered.index(current) + 1,
             "total": len(ordered),
             "more": len(remaining) > 1,
-            "text": (text := AgreementText.of(version, request)),
+            "text": (text := AgreementText.of(version, request, current.agreement.title)),
             "html": text.html,
             "shown_token": signer.shown_token(version),
             "handle_pattern": handle_pattern(identity.login),

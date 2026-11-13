@@ -204,7 +204,9 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
         next_agreement = next(
             (other for other in crumbs["others"] if other.version_id not in signed), None
         )
-    text = AgreementText.of(version, request)
+    title = names[0].name if names else version.path
+    shown = crumbs["agreement"].title if crumbs else title  # the heading of the page
+    text = AgreementText.of(version, request, shown)
     return page(
         request,
         "ai_pycal/agreement.html",
@@ -213,7 +215,7 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
             "required_by": names,
             "crumbs": crumbs,
             "next_agreement": next_agreement,
-            "title": names[0].name if names else version.path,
+            "title": title,
             "text": text,
             "html": text.html,
             "signature": signature,

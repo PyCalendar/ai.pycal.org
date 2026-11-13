@@ -27,7 +27,7 @@ class AgreementText:
         return name[:1].upper() + name[1:]
 
     @classmethod
-    def of(cls, version: AgreementVersion, request) -> "AgreementText":
+    def of(cls, version: AgreementVersion, request, title: str = "") -> "AgreementText":
         """The text of *version* for the language of the visitor.
 
         ``?original`` on the address shows the original instead of the translation.
@@ -35,13 +35,17 @@ class AgreementText:
         Args:
             version: The agreement.
             request: The request, with the language of the visitor.
+            title: The title that the page shows above the text: the same first heading of
+                the text is left out.
 
         Returns:
             The text.
         """
         translation = version.translations.filter(language=get_language()).first()
+        original = render_agreement(version.text, version.path, title)
         if translation is None:
-            return cls(render_agreement(version.text, version.path))
+            return cls(original)
         if "original" in request.GET:
-            return cls(render_agreement(version.text, version.path), available=translation)
-        return cls(render_agreement(translation.text, translation.path), translation=translation)
+            return cls(original, available=translation)
+        html = render_agreement(translation.text, translation.path, title)
+        return cls(html, translation=translation)

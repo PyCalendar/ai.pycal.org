@@ -57,7 +57,10 @@ GitHub check names and the contributor JSON and badge endpoints.
    heading of level 1, such as ``# Contributor License Agreement``. The site
    names the agreement by this title everywhere; a file without one stops the
    configuration with :class:`~ai_pycal.errors.config_file.AgreementTitleMissing`.
-   Markdown is rendered safely.
+   Markdown is rendered safely. The pages show the title above the text, so
+   they leave out the first heading of the text if it is the same title. Front
+   matter, a block between ``---`` lines at the start of the file such as for
+   Jekyll, is not shown.
 
 ``repository``
    The source repository as ``owner/name``, an HTTPS GitHub URL or an SSH Git
