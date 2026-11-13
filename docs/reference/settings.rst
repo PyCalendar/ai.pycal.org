@@ -116,8 +116,12 @@ emails are written to the log.
 =========
 
 ``SITE_ADMINS``
-   GitHub handles, comma separated, that may open the admin pages of Django.
-   Default none.
+   GitHub handles, comma separated, of the administrators of the site. They
+   are superusers of the Django admin, ``/admin/``, which the heading
+   *Administration* of the menu opens, and see the global log. A change applies
+   at the next page that a person opens, without signing in again: people who
+   are no longer listed lose these rights. Users without a GitHub account,
+   such as one made with ``createsuperuser``, keep theirs. Default none.
 ``SIGN_OUT_MINUTES``
    Minutes after signing in when people are signed out again, also while they
    use the site: then they sign in with GitHub again. Default ``60``, at least

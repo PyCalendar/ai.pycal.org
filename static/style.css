@@ -49,6 +49,9 @@ main.wrap { padding-top: 1.5rem; padding-bottom: 2rem; min-height: 60vh; }
 .nav .account-menu ul a:hover, .account-menu ul button:hover { background: var(--surface-tint); text-decoration: none; color: var(--text); }
 .account-menu form { margin: 0; }
 .account-menu .menu-heading { padding: .2rem .6rem; color: var(--text-muted); font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+/* the heading links to the Django admin for staff: it keeps the look of a heading */
+.nav .account-menu ul .menu-heading a { display: inline; width: auto; padding: 0; border-radius: 0; color: inherit; font: inherit; text-decoration: none; }
+.nav .account-menu ul .menu-heading a:hover { background: none; color: var(--text); text-decoration: underline; }
 .account-menu .separator { height: 1px; margin: .3rem .2rem; background: var(--border); }
 .count { display: inline-block; min-width: 1.3em; padding: 0 .35em; border-radius: 1em; background: var(--accent); color: var(--accent-text); font-size: .8em; font-weight: 700; text-align: center; }
 /* Links to the documentation next to things: a question mark in a circle, in a new tab. */

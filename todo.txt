@@ -564,3 +564,9 @@
 - [x] The license (AGPL-3.0-or-later, REUSE.toml, the icon under CC-BY-SA-4.0) is in the
       documentation: Contribute > License.
 - [x] The start page of the documentation says that most of the project is written with AI.
+- [x] The heading Administration of the menu links to the Django admin for staff; the entry
+      Django admin is gone. For administrators who are not staff it stays text. Tests.
+- [x] "You are authenticated as niccokunzmann, but are not authorized" on /admin/: the rights of
+      SITE_ADMINS were only given at the sign-in, so a session of before SITE_ADMINS was set
+      had none. They now follow SITE_ADMINS at every request (granted and taken away); users
+      without GitHub, such as of createsuperuser, keep theirs. Tests.

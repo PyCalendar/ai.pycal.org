@@ -117,3 +117,6 @@ link leads back to the page of the project, pull request or person.
    emails (without addresses), sign-ups, the registration of the app, refused
    webhooks and webhooks of repositories that the site does not know. On the
    other logs, administrators open a trigger in the global log with ⤢.
+
+The heading *Administration* of the menu leads staff to the Django admin,
+``/admin/``.

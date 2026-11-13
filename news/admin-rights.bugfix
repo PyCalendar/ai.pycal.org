@@ -1,0 +1,1 @@
+The people of SITE_ADMINS can open the Django admin also with a session of before they were added; people removed from SITE_ADMINS lose it at once.

@@ -21,15 +21,10 @@ def update_user(sender, request, user, **kwargs) -> None:
         **kwargs: More of allauth.
     """
     sign_out_later(request)
-    identity = GitHubIdentity.of(user)
-    if identity is None:
+    if GitHubIdentity.of(user) is None:
         return
     keep_verified_addresses(user)
-    admin = identity.login.lower() in settings.SITE_ADMINS
-    changed = user.is_staff != admin or user.is_superuser != admin
-    user.is_staff = user.is_superuser = admin
-    if changed:
-        user.save(update_fields=["is_staff", "is_superuser"])
+    GitHubIdentity.keep_rights(user)
 
 
 def sign_out_later(request) -> None:

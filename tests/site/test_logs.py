@@ -198,3 +198,29 @@ def test_the_log_is_the_icon_next_to_the_title(client, github, repository, page,
     assert f'class="log-link" data-log href="{log}"' in title
     assert html.count(f'href="{log}"') == 1  # no other link to the log, such as a text
     assert "<p>" not in html.split("<title>")[1].split("</title>")[0]
+
+
+def menu_of(client) -> str:
+    return (
+        client.get("/")
+        .content.decode()
+        .split('<details class="account-menu">')[1]
+        .split("</details>")[0]
+    )
+
+
+def test_the_heading_administration_leads_to_the_django_admin(client, maintainer, settings):
+    settings.SITE_ADMINS = ["maintainer"]
+    client.force_login(maintainer)
+    menu = menu_of(client)
+    heading = menu.split('class="menu-heading">')[1].split("</li>")[0]
+    assert heading.startswith('<a href="/admin/"') and ">Administration</a>" in heading
+    assert menu.count('href="/admin/"') == 1  # no second entry for the same page
+    assert 'href="/logs/all/">Global log' in menu
+
+
+def test_no_administration_for_the_others(client, maintainer, settings):
+    settings.SITE_ADMINS = []
+    client.force_login(maintainer)
+    menu = menu_of(client)
+    assert "Administration" not in menu and "/admin/" not in menu

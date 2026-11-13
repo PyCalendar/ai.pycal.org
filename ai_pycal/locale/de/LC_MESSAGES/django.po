@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sign.pycal.org\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 10:27+0000\n"
+"POT-Creation-Date: 2026-11-13 12:47+0000\n"
 "PO-Revision-Date: 2026-11-12 23:45+0000\n"
 "Last-Translator: sign.pycal.org contributors\n"
 "Language-Team: German\n"
@@ -412,14 +412,14 @@ msgstr "Übersicht"
 msgid "Preferences"
 msgstr "Einstellungen"
 
+msgid "Django admin"
+msgstr "Django-Verwaltung"
+
 msgid "Administration"
 msgstr "Verwaltung"
 
 msgid "Global log"
 msgstr "Gesamtes Protokoll"
-
-msgid "Django admin"
-msgstr "Django-Verwaltung"
 
 msgid "Sign out"
 msgstr "Abmelden"

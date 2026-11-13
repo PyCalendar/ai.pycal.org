@@ -8,9 +8,8 @@
     {% if github %}<li><a href="{% url 'contributor' github.login %}">{% translate "Dashboard" %}</a></li>{% endif %}
     <li><a href="{% url 'profile' %}">{% translate "Preferences" %}</a></li>
     {% if site_admin or user.is_staff %}<li class="separator" role="separator"></li>
-    <li class="menu-heading">{% translate "Administration" %}</li>
-    {% if site_admin %}<li><a href="{% url 'all_logs' %}">{% translate "Global log" %}</a></li>{% endif %}
-    {% if user.is_staff %}<li><a href="{% url 'admin:index' %}">{% translate "Django admin" %}</a></li>{% endif %}{% endif %}
+    <li class="menu-heading">{% if user.is_staff %}<a href="{% url 'admin:index' %}" title="{% translate "Django admin" %}">{% translate "Administration" %}</a>{% else %}{% translate "Administration" %}{% endif %}</li>
+    {% if site_admin %}<li><a href="{% url 'all_logs' %}">{% translate "Global log" %}</a></li>{% endif %}{% endif %}
     <li class="separator" role="separator"></li>
     <li><form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">{% translate "Sign out" %}</button></form></li>
   </ul>
