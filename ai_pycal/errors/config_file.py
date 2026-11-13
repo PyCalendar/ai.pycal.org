@@ -59,8 +59,9 @@ class ConfigVersionMissing(ConfigFileError):
     """The configuration file has no version.
 
     The version says which format the file uses, so that later formats can be
-    read without misunderstanding older files. Add ``version: 1.0.0`` as the
-    first line.
+    read without misunderstanding older files. Add the newest version,
+    ``version: 2.2.0``, as the first line, as in the :ref:`example file
+    <example-config>`, and check the fields with its comments.
     """
 
     title = _("The configuration file has no version")
@@ -69,8 +70,9 @@ class ConfigVersionMissing(ConfigFileError):
 class ConfigVersionInvalid(ConfigFileError):
     """The version of the configuration file is not a version number.
 
-    The version has three numbers separated by dots, such as ``1.0.0``. Put it in
-    quotes if YAML reads it as a number: ``version: "1.0"`` is read as text.
+    The version has three numbers separated by dots, such as ``2.2.0``, the
+    newest one, as in the :ref:`example file <example-config>`. ``version: 2.2``
+    has only two.
     """
 
     title = _("The version of the configuration file is invalid")

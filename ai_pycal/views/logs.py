@@ -10,12 +10,13 @@ Each shows only the triggers and actions that concern it.
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Prefetch, Q
-from django.shortcuts import render
 
 from ai_pycal.models import LogAction, LogTrigger
+from ai_pycal.services import public_data as data
 from ai_pycal.services.identity import GitHubIdentity
 from ai_pycal.services.visibility import visible_projects
 
+from .json_page import page as json_page
 from .policies import contributor_id, project_for, pull_for
 
 PER_PAGE = 50
@@ -53,10 +54,28 @@ def log_page(request, triggers, actions: Q, context: dict):
         opened = int(request.GET.get("trigger", ""))
     except ValueError:
         opened = None
-    return render(
+    shown = page
+    return json_page(
         request,
         "ai_pycal/logs.html",
-        {**context, "page": page, "opened": opened, "site_admin": is_site_admin(request.user)},
+        {**context, "page": shown, "opened": opened, "site_admin": is_site_admin(request.user)},
+        lambda: {
+            "scope": context["scope"],
+            **{
+                key: value
+                for key, value in (
+                    ("owner", context.get("owner")),
+                    ("handle", context.get("handle")),
+                    ("project", data.project(context["project"]) if "project" in context else None),
+                    ("pull_request", data.pull(context["pull"]) if "pull" in context else None),
+                )
+                if value
+            },
+            "page": shown.number,
+            "pages": shown.paginator.num_pages,
+            "per_page": PER_PAGE,
+            "triggers": [data.trigger(found) for found in shown],
+        },
     )
 
 

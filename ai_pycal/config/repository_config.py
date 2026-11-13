@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 
 import yaml
+from django.conf import settings
 
 from ai_pycal.errors import (
     ConfigFileNotAMapping,
@@ -20,6 +21,8 @@ from .remote import GitHubRemote
 # where the file is in the default branch of a repository
 CONFIG_PATH = ".github/agreements.yml"
 KEYS = {"version", "agreements"}
+# the file to copy, with the fields explained, in the documentation
+EXAMPLE = "_static/agreements.yml"
 
 
 @dataclass(frozen=True)
@@ -72,7 +75,10 @@ class RepositoryConfig:
         if not isinstance(data, dict):
             raise ConfigFileNotAMapping(f"{CONFIG_PATH}: {type(data).__name__}")
         if "version" not in data:
-            raise ConfigVersionMissing(CONFIG_PATH)
+            raise ConfigVersionMissing(
+                f"{CONFIG_PATH}: add version: {SUPPORTED} as the first line, as in "
+                f"{settings.DOCS_URL.rstrip('/')}/{EXAMPLE}"
+            )
         version = FormatVersion.parse(data["version"])
         newer = version.check_supported(SUPPORTED)
         if not newer:

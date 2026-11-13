@@ -1,0 +1,64 @@
+# The agreements that contributors sign on https://sign.pycal.org before their pull
+# requests are checked and labelled. Copy this file to .github/agreements.yml on the
+# default branch of your repository and change it. It works as it is: it uses the
+# agreements of the example repository.
+# Every field: https://docs.sign.pycal.org/reference/config-file.html
+
+# Required, the first line: the format of this file, so that the site reads it the same
+# way also when the format grows. 2.2.0 is the newest format.
+version: 2.2.0
+
+# Required: the agreements, at least one. The key, such as "cla", names the agreement in
+# the checks of the pull requests: lowercase letters, digits, - and _.
+agreements:
+  cla:
+    # Required: the name of the agreement on the site.
+    name: Contributor License Agreement (example)
+    # Optional: Markdown that says what the agreement is for.
+    description: Give the project permission to distribute your contributions.
+    # Optional: the repository of the file, as owner/name, an HTTPS address or an SSH
+    # remote. Remove it to use the files of your own repository.
+    repository: PyCalendar/sign.pycal.org-example
+    # Required: the Markdown file of the agreement in that repository. Its first line is
+    # its title, such as "# Contributor License Agreement".
+    path: agreements/cla.md
+    # Optional: a tag, a branch or a commit; the default branch if it is missing. A tag
+    # keeps the agreement stable. A new commit of the file needs new signatures.
+    ref: main
+    # Optional: true (the default) for every pull request; false for an agreement that
+    # only a choice below asks for, or that people sign if they want.
+    mandatory: true
+    # Optional: the seconds between opening the agreement and signing it, at least,
+    # from 0 to 3600. Without it the setting of the site applies, 3 seconds.
+    sign-min-seconds: 10
+    # Optional: the labels of the pull requests, each a label or a list of labels.
+    pr:
+      # set when the agreement is signed
+      labels: cla-signed
+      # set while it is not signed
+      unsigned-labels: cla-missing
+  ai-policy:
+    name: AI Policy (example)
+    description: Use AI responsibly and disclose assistance.
+    repository: PyCalendar/sign.pycal.org-example
+    path: agreements/ai-policy.md
+    ref: main
+    mandatory: false
+    pr:
+      labels: [ai-policy-accepted]
+
+# Optional: what the author of a pull request chooses from, such as whether AI helped.
+# The agreements of the chosen one are signed in addition to the mandatory ones.
+choices:
+  # Required: a unique name; a new name is a new choice, so keep it.
+  - name: Disclosed AI use
+    # Required: Markdown that explains the choice.
+    description: Accept the AI policy and disclose the assistance.
+    # Required: the keys of the agreements of the choice, from the agreements above.
+    agreements: [ai-policy]
+    # Optional: true for the choice of new pull requests; at most one choice. Without a
+    # default the author chooses.
+    default: true
+    # Optional: the labels while this choice is selected.
+    pr:
+      labels: [ai-disclosed]

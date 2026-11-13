@@ -13,6 +13,7 @@ from django.views.decorators.http import require_POST
 from ai_pycal.actions import SignatureRemoved, Trigger
 from ai_pycal.errors import AgreementNotFound, SigningError
 from ai_pycal.models import AgreementVersion, RequiredAgreement, Signature
+from ai_pycal.services import public_data as data
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.agreement_text import AgreementText
 from ai_pycal.services.identity import GitHubIdentity
@@ -20,6 +21,8 @@ from ai_pycal.services.pull_state import PullState
 from ai_pycal.services.signer import Signer
 from ai_pycal.services.todos import Todos
 from ai_pycal.services.visibility import visible_projects
+
+from .json_page import page
 
 
 def version_or_404(pk: int, user=None) -> AgreementVersion:
@@ -201,7 +204,8 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
         next_agreement = next(
             (other for other in crumbs["others"] if other.version_id not in signed), None
         )
-    return render(
+    text = AgreementText.of(version, request)
+    return page(
         request,
         "ai_pycal/agreement.html",
         {
@@ -210,7 +214,7 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
             "crumbs": crumbs,
             "next_agreement": next_agreement,
             "title": names[0].name if names else version.path,
-            "text": (text := AgreementText.of(version, request)),
+            "text": text,
             "html": text.html,
             "signature": signature,
             "previous": previous,
@@ -220,6 +224,27 @@ def agreement_page(request, version: AgreementVersion, sign_error=None, status: 
             "sign_error": sign_error,
             "handle": request.POST.get("handle", ""),
             "next": here,
+        },
+        lambda: {
+            **data.version(version),
+            "name": names[0].name if names else None,
+            "text": version.text,
+            "translations": {
+                found.language: {"title": found.title, "text": found.text, "commit": found.commit}
+                for found in version.translations.all()
+            },
+            "required_by": [
+                {
+                    "project": data.project(required.repository),
+                    "key": required.key,
+                    "name": required.name,
+                    "mandatory": required.mandatory,
+                }
+                for required in names
+            ],
+            "history": data.links(
+                reverse("history", args=[*version.source.split("/", 1), version.path])
+            ),
         },
         status=status,
     )
@@ -327,13 +352,15 @@ def changes(request, pk: int, old: int):
     """
     version = version_or_404(pk, request.user)
     previous = version_or_404(old, request.user)
-    return render(
+    found = AgreementDiff(previous, version).changes()
+    return page(
         request,
         "ai_pycal/changes.html",
-        {
-            "version": version,
-            "previous": previous,
-            "changes": AgreementDiff(previous, version).changes(),
+        {"version": version, "previous": previous, "changes": found},
+        lambda: {
+            "version": data.version(version),
+            "previous": data.version(previous),
+            "changes": [{"kind": line.kind, "text": line.text} for line in found],
         },
     )
 

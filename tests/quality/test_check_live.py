@@ -58,6 +58,8 @@ def test_the_site_of_the_tests_passes(client, github, repository, alice, capsys,
     ):
         assert live.checked.get(page) == 200, page
     assert any(path.startswith("/agreements/history/") for path in live.checked)
+    for json in ("/index.json", "/projects.json", f"/project/{REPOSITORY}.json"):
+        assert live.checked.get(json) == 200, json
 
 
 def test_a_public_page_that_asks_to_sign_in_fails():
@@ -120,3 +122,27 @@ def test_a_404_without_the_page_of_the_site_fails():
 def test_the_sign_in_page_does_not_nest_its_address(client):
     page = client.get("/accounts/login/?next=/projects/").content.decode()
     assert "next=/accounts/login/" not in page and "next=%2Faccounts" not in page
+
+
+@pytest.mark.parametrize(
+    ("answer", "problem"),
+    [
+        (httpx.Response(404, json={}), "expected 200"),
+        (httpx.Response(200, text="<html>"), "not JSON"),
+        (httpx.Response(200, json={}), "other sites may not read it"),
+        (
+            httpx.Response(
+                200,
+                content=b"{",
+                headers={"content-type": "application/json", "access-control-allow-origin": "*"},
+            ),
+            "invalid JSON",
+        ),
+    ],
+)
+def test_the_json_of_a_page_must_be_readable(answer, problem):
+    live = LiveCheck(
+        "http://site", client=httpx.Client(transport=httpx.MockTransport(lambda r: answer))
+    )
+    live.check_json("/projects/")
+    assert problem in live.failures[0] and "/projects.json" in live.failures[0]

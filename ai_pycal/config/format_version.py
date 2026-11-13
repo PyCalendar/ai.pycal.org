@@ -35,11 +35,11 @@ class FormatVersion:
             >>> FormatVersion.parse("1.0")
             Traceback (most recent call last):
             ...
-            ai_pycal.errors.config_file.ConfigVersionInvalid: version: '1.0', expected such as 1.0.0
+            ai_pycal.errors.config_file.ConfigVersionInvalid: version: '1.0', expected such as 2.2.0
         """
         match = VERSION.match(str(value).strip()) if isinstance(value, str) else None
         if not match:
-            raise ConfigVersionInvalid(f"version: {value!r}, expected such as 1.0.0")
+            raise ConfigVersionInvalid(f"version: {value!r}, expected such as {SUPPORTED}")
         return cls(*(int(part) for part in match.groups()))
 
     def __str__(self) -> str:

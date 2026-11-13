@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Prefetch, Q
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.html import escape
 from django.views.decorators.http import require_POST
@@ -26,6 +26,7 @@ from ai_pycal.models import (
     RequiredAgreement,
     Signature,
 )
+from ai_pycal.services import public_data as data
 from ai_pycal.services.agreement_diff import AgreementDiff
 from ai_pycal.services.email_addresses import verified_address
 from ai_pycal.services.identity import GitHubIdentity
@@ -36,6 +37,7 @@ from ai_pycal.services.signer import Signer
 from ai_pycal.services.visibility import visible_projects
 
 from .agreements import handle_pattern
+from .json_page import page
 from .setup import may_update
 
 
@@ -93,13 +95,23 @@ def projects(request, owner: str = ""):
     owners: dict[str, list] = {}
     for project in found.order_by("full_name"):
         owners.setdefault(project.owner, []).append(project)
-    return render(
+    owners_sorted = sorted(owners.items(), key=lambda item: item[0].lower())
+    return page(
         request,
         "ai_pycal/projects.html",
-        {
-            "owners": sorted(owners.items(), key=lambda item: item[0].lower()),
-            "owner": owner,
-            "setup_url": reverse("setup"),
+        {"owners": owners_sorted, "owner": owner, "setup_url": reverse("setup")},
+        lambda: {
+            "owner": owner or None,
+            "projects": [
+                {
+                    **data.project(project),
+                    "agreements": [
+                        data.agreement(required) for required in project.required_agreements.all()
+                    ],
+                }
+                for _, found_projects in owners_sorted
+                for project in found_projects
+            ],
         },
     )
 
@@ -153,13 +165,22 @@ def project_status(request, owner: str, repo: str):
         The page.
     """
     repository = project_for(request, owner, repo)
-    return render(
+    problems = list(repository.problems.filter(active=True))
+    log_url = reverse("project_log", args=[repository.owner, repository.name])
+    return page(
         request,
         "ai_pycal/project_status.html",
-        {
-            "project": repository,
-            "problems": list(repository.problems.filter(active=True)),
-            "log_url": reverse("project_log", args=[repository.owner, repository.name]),
+        {"project": repository, "problems": problems, "log_url": log_url},
+        lambda: {
+            "project": data.project(repository),
+            "configuration": {
+                "version": repository.config_version,
+                "commit": repository.config_commit,
+                "checked": repository.checked,
+            },
+            "error": data.error(repository.error, repository.error_detail),
+            "problems": [data.error(problem.error, problem.detail) for problem in problems],
+            "log": data.links(log_url),
         },
     )
 
@@ -213,28 +234,44 @@ def project(request, owner: str, repo: str):
     choices = list(repository.choices.all())
     for choice in choices:
         choice.description_html = markdown(choice.description, "description.md")
-    return render(
+    context = {
+        "project": repository,
+        "policies": policies,
+        "attention": [policy for policy in policies if policy.attention],
+        "can_update": may_update(request.user, repository),
+        "watching": request.user.is_authenticated
+        and repository.watchers.filter(pk=request.user.pk).exists(),
+        "watch_address": verified_address(request.user),
+        "watchers": watcher_handles(repository) if request.user.is_authenticated else [],
+        "show_all": request.GET.get("pulls") == "all",
+        "pulls": PullState.annotate(
+            repository.pull_requests.select_related("repository").order_by("-number")
+            if request.GET.get("pulls") == "all"
+            else repository.pull_requests.filter(open=True)
+            .select_related("repository")
+            .order_by("-number")
+        ),
+        "log_url": reverse("project_log", args=[repository.owner, repository.name]),
+        "choices": choices,
+    }
+    return page(
         request,
         "ai_pycal/project.html",
-        {
-            "project": repository,
-            "policies": policies,
-            "attention": [policy for policy in policies if policy.attention],
-            "can_update": may_update(request.user, repository),
-            "watching": request.user.is_authenticated
-            and repository.watchers.filter(pk=request.user.pk).exists(),
-            "watch_address": verified_address(request.user),
-            "watchers": watcher_handles(repository) if request.user.is_authenticated else [],
-            "show_all": request.GET.get("pulls") == "all",
-            "pulls": PullState.annotate(
-                repository.pull_requests.select_related("repository").order_by("-number")
-                if request.GET.get("pulls") == "all"
-                else repository.pull_requests.filter(open=True)
-                .select_related("repository")
-                .order_by("-number")
-            ),
-            "log_url": reverse("project_log", args=[repository.owner, repository.name]),
-            "choices": choices,
+        context,
+        lambda: {
+            "project": data.project(repository),
+            "agreements": [
+                {
+                    **data.agreement(policy),
+                    "signatures": [data.signature(signed) for signed in policy.signers],
+                }
+                for policy in policies
+            ],
+            "choices": [data.choice(choice) for choice in choices],
+            "all_pull_requests": context["show_all"],
+            "pull_requests": [data.pull(found) for found in context["pulls"]],
+            "status": data.links(reverse("project_status", args=[owner, repo])),
+            "log": data.links(context["log_url"]),
         },
     )
 
@@ -311,7 +348,7 @@ def contributor(request, handle: str):
         if github_id
         else []
     )
-    return render(
+    return page(
         request,
         "ai_pycal/contributor.html",
         {
@@ -321,6 +358,26 @@ def contributor(request, handle: str):
             "pulls": pulls,
             "preferences": preferences,
             "is_self": identity is not None and identity.github_id == github_id,
+        },
+        lambda: {
+            **data.contributor(handle),
+            "signatures": [
+                {
+                    "agreement": data.agreement(signed.agreement) if signed.agreement else None,
+                    "version": data.version(signed.version),
+                    "signed": signed.signed,
+                    "state": signed.state,
+                    "mandatory": signed.mandatory,
+                    "projects": [data.project(found) for found in signed.projects],
+                }
+                for signed in signatures
+            ],
+            "pull_requests": [data.pull(found) for found in pulls],
+            "defaults": [
+                {"project": data.project(found.repository), "choice": found.choice.key}
+                for found in preferences
+            ],
+            "log": data.links(reverse("contributor_log", args=[handle])),
         },
     )
 
@@ -348,20 +405,34 @@ def history(request, owner: str, repo: str, agreement_path: str):
                     .order_by("repository__full_name"),
                 }
             )
-    return render(
+    named = (
+        RequiredAgreement.objects.filter(
+            version__source__iexact=f"{owner}/{repo}",
+            version__path=agreement_path,
+            repository__in=visible,
+        )
+        .select_related("repository")
+        .first()
+    )
+    return page(
         request,
         "ai_pycal/history.html",
-        {
+        {"source": f"{owner}/{repo}", "path": agreement_path, "versions": rows, "agreement": named},
+        lambda: {
             "source": f"{owner}/{repo}",
             "path": agreement_path,
-            "versions": rows,
-            "agreement": RequiredAgreement.objects.filter(
-                version__source__iexact=f"{owner}/{repo}",
-                version__path=agreement_path,
-                repository__in=visible,
-            )
-            .select_related("repository")
-            .first(),
+            "name": named.name if named else None,
+            "versions": [
+                {
+                    **data.version(row["version"]),
+                    "projects": [data.project(found) for found in row["projects"]],
+                    "uses": [
+                        {"project": data.project(use.repository), "mandatory": use.mandatory}
+                        for use in row["uses"]
+                    ],
+                }
+                for row in rows
+            ],
         },
     )
 
@@ -447,7 +518,8 @@ def pull(request, owner: str, repo: str, number: int):
     for choice in choices:
         choice.description_html = markdown(choice.description, "description.md")
     here = reverse("project_pull", kwargs={"owner": owner, "repo": repo, "number": number})
-    return render(
+    chosen = check.choice()
+    return page(
         request,
         "ai_pycal/pull_request.html",
         {
@@ -455,7 +527,7 @@ def pull(request, owner: str, repo: str, number: int):
             "states": states,
             "rows": rows,
             "choices": choices,
-            "choice": check.choice(),
+            "choice": chosen,
             "is_author": is_author,
             "needs_signing": any(state.required and not state.signed for state in states),
             "focused": True,
@@ -463,6 +535,21 @@ def pull(request, owner: str, repo: str, number: int):
             "my_pulls": my_pulls(request, item.repository, identity),
             "query": request.GET.get("q", ""),
             "handle_pattern": handle_pattern(identity.login) if identity else "",
+        },
+        lambda: {
+            "pull_request": data.pull(item),
+            "project": data.project(item.repository),
+            "choice": data.choice(chosen) if chosen else None,
+            "choices": [data.choice(choice) for choice in choices],
+            "agreements": [
+                {
+                    **data.agreement(state.agreement),
+                    "required": state.required,
+                    "signed": state.signed,
+                }
+                for state in states
+            ],
+            "log": data.links(reverse("pull_log", args=[owner, repo, number])),
         },
     )
 

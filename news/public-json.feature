@@ -1,0 +1,1 @@
+Every public page has its information as JSON at the address of the page with ``.json``, such as ``/project/PyCalendar/sign.pycal.org-example.json``, readable by JavaScript of other sites (CORS); ``make check-live`` reads it too.

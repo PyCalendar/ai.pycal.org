@@ -43,6 +43,13 @@ html_theme_options = {
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
         },
+        {
+            # switch between the documentation and the site
+            "name": "sign.pycal.org",
+            "url": "https://sign.pycal.org/",
+            "icon": "fa-solid fa-file-signature",
+            "type": "fontawesome",
+        },
     ],
     "logo": {"text": "sign.pycal.org"},
     "show_toc_level": 2,

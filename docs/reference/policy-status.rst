@@ -2,7 +2,8 @@
 Contributor policy status API
 ==============================
 
-Read a contributor's signature for a project's **current policy version**:
+Read a contributor's signature for a project's **current policy version**; every
+public page also has its JSON, see :doc:`json`:
 
 .. code-block:: text
 

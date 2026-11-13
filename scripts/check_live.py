@@ -10,7 +10,8 @@ The check
 3. follows every link from there that leads to a public page (the project, its pull requests,
    agreements, versions, contributors, logs and badges) and expects each to open without
    signing in;
-4. checks that errors get their pages: a missing page is 404, not 500, pages that need
+4. reads the JSON of every public page, ``<page>.json``, which other sites may read (CORS);
+5. checks that errors get their pages: a missing page is 404, not 500, pages that need
    privileges ask to sign in or answer 403, and the webhook refuses unsigned deliveries.
 
 It only reads, except for one unsigned webhook delivery, which the site refuses and logs.
@@ -148,7 +149,10 @@ class LiveCheck:
                 self.report(False, 200, path, "the page shows a server error")
                 return None
             self.report(True, 200, path)
-            return text if "html" in response.headers.get("content-type", "") else ""
+            if "html" not in response.headers.get("content-type", ""):
+                return ""
+            self.check_json(path)
+            return text
         if response.status_code in (301, 302) and SIGN_IN in location:
             self.report(False, response.status_code, path, "public, but asks to sign in")
         elif response.status_code in (301, 302, 307, 308):
@@ -160,6 +164,31 @@ class LiveCheck:
         else:
             self.report(False, response.status_code, path, "expected 200")
         return None
+
+    def check_json(self, path: str) -> None:
+        """Read the JSON of a public page: it must be JSON that other sites may read.
+
+        Args:
+            path: The page, such as ``/projects/``.
+        """
+        address = "/index.json" if path == "/" else path.rstrip("/") + ".json"
+        if path == SIGN_IN:
+            return
+        response = self.get(address)
+        self.checked[address] = response.status_code
+        problem = ""
+        if response.status_code != 200:
+            problem = "expected 200"
+        elif not response.headers.get("content-type", "").startswith("application/json"):
+            problem = "not JSON"
+        elif response.headers.get("access-control-allow-origin") != "*":
+            problem = "other sites may not read it (CORS)"
+        else:
+            try:
+                response.json()
+            except ValueError:
+                problem = "invalid JSON"
+        self.report(not problem, response.status_code, address, problem)
 
     def walk(self, start: list[str]) -> None:
         """Follow the links of the public pages, from *start*.
@@ -271,7 +300,10 @@ class LiveCheck:
         start = ["/", "/about/", "/licenses/", "/projects/", "/health/", "/favicon.ico", SIGN_IN]
         self.walk(start + ([project] if project else []))
         self.check_errors(project)
-        print(f"{len(self.checked)} public pages, {len(self.failures)} failures", flush=True)
+        print(
+            f"{len(self.checked)} public pages and their JSON, {len(self.failures)} failures",
+            flush=True,
+        )
         for line in self.failures:
             print(line, flush=True)
         return 1 if self.failures else 0

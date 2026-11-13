@@ -23,8 +23,15 @@ def test_the_fixture_uses_the_mandatory_variant_of_the_example():
     fixture = yaml.safe_load((DATA / "agreements.yml").read_text())
     assert example["agreements"]["ai-policy"]["mandatory"] is False
     assert fixture["agreements"]["ai-policy"]["mandatory"] is True
-    example["agreements"]["ai-policy"]["mandatory"] = True
-    assert example == fixture
+    for key in ("cla", "ai-policy"):
+        for field in ("name", "path", "ref"):
+            assert example["agreements"][key][field] == fixture["agreements"][key][field]
+
+
+def test_the_example_is_the_file_of_the_documentation():
+    assert (EXAMPLE / ".github" / "agreements.yml").read_text() == (
+        EXAMPLE.parent / "docs" / "_static" / "agreements.yml"
+    ).read_text()
 
 
 @pytest.mark.parametrize(

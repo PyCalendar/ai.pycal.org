@@ -50,7 +50,9 @@ class ErrorPageMiddleware:
             return None
         if isinstance(exception, UnexpectedError):
             log.exception("unexpected error", exc_info=exception)
-        if getattr(request.resolver_match, "url_name", "") == "policy_json":
+        if getattr(request.resolver_match, "url_name", "") == "policy_json" or getattr(
+            request, "public_json", False
+        ):
             return JsonResponse(
                 {
                     "error": exception.code,

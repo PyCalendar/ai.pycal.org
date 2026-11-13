@@ -8,43 +8,16 @@ page of the project. Version ``2.2.0`` uses ``ref``, ``pr.labels``,
 ``pr.unsigned-labels`` and ``sign-min-seconds`` and supports mandatory
 agreements and choices.
 
-.. code-block:: yaml
+.. _example-config:
 
-   version: 2.2.0
-   agreements:
-     cla:
-       name: Contributor agreement
-       sign-min-seconds: 30
-       description: Everyone accepts the contributor agreement.
-       path: agreements/cla.md
-       ref: main
-       mandatory: true
-       pr:
-         labels: [cla-signed]
-         unsigned-labels: [cla-missing]
-     disclosed-ai:
-       name: AI use with disclosure
-       description: Explain which tools assisted your contribution.
-       path: agreements/disclosed-ai.md
-       mandatory: false
-     human-only:
-       name: Human authorship
-       description: Confirm that this contribution was made without AI.
-       path: agreements/human-only.md
-       mandatory: false
-   choices:
-     - name: Disclosed AI use
-       description: Accept the AI policy and disclose the assistance.
-       agreements: [disclosed-ai]
-       default: true
-       pr:
-         labels: [ai-disclosed]
-     - name: Human authorship
-       description: Follow the human authorship policy instead.
-       agreements: [human-only]
-       default: false
-       pr:
-         labels: [human-authored]
+Copy the example file `agreements.yml
+<https://docs.sign.pycal.org/_static/agreements.yml>`_ to
+:file:`.github/agreements.yml` and change it. Its comments explain every field;
+as it is, it uses the agreements of the `example repository
+<https://github.com/PyCalendar/sign.pycal.org-example>`_.
+
+.. literalinclude:: ../_static/agreements.yml
+   :language: yaml
 
 Versions
 ========

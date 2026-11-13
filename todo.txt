@@ -533,3 +533,14 @@
       problem and made the installer a watcher, while its project page is a 404 (not added).
 - [x] A repository that was never added and has no file is no problem: no todo, no banner, no
       email; the installer watches only repositories that were set up; old problems are hidden.
+
+## 2026-11-13: JSON of every page, the example configuration, the link to the site
+
+- [x] Every public page has a .json endpoint with its public information (as for a visitor who is
+      not signed in), with CORS headers for JavaScript; personal pages have none. Documented in
+      docs/reference/json.rst; make check-live reads the JSON of every public page.
+- [x] The errors of the version name the newest version (2.2.0) instead of 1.0.0 and refer to the
+      example file docs/_static/agreements.yml, which explains every field in comments; the
+      example repository uses the same file.
+- [x] The documentation links to https://sign.pycal.org/ next to the GitHub icon.
+- [ ] Use the JSON to check why ai-policy-accepted is missing on PyCalendar/sign.pycal.org-example#2.

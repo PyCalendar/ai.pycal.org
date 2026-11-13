@@ -1,12 +1,13 @@
 """The pages about the site: start, about, health, the icon and the colors."""
 
+from dataclasses import asdict
 from pathlib import Path
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.db import connection
 from django.http import FileResponse, Http404, HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST
@@ -14,8 +15,11 @@ from django.views.decorators.http import require_POST
 from ai_pycal import build_info, licenses
 from ai_pycal.checks import FAVICON_TYPES, is_url
 from ai_pycal.models import Signature
+from ai_pycal.services.public_data import links
 from ai_pycal.services.visibility import visible_projects
 from ai_pycal.theme import COOKIE, Theme
+
+from .json_page import page
 
 
 def home(request):
@@ -27,13 +31,21 @@ def home(request):
     Returns:
         The page.
     """
-    return render(
+    context = {
+        # what the visitor can see: private projects only for their people
+        "repositories": visible_projects(request.user).filter(active=True).count(),
+        "signatures": Signature.objects.count(),
+    }
+    return page(
         request,
         "ai_pycal/home.html",
-        {
-            # what the visitor can see: private projects only for their people
-            "repositories": visible_projects(request.user).filter(active=True).count(),
-            "signatures": Signature.objects.count(),
+        context,
+        lambda: {
+            "site": settings.SITE_NAME,
+            "projects": context["repositories"],
+            "signatures": context["signatures"],
+            **links("/"),
+            "pages": {"projects": links(reverse("projects")), "about": links(reverse("about"))},
         },
     )
 
@@ -47,10 +59,17 @@ def about(request):
     Returns:
         The page.
     """
-    return render(
+    build = build_info.get(settings.SOURCE_URL)
+    return page(
         request,
         "ai_pycal/about.html",
-        {"build": build_info.get(settings.SOURCE_URL)},
+        {"build": build},
+        lambda: {
+            "site": settings.SITE_NAME,
+            "source": settings.SOURCE_URL,
+            "documentation": settings.DOCS_URL,
+            "build": {key: build[key] for key in (*build_info.FIELDS, "commit_url", "code_url")},
+        },
     )
 
 
@@ -129,14 +148,24 @@ def licenses_page(request):
     Returns:
         The page.
     """
-    return render(
+    context = {
+        "project_license": licenses.PROJECT_LICENSE,
+        "license_names": licenses.license_names(),
+        "reused": licenses.reused(),
+        "packages": licenses.packages(),
+    }
+    return page(
         request,
         "ai_pycal/licenses.html",
-        {
-            "project_license": licenses.PROJECT_LICENSE,
-            "license_names": licenses.license_names(),
-            "reused": licenses.reused(),
-            "packages": licenses.packages(),
+        context,
+        lambda: {
+            "license": context["project_license"],
+            "licenses": [
+                {"name": name, "text": reverse("license_text", args=[name])}
+                for name in context["license_names"]
+            ],
+            "reused": [asdict(package) for package in context["reused"]],
+            "packages": [asdict(package) for package in context["packages"]],
         },
     )
 
