@@ -548,7 +548,8 @@
       not change that. Now it does when signed.
 - [x] A pull request first checked before the project offered choices froze "no choice"; now the
       default applies when choices are added (migration 0021 unfreezes the existing ones). Tests.
-- [ ] Check #2 with the JSON after the deploy.
+- [x] Checked #2 with the JSON after the deploy: choice disclosed-ai-use, both agreements
+      required and signed; labels cla-signed, ai-disclosed, ai-policy-accepted.
 - [x] CI of 809a868 failed: a German request left German active in the thread of the tests
       (flaky test_times); every test now starts in English.
 - [x] CI of ede6d5c failed: make check-live crashed on a timeout of /licenses/ after the restart;
