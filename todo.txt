@@ -556,3 +556,11 @@
       it now tries a request three times and reports no answer as a failure.
 - [x] The list of licenses stays as it is: it is not built when the site starts (decision of the
       person; the live check tries again after a timeout).
+
+## 2026-11-13: a slim README
+
+- [x] The README is slim: a sentence, the badges and the link to the documentation, which has
+      everything else (the pages, the configuration, development and links were all there).
+- [x] The license (AGPL-3.0-or-later, REUSE.toml, the icon under CC-BY-SA-4.0) is in the
+      documentation: Contribute > License.
+- [x] The start page of the documentation says that most of the project is written with AI.

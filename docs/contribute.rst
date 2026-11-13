@@ -64,3 +64,15 @@ Translate an agreement
 
 The agreements are not translated here but in their projects: see
 :ref:`agreement-translations`.
+
+.. _license:
+
+License
+=======
+
+The code is under the `AGPL-3.0-or-later
+<https://github.com/PyCalendar/sign.pycal.org/blob/main/LICENSE>`_. Files taken
+from other projects keep their licenses, such as the icon of pycal under
+CC-BY-SA-4.0; :file:`REUSE.toml` lists them and :file:`LICENSES/` has their
+texts. The page `Licenses <https://sign.pycal.org/licenses/>`_ of the site also
+shows the licenses of the Python packages it uses.

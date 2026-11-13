@@ -14,6 +14,12 @@ GitHub App labels them and adds a check for each agreement.
 - **People who run the site** create the GitHub App and start the container:
   :doc:`how-to/github-app` and :doc:`how-to/run-docker`.
 
+.. note::
+
+   Most of this project is written with AI: Claude Code makes the changes
+   from the prompts of a person, who reviews them. The prompts are recorded in
+   the commit messages, as the :doc:`contribute` page explains.
+
 .. toctree::
    :maxdepth: 2
 
