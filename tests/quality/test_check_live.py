@@ -146,3 +146,27 @@ def test_the_json_of_a_page_must_be_readable(answer, problem):
     )
     live.check_json("/projects/")
     assert problem in live.failures[0] and "/projects.json" in live.failures[0]
+
+
+def test_a_timeout_is_tried_again(monkeypatch):
+    answers = iter([httpx.ReadTimeout("slow"), httpx.Response(200, text="<html>")])
+
+    def handle(request):
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    monkeypatch.setattr("scripts.check_live.time.sleep", lambda seconds: None)
+    live = LiveCheck("http://site", client=httpx.Client(transport=httpx.MockTransport(handle)))
+    assert live.get("/licenses/").status_code == 200
+
+
+def test_no_answer_is_a_failure_not_a_crash(monkeypatch):
+    def handle(request):
+        raise httpx.ReadTimeout("slow")
+
+    monkeypatch.setattr("scripts.check_live.time.sleep", lambda seconds: None)
+    live = LiveCheck("http://site", client=httpx.Client(transport=httpx.MockTransport(handle)))
+    live.check_page("/licenses/")
+    assert "599" in live.failures[0] and "/licenses/" in live.failures[0]

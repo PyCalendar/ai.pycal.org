@@ -39,6 +39,8 @@ SIGN_IN = "/accounts/login/"
 # pages that act for a person, such as signing: they ask visitors to sign in
 PERSONAL = re.compile(r"^/(project/.*/sign/|agreements/\d+/sign/|my-agreements/|todos/|profile/)$")
 MAX_PAGES = 300
+TRIES = 3  # tries of a request that gets no answer, such as a timeout
+RETRY_PAUSE = 10
 
 
 class LiveCheck:
@@ -79,9 +81,19 @@ class LiveCheck:
             path: The path, such as ``/about/``.
 
         Returns:
-            The answer.
+            The answer; one with the status 599 and the reason if there was none after
+            ``TRIES`` tries, such as after timeouts while the site is busy after a restart.
         """
-        return self.client.get(urljoin(self.url + "/", path.lstrip("/")))
+        address = urljoin(self.url + "/", path.lstrip("/"))
+        for attempt in range(TRIES):
+            try:
+                return self.client.get(address)
+            except httpx.TransportError as error:
+                reason = f"{type(error).__name__}: {error}"
+                print(f"retry {path}: {reason}", flush=True)
+                if attempt + 1 < TRIES:
+                    time.sleep(RETRY_PAUSE)
+        return httpx.Response(599, text=reason)
 
     def wait_until_up(self, pause: float = 10) -> bool:
         """Wait while the site starts: 5xx answers and refused connections are retried.

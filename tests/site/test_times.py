@@ -51,3 +51,13 @@ def test_no_page_formats_times_itself():
         text = template.read_text()
         assert "|date:" not in text, template
         assert "<time " not in text or "times.py" in text, template
+
+
+def test_a_german_request_does_not_change_the_language_of_the_next_test(client, db):
+    client.get("/", HTTP_ACCEPT_LANGUAGE="de")
+
+
+def test_the_language_is_english_again():
+    from django.utils import translation
+
+    assert translation.get_language() == "en"

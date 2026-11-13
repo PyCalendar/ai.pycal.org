@@ -37,6 +37,17 @@ def private_key() -> str:
 
 
 @pytest.fixture(autouse=True)
+def english():
+    """Every test starts in English: LocaleMiddleware leaves the language of the last request
+    active in the thread, such as German after a test of the translations."""
+    from django.utils import translation
+
+    translation.activate("en")
+    yield
+    translation.activate("en")
+
+
+@pytest.fixture(autouse=True)
 def app_settings(settings, private_key):
     settings.GITHUB_APP_ID = "1"
     settings.GITHUB_APP_SLUG = "ai-pycal-test"

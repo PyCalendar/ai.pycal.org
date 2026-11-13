@@ -1,0 +1,1 @@
+``make check-live`` tries a request again after a timeout, as while the site is busy after a restart, and reports no answer as a failure instead of stopping.
