@@ -2,6 +2,7 @@
 
 from django.db.models import Prefetch, Q
 
+from ai_pycal.errors import ConfigFileNotFound
 from ai_pycal.models import (
     ProjectProblem,
     PullRequest,
@@ -153,12 +154,17 @@ class Todos:
         return False
 
     def problems(self) -> list[ProjectProblem]:
-        """The active problems of the projects that the person watches or administers."""
+        """The active problems of the projects that the person watches or administers.
+
+        A missing configuration file of a repository that is not added is left out: the
+        installation has it, but it does not use the site.
+        """
         return list(
             ProjectProblem.objects.filter(
                 Q(repository__watchers=self.user) | Q(repository__installation__admins=self.user),
                 active=True,
             )
+            .exclude(code=ConfigFileNotFound.__name__, repository__active=False)
             .select_related("repository")
             .distinct()
         )

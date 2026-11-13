@@ -62,7 +62,8 @@ repositories you chose. You do not need to sign in on the site: each chosen
 repository with the configuration file is set up, and its open pull requests
 get a check for each agreement. Those of people who signed get the labels of
 ``pr.labels``. A repository without the file is set up when the file is pushed
-to its default branch.
+to its default branch. Until then it is no problem of anyone: with **All
+repositories**, most of them do not use the site, and none shows in your to-dos.
 
 If the configuration file is wrong, the repository is not set up. Its error,
 with a link to how to solve it, is shown on **Setup** and on the page of the

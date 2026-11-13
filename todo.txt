@@ -525,3 +525,11 @@
       the setting SIGN_OUT_MINUTES (default 60) in .env.
 - [x] Every link to a log is the log icon next to the title: the pull request page had a text link
       "Log of this pull request" (also inside its <title>).
+
+## 2026-11-13: repositories without the configuration file
+
+- [x] Explained why PyCalendar/icalendar showed: the app is installed on all repositories of
+      PyCalendar; the installation webhook stored each, recorded "no configuration file" as a
+      problem and made the installer a watcher, while its project page is a 404 (not added).
+- [x] A repository that was never added and has no file is no problem: no todo, no banner, no
+      email; the installer watches only repositories that were set up; old problems are hidden.

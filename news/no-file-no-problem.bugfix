@@ -1,0 +1,1 @@
+A repository of an installation that was never added and has no configuration file is no longer shown as a problem at the top of every page and in Todos, and nobody gets an email about it; the installer watches only the repositories that were set up.

@@ -94,7 +94,10 @@ class RepositorySync:
             from .project_notices import ProjectNotices
 
             ConfigurationRead(repository, error=error).run()
-            ProjectNotices(repository).record(error)
+            if repository.active or not isinstance(error, ConfigFileNotFound):
+                # a repository that was never added and has no file is not a problem: it
+                # is one of the installation that does not use the site
+                ProjectNotices(repository).record(error)
             raise
         before = dict(repository.required_agreements.values_list("key", "version_id"))
         with transaction.atomic():

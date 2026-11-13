@@ -163,13 +163,13 @@ class WebhookHandler:
             )
             if repository.active or repository.paused:
                 continue
-            if sender is not None:
-                repository.watchers.add(sender)
             try:
                 RepositorySetup(repository).add()
             except AgreementError as error:
                 log.info("%s is not set up: %s", repository, error.code)
                 continue
+            if sender is not None:
+                repository.watchers.add(sender)  # only of the repositories that use the site
             added += 1
         return added
 

@@ -1,14 +1,12 @@
 """What every page knows: the name of the site, its colors and its links."""
 
 from django.conf import settings
-from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import get_language_info
 from django.utils.translation import gettext_lazy as _
 
 from . import build_info
 from .checks import is_url
-from .models import ProjectProblem
 from .services.app_registration import AppRegistration
 from .services.identity import GitHubIdentity
 from .services.todos import Todos
@@ -77,16 +75,9 @@ def site(request) -> dict:
     problems = []
     todo_count = 0
     if getattr(request.user, "is_authenticated", False):
-        todo_count = Todos(request.user, GitHubIdentity.of(request.user)).count()
-        problems = (
-            ProjectProblem.objects.filter(
-                Q(repository__watchers=request.user)
-                | Q(repository__installation__admins=request.user),
-                active=True,
-            )
-            .select_related("repository")
-            .distinct()
-        )
+        todos = Todos(request.user, GitHubIdentity.of(request.user))
+        problems = todos.problems()
+        todo_count = len(todos.to_sign()) + len(problems)
     theme = Theme.choice(request.COOKIES.get(COOKIE))
     configured = bool(settings.GITHUB_APP_ID)
     return {

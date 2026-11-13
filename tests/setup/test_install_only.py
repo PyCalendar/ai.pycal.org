@@ -120,3 +120,37 @@ def test_removing_and_adding_on_setup(client, example, repository, maintainer):
     client.post(f"/setup/1/{repository.github_id}/add/")
     repository.refresh_from_db()
     assert repository.active and not repository.paused
+
+
+def test_a_repository_without_configuration_is_no_problem_of_anyone(client, example, alice):
+    example.push("PyCalendar/other", {"README.md": "# Other"})
+    example.installation_repositories[1].append("PyCalendar/other")
+    other = example.repositories["PyCalendar/other"]
+    payload = installed(example, repositories=[{"id": other.id, "full_name": "PyCalendar/other"}])
+    send_webhook(client, "installation", payload)
+    repository = Repository.objects.get(full_name="PyCalendar/other")
+    assert not repository.problems.exists()  # no todo, no email
+    assert alice not in repository.watchers.all()  # the installer watches what uses the site
+    client.force_login(alice)
+    assert "PyCalendar/other" not in client.get("/todos/").content.decode()
+    assert "PyCalendar/other" not in client.get("/").content.decode()
+
+
+def test_an_old_problem_of_a_repository_not_added_is_hidden(client, example, alice):
+    from ai_pycal.models import ProjectProblem
+
+    installation = Installation.objects.create(github_id=1, account_login="PyCalendar")
+    other = Repository.objects.create(
+        github_id=99, installation=installation, full_name="PyCalendar/other"
+    )
+    other.watchers.add(alice)
+    ProjectProblem.objects.create(
+        repository=other, code="ConfigFileNotFound", detail="no file here"
+    )
+    ProjectProblem.objects.create(
+        repository=other, code="ConfigVersionMissing", detail="wrong file here"
+    )
+    client.force_login(alice)
+    page = client.get("/todos/").content.decode()
+    assert "no file here" not in page
+    assert "wrong file here" in page  # a file that is there but wrong is still a problem
