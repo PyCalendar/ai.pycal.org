@@ -1,8 +1,11 @@
 """Who signs in with GitHub: the handle becomes the user name; SITE_ADMINS administer."""
 
+from datetime import timedelta
+
 from allauth.account.signals import user_logged_in, user_signed_up
 from django.conf import settings
 from django.dispatch import receiver
+from django.utils import timezone
 
 from .services.identity import GitHubIdentity
 
@@ -17,6 +20,7 @@ def update_user(sender, request, user, **kwargs) -> None:
         user: The user.
         **kwargs: More of allauth.
     """
+    sign_out_later(request)
     identity = GitHubIdentity.of(user)
     if identity is None:
         return
@@ -26,6 +30,19 @@ def update_user(sender, request, user, **kwargs) -> None:
     user.is_staff = user.is_superuser = admin
     if changed:
         user.save(update_fields=["is_staff", "is_superuser"])
+
+
+def sign_out_later(request) -> None:
+    """Sign the person out ``SIGN_OUT_MINUTES`` after signing in, even while they use the site.
+
+    The time is fixed at the sign-in: using the site does not extend it.
+
+    Args:
+        request: The request of the sign-in.
+    """
+    session = getattr(request, "session", None)
+    if session is not None:
+        session.set_expiry(timezone.now() + timedelta(seconds=settings.SESSION_COOKIE_AGE))
 
 
 def keep_verified_addresses(user) -> int:

@@ -180,3 +180,21 @@ def test_handles_in_the_log_link_to_the_people(client, github, repository, alice
     sign_agreement(client, versions(repository)["cla"], "alice")
     page = client.get(f"/logs/{REPOSITORY}/").content.decode()
     assert '<a href="/contributor/alice/">@alice</a>' in page
+
+
+@pytest.mark.parametrize(
+    ("page", "log"),
+    [
+        (f"/project/{REPOSITORY}/pulls/1/", f"/logs/{REPOSITORY}/pulls/1/"),
+        (f"/project/{REPOSITORY}/", f"/logs/{REPOSITORY}/"),
+        (f"/project/{REPOSITORY}/status/", f"/logs/{REPOSITORY}/"),
+        ("/contributor/alice/", "/logs/contributor/alice/"),
+    ],
+)
+def test_the_log_is_the_icon_next_to_the_title(client, github, repository, page, log):
+    send_webhook(client, "pull_request", pull_payload(github, 1))
+    html = client.get(page).content.decode()
+    title = html.split("<main")[1].split("</h1>", 1)[1].split("</div>")[0]  # after the title
+    assert f'class="log-link" data-log href="{log}"' in title
+    assert html.count(f'href="{log}"') == 1  # no other link to the log, such as a text
+    assert "<p>" not in html.split("<title>")[1].split("</title>")[0]

@@ -118,6 +118,10 @@ emails are written to the log.
 ``SITE_ADMINS``
    GitHub handles, comma separated, that may open the admin pages of Django.
    Default none.
+``SIGN_OUT_MINUTES``
+   Minutes after signing in when people are signed out again, also while they
+   use the site: then they sign in with GitHub again. Default ``60``, at least
+   ``1``.
 
 .. _settings-look:
 

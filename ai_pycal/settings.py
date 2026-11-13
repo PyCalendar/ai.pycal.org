@@ -159,6 +159,9 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_QUERY_EMAIL = True  # the verified addresses identify people and get the emails
 # GitHub handles that administer this site: the admin pages of Django
 SITE_ADMINS = [login.lower() for login in env.list("SITE_ADMINS", default=[])]
+# minutes after signing in when people are signed out again, also while they use the site
+SIGN_OUT_MINUTES = env.float("SIGN_OUT_MINUTES", default=60)
+SESSION_COOKIE_AGE = max(60, round(SIGN_OUT_MINUTES * 60))
 
 # The GitHub App: docs/how-to/github-app.rst
 GITHUB_API = env("GITHUB_API", default="https://api.github.com").rstrip("/")

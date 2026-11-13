@@ -1,7 +1,6 @@
 {% extends "ai_pycal/base.html" %}
 {% load times github i18n %}
-{% block title %}{{ pull.title }} #{{ pull.number }} · {{ site_name }}<p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
-{% endblock %}
+{% block title %}{{ pull.title }} #{{ pull.number }} · {{ site_name }}{% endblock %}
 {% block main %}
 <div class="crumbs" data-title>
   <nav class="crumbs-start" aria-label="{% translate "Path" %}"><a href="{% url 'owner_projects' pull.repository.owner %}">{{ pull.repository.owner }}</a><span class="crumbs-sep">/</span><a href="/project/{{ pull.repository.full_name }}/">{{ pull.repository.name }}</a><span class="crumbs-sep">/</span></nav>
@@ -14,6 +13,7 @@
   </details>{% endif %}
   <h1 class="crumbs-current"><a href="{{ here }}">#{{ pull.number }}</a></h1>
   {% github_link pull.url "The pull request on GitHub" %}
+  {% url 'pull_log' pull.repository.owner pull.repository.name pull.number as log_url %}{% include "ai_pycal/_log_link.html" with url=log_url %}
 </div>
 <p class="lead">{{ pull.title }} <span class="muted">#{{ pull.number }}</span> · {% translate "by" %} <a href="{% url 'contributor' pull.author_login %}">@{{ pull.author_login }}</a></p>
 {% if user.is_authenticated and not is_author %}<p>{% url 'contributor' pull.author_login as author_url %}{% blocktranslate with author=pull.author_login %}This is the public agreement record for <a href="{{ author_url }}">@{{ author }}</a>. Only the author of the pull request can change its choice.{% endblocktranslate %}</p>{% endif %}
@@ -33,5 +33,4 @@
   {% if row.state.signed %}<span class="badge badge-success">{% translate "Signed" %}</span>{% else %}<span class="badge {% if row.state.required %}badge-error{% else %}badge-warning{% endif %}">{% translate "Unsigned" %}</span>{% endif %}</span></li>
 {% endfor %}</ul>
 {% if is_author and needs_signing %}<p><a class="button" href="{{ here }}sign/" data-sign-flow>{% translate "Sign the agreements" %}</a></p>{% elif not user.is_authenticated and needs_signing %}<p><a class="button" href="{{ here }}sign/" data-sign-flow>{% translate "Sign in to sign agreements" %}</a></p>{% endif %}
-<p><a href="{% url 'pull_log' pull.repository.owner pull.repository.name pull.number %}" data-log>{% translate "Log of this pull request" %}</a></p>
 {% endblock %}

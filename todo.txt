@@ -518,3 +518,10 @@
 - [x] Sign-in asks GitHub only for the identity and the email addresses (scope user:email, read
       only); the verified addresses are kept at every sign-in.
 - [ ] The person: create the OAuth app and enter it on https://sign.pycal.org/setup/oauth-app/.
+
+## 2026-11-13: sign out after an hour
+
+- [x] People are signed out an hour after signing in, also while they use the site; the time is
+      the setting SIGN_OUT_MINUTES (default 60) in .env.
+- [x] Every link to a log is the log icon next to the title: the pull request page had a text link
+      "Log of this pull request" (also inside its <title>).
