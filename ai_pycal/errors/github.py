@@ -78,13 +78,17 @@ class GitHubAppNotConfigured(AgreementError):
 class SignInNotConfigured(GitHubAppNotConfigured):
     """Signing in with GitHub is not configured.
 
-    The site signs people in with the GitHub App. Set ``GITHUB_CLIENT_ID`` and
-    ``GITHUB_SECRET`` to the client ID and a client secret of the app, as described
-    in :doc:`/how-to/github-app`. For development, put them into ``.env``:
-    ``make run`` reads it.
+    The site signs people in with an OAuth app, which only tells who they are and
+    their email addresses. The people who run the site create it on GitHub and
+    enter it on the page ``/setup/oauth-app/`` with the setup code of the log, or
+    set ``GITHUB_OAUTH_CLIENT_ID`` and ``GITHUB_OAUTH_SECRET``, as described in
+    :ref:`oauth-app`. For development, put them into ``.env``: ``make run`` reads
+    it.
     """
 
     title = _("Signing in with GitHub is not configured")
+    guide = "how-to/github-app-site.html#oauth-app"
+    guide_title = _("The OAuth app for signing in")
 
 
 class InvalidPrivateKey(GitHubAppNotConfigured):

@@ -115,8 +115,6 @@ On the app's settings page:
 #. Copy the numeric **App ID** to ``GITHUB_APP_ID``.
 #. Copy the app's **slug** from its address, for example the last component of
    ``https://github.com/apps/your-app-slug``, to ``GITHUB_APP_SLUG``.
-#. Copy **Client ID** to ``GITHUB_CLIENT_ID``. It differs from the numeric App ID.
-#. Press **Generate a new client secret** and copy it to ``GITHUB_SECRET``.
 #. Under **Private keys**, press **Generate a private key**. Save the downloaded
    PEM file as ``data/github-app.pem`` in the checkout. Use a new filename if
    that path already holds another app's key.
@@ -129,10 +127,12 @@ Complete these settings in ``.env``, replacing the example values:
    SITE_URL=http://localhost:5000
    GITHUB_APP_ID=123456
    GITHUB_APP_SLUG=your-app-slug
-   GITHUB_CLIENT_ID=Iv23...
-   GITHUB_SECRET=the-client-secret-from-github
    GITHUB_WEBHOOK_SECRET=the-webhook-secret-you-chose-in-step-2
    GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem
+   GITHUB_OAUTH_CLIENT_ID=Ov23...
+   GITHUB_OAUTH_SECRET=the-client-secret-of-the-oauth-app
+
+The OAuth app signs people in; create it as :ref:`oauth-app` describes.
 
 Restrict access to the downloaded key:
 

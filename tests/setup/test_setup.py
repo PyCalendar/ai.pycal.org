@@ -172,10 +172,10 @@ def test_unconfigured_setup_shows_env_settings_without_credentials(client, setti
     for variable in (
         "GITHUB_APP_ID",
         "GITHUB_APP_SLUG",
-        "GITHUB_CLIENT_ID",
-        "GITHUB_SECRET",
         "GITHUB_WEBHOOK_SECRET",
         "GITHUB_APP_PRIVATE_KEY_FILE",
+        "GITHUB_OAUTH_CLIENT_ID",
+        "GITHUB_OAUTH_SECRET",
     ):
         assert f"{variable}=" in page
     assert "data/github-app.pem" in page

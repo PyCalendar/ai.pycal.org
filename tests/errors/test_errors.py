@@ -27,7 +27,10 @@ def test_every_error_explains_itself(name):
 def test_the_guides_of_the_errors_exist(name):
     guide = ALL[name].guide
     if guide:
-        assert (DOCS / guide.replace(".html", ".rst")).is_file(), guide
+        page, _, section = guide.partition("#")
+        assert (DOCS / page.replace(".html", ".rst")).is_file(), guide
+        if section:
+            assert f".. _{section}:" in (DOCS / page.replace(".html", ".rst")).read_text()
 
 
 def test_every_module_of_errors_is_in_the_documentation():

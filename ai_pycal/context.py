@@ -88,9 +88,7 @@ def site(request) -> dict:
             .distinct()
         )
     theme = Theme.choice(request.COOKIES.get(COOKIE))
-    configured = bool(
-        settings.GITHUB_APP_ID and settings.SOCIALACCOUNT_PROVIDERS["github"].get("APP")
-    )
+    configured = bool(settings.GITHUB_APP_ID)
     return {
         "site_name": settings.SITE_NAME,
         "theme_choice": theme,
@@ -119,6 +117,8 @@ def site(request) -> dict:
         "version": version_text(),
         # without an app, the sign-in page and the errors offer to register one
         "github_app_configured": configured,
+        # without the OAuth app nobody can sign in (docs/how-to/github-app-site.rst)
+        "sign_in_configured": settings.SIGN_IN_WITH_OAUTH_APP,
         # why the site cannot register an app, shown instead of the button
         "app_registration_obstacle": None if configured else AppRegistration.obstacle(),
         "github": GitHubIdentity.of(getattr(request, "user", None)),

@@ -508,3 +508,13 @@
       walks every page that should be public from it.
 - [x] Public by default: every page without personal information or configuration that needs
       privileges; the page of a person is public, to check what they signed without signing in.
+
+## 2026-11-13: the OAuth app is required
+
+- [x] Documented in the setup of the platform how to register the OAuth app (Docker guide, setup
+      guide, settings, .env.example with a reference, .env.development.example).
+- [x] The OAuth app is required for signing in; the GitHub App never signs people in. Without it,
+      the sign-in page leads to /setup/oauth-app/, entered with the setup code of the log.
+- [x] Sign-in asks GitHub only for the identity and the email addresses (scope user:email, read
+      only); the verified addresses are kept at every sign-in.
+- [ ] The person: create the OAuth app and enter it on https://sign.pycal.org/setup/oauth-app/.

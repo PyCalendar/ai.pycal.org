@@ -55,8 +55,8 @@ precedence. Or create the app yourself as :doc:`/how-to/github-app` describes.
    ``https://github.com/apps/ai-pycal-org``. The Setup page links there to
    install the app.
 ``GITHUB_CLIENT_ID``, ``GITHUB_SECRET``
-   The client id and a client secret of the app, for signing in with GitHub and
-   renewing the tokens of the people.
+   The client id and a client secret of the GitHub App. The registration keeps
+   them; the site does not use them, since people sign in with the OAuth app.
 ``GITHUB_WEBHOOK_SECRET``
    The secret of the webhooks. Without it, all webhooks are refused.
 ``GITHUB_APP_PRIVATE_KEY_FILE``
@@ -65,11 +65,11 @@ precedence. Or create the app yourself as :doc:`/how-to/github-app` describes.
 ``GITHUB_APP_PRIVATE_KEY``
    The private key itself, instead of a file; ``\n`` stands for a line break.
 ``GITHUB_OAUTH_CLIENT_ID``, ``GITHUB_OAUTH_SECRET``
-   An OAuth app without scopes that signs people in, so that GitHub does not
-   ask them to let the app act on their behalf; see
-   :ref:`the OAuth app <oauth-app>`. Without it, the GitHub App signs people in.
-   Administrators of the site can enter it on the page **Setup**, which keeps
-   it in ``DATA_DIR/.env``.
+   Required. The OAuth app that signs people in: GitHub tells the site who they
+   are and their email addresses, read only, and never asks to let it act on
+   their behalf; see :ref:`the OAuth app <oauth-app>`. Without it, nobody can
+   sign in. The people who run the site enter it on ``/setup/oauth-app/`` with
+   the setup code of the log, which keeps it in ``DATA_DIR/.env``.
 ``GITHUB_API``
    The API of GitHub. Default ``https://api.github.com``. Change it only for
    GitHub Enterprise Server.

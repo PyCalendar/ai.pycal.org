@@ -74,9 +74,7 @@ def setup(request):
             "error": error,
             "required": sorted(permissions.REQUIRED.items()),
             "app_events": app_events(request.user),
-            "oauth_missing": GitHubApp.configured()
-            and not settings.SIGN_IN_WITH_OAUTH_APP
-            and GitHubIdentity.is_site_admin(request.user),
+            "oauth_missing": not settings.SIGN_IN_WITH_OAUTH_APP,
         },
     )
 

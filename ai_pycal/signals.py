@@ -20,11 +20,55 @@ def update_user(sender, request, user, **kwargs) -> None:
     identity = GitHubIdentity.of(user)
     if identity is None:
         return
+    keep_verified_addresses(user)
     admin = identity.login.lower() in settings.SITE_ADMINS
     changed = user.is_staff != admin or user.is_superuser != admin
     user.is_staff = user.is_superuser = admin
     if changed:
         user.save(update_fields=["is_staff", "is_superuser"])
+
+
+def keep_verified_addresses(user) -> int:
+    """Keep the email addresses that GitHub verified, as GitHub told them at the sign-in.
+
+    GitHub tells them with the scope ``user:email``, read only. They identify a person and
+    get the emails of the projects they watch; addresses that GitHub has not verified are
+    left out, and addresses added on the site stay.
+
+    Args:
+        user: The person who signed in.
+
+    Returns:
+        How many addresses were added or verified.
+    """
+    from allauth.account.models import EmailAddress
+    from allauth.socialaccount.models import SocialAccount
+
+    account = SocialAccount.objects.filter(user=user, provider="github").first()
+    emails = (account.extra_data.get("emails") if account else None) or []
+    changed = 0
+    has_primary = EmailAddress.objects.filter(user=user, primary=True).exists()
+    for email in emails:
+        if not (isinstance(email, dict) and email.get("verified") and email.get("email")):
+            continue
+        address = str(email["email"]).strip()
+        if (
+            EmailAddress.objects.filter(email__iexact=address, verified=True)
+            .exclude(user=user)
+            .exists()
+        ):
+            continue  # another account has it: an address identifies one person
+        found = EmailAddress.objects.filter(user=user, email__iexact=address).first()
+        if found is None:
+            primary = bool(email.get("primary")) and not has_primary
+            EmailAddress.objects.create(user=user, email=address, verified=True, primary=primary)
+            has_primary = has_primary or primary
+            changed += 1
+        elif not found.verified:
+            found.verified = True
+            found.save(update_fields=["verified"])
+            changed += 1
+    return changed
 
 
 @receiver(user_signed_up)

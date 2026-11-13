@@ -48,8 +48,9 @@ def app_settings(settings, private_key):
     settings.SITE_URL = "https://ai.example.org"
     settings.STATUS_CONTEXT = "ai.example.org"
     settings.SIGN_MIN_SECONDS = 0
+    settings.SIGN_IN_WITH_OAUTH_APP = True  # the OAuth app that signs people in
     settings.SOCIALACCOUNT_PROVIDERS = {
-        "github": {"SCOPE": [], "APP": {"client_id": "client", "secret": "secret"}}
+        "github": {"SCOPE": ["user:email"], "APP": {"client_id": "client", "secret": "secret"}}
     }
     settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
     settings.STORAGES = {

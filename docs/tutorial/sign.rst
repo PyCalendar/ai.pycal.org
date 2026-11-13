@@ -10,9 +10,9 @@ repositories that ask for it.
 1. Open your pull request on GitHub. In the checks, each agreement has an entry
    such as ``sign.pycal.org/ai-policy — @you: please sign AI Policy``. Select
    **Details**. It opens the signing flow of the pull request.
-2. Select **Sign in with GitHub**. GitHub only tells the site who you are; it
-   does not ask to let the site act on your behalf (when the site is set up
-   with its OAuth app). Then the flow continues.
+2. Select **Sign in with GitHub**. GitHub only tells the site who you are and
+   your email addresses, read only; it does not ask to let the site act on your
+   behalf. Then the flow continues.
 3. The flow shows one agreement after the other, required ones first, with your
    progress, such as *Agreement 1 of 2*. Nothing else on the page leads away;
    **About** at the bottom opens in a new tab. If the project offers choices,

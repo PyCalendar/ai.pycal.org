@@ -55,10 +55,12 @@ The example contains the settings to fill in:
 .. literalinclude:: ../../.env.development.example
    :language: shell
 
-Set the six ``GITHUB_*`` values from your development GitHub App, and save its
+Set the ``GITHUB_*`` values from your development GitHub App, and save its
 private key at the path named by ``GITHUB_APP_PRIVATE_KEY_FILE``.
-``GITHUB_SECRET`` is the client secret; ``GITHUB_WEBHOOK_SECRET`` is the
-separate webhook secret. Choose a unique ``SITE_NAME`` before creating the
+``GITHUB_WEBHOOK_SECRET`` is the webhook secret. ``GITHUB_OAUTH_CLIENT_ID``
+and ``GITHUB_OAUTH_SECRET`` are of the OAuth app that signs people in
+(:ref:`oauth-app`), with the callback URL
+``http://localhost:5000/accounts/github/login/callback/``. Choose a unique ``SITE_NAME`` before creating the
 app. Start at :doc:`github-app` to choose the recommended submission form,
 manifest CLI flow or manual app creation and obtain the credentials.
 

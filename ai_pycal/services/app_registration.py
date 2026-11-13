@@ -246,6 +246,20 @@ class AppRegistration:
         return None
 
     @classmethod
+    def code_matches(cls, setup_code: str) -> bool:
+        """Whether a code entered is the setup code of the site; any code in development.
+
+        Args:
+            setup_code: The code entered.
+
+        Returns:
+            True if it matches, or if the site needs no code.
+        """
+        if not cls.needs_setup_code():
+            return True
+        return hmac.compare_digest(setup_code.strip().lower(), cls.setup_code().lower())
+
+    @classmethod
     def check(cls, setup_code: str) -> None:
         """Check that a registration may start.
 
@@ -263,9 +277,7 @@ class AppRegistration:
         obstacle = cls.obstacle()
         if obstacle:
             raise obstacle
-        if cls.needs_setup_code() and not hmac.compare_digest(
-            setup_code.strip().lower(), cls.setup_code().lower()
-        ):
+        if not cls.code_matches(setup_code):
             raise SetupCodeWrong()
 
     @classmethod
@@ -380,11 +392,6 @@ class AppRegistration:
         settings.GITHUB_APP_SLUG = os.environ["GITHUB_APP_SLUG"]
         settings.GITHUB_WEBHOOK_SECRET = os.environ["GITHUB_WEBHOOK_SECRET"]
         settings.GITHUB_APP_PRIVATE_KEY = key
-        if not settings.SIGN_IN_WITH_OAUTH_APP:  # an OAuth app signs people in otherwise
-            settings.SOCIALACCOUNT_PROVIDERS["github"]["APP"] = {
-                "client_id": os.environ["GITHUB_CLIENT_ID"],
-                "secret": os.environ["GITHUB_SECRET"],
-            }
 
     @staticmethod
     def reload_workers(request) -> bool:

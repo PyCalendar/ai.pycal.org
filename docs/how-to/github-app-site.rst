@@ -107,26 +107,48 @@ empty one counts as unset. Back up the volume and keep both files secret.
 
 .. _oauth-app:
 
-Sign people in without acting on their behalf
-=============================================
+Sign people in with the OAuth app
+=================================
 
-When people sign in with a GitHub App, GitHub asks them to let it act on their
-behalf, although the site only reads who they are. An OAuth app without scopes
-signs them in with read access to their public information only; the GitHub
-App keeps writing labels and checks with its own token, and reads whether a
-person has the role *admin* or *maintain* of a repository by itself.
+**Required.** People sign in with an OAuth app, not with the GitHub App. The
+two have different jobs:
+
+The GitHub App
+   Installed on the repositories. It receives their webhooks and writes the
+   labels and checks of the pull requests with its own token. It needs no
+   person to act for.
+The OAuth app
+   Only identifies the people who sign in. It asks GitHub for the scope
+   ``user:email``: GitHub tells the site who the person is and their email
+   addresses, read only. The site keeps the addresses that GitHub verified;
+   they identify people on their pull requests and get the emails of the
+   projects they watch. GitHub never asks people to let the site act on their
+   behalf, as it does when they sign in with a GitHub App.
+
+Until the site has the OAuth app, nobody can sign in. The site writes a line
+like this into its log at every start:
+
+.. code-block:: text
+
+   Nobody can sign in: this site has no OAuth app. Enter it on https://ai.example.org/setup/oauth-app/ with the setup code 3f9a-0c41-77d2
 
 GitHub has no manifest for OAuth apps, so it is created by hand:
 
-#. On GitHub, open *Settings → Developer settings → OAuth apps → New OAuth
-   app*, of your account or of the organization.
-#. Homepage URL: the address of the site. Authorization callback URL: the
-   address of the site plus ``/accounts/github/login/callback/``.
+#. On GitHub, open *Settings → Developer settings → OAuth Apps → New OAuth
+   App*, of your account or of the organization.
+#. **Homepage URL**: the address of the site, such as
+   ``https://sign.pycal.org``. **Authorization callback URL**: the address of
+   the site plus ``/accounts/github/login/callback/``, such as
+   ``https://sign.pycal.org/accounts/github/login/callback/``.
 #. Register it and generate a client secret.
-#. On the page **Setup**, administrators of the site (``SITE_ADMINS``) follow
-   **Set up the OAuth app** and enter the client ID and the secret. They are
-   kept in ``DATA_DIR/.env``. Or set ``GITHUB_OAUTH_CLIENT_ID`` and
-   ``GITHUB_OAUTH_SECRET`` in the environment.
+#. Open ``/setup/oauth-app/`` on the site, also reached from **Sign in**, and
+   enter the client ID, the client secret and the setup code. They are kept in
+   ``DATA_DIR/.env``. Or set ``GITHUB_OAUTH_CLIENT_ID`` and
+   ``GITHUB_OAUTH_SECRET`` in the environment, as in :file:`.env.example`;
+   the environment takes precedence.
+
+Afterwards only the administrators of the site (``SITE_ADMINS``) can change the
+OAuth app on that page; they need no setup code.
 
 One app per site
 ================

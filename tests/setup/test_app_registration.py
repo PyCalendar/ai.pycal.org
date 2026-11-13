@@ -36,7 +36,6 @@ def new_site(settings, tmp_path, monkeypatch):
     settings.GITHUB_APP_SLUG = ""
     settings.GITHUB_APP_PRIVATE_KEY = ""
     settings.GITHUB_WEBHOOK_SECRET = ""
-    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
     for name in GITHUB_NAMES:
         monkeypatch.delenv(name, raising=False)
     yield settings
@@ -97,7 +96,8 @@ def test_github_returns_and_the_credentials_are_saved(client, new_site, github, 
     assert not (tmp_path / "github-app-setup-code").exists()
     # the site uses the app at once, and registers no other
     assert new_site.GITHUB_APP_ID == "4242"
-    assert new_site.SOCIALACCOUNT_PROVIDERS["github"]["APP"]["client_id"] == "Iv1.new"
+    # the GitHub App never signs people in: that is the OAuth app
+    assert "Iv1.new" not in str(new_site.SOCIALACCOUNT_PROVIDERS)
     assert AppRegistration.source() == "volume"
     again = start(client)
     assert again.status_code == 409
@@ -291,5 +291,8 @@ def test_the_setup_code_is_in_the_log_and_the_command(new_site, capsys):
 def test_without_an_app_the_errors_and_setup_offer_the_registration(client, new_site):
     setup = client.get("/setup/", follow=True).content.decode()  # signs in first
     assert 'href="/setup/github-app/">Register GitHub App</a>' in setup
+    # signing in needs only the OAuth app, which asks GitHub only for the email addresses
     response = client.post("/accounts/github/login/")
-    assert 'href="/setup/github-app/">Register GitHub App</a>' in response.content.decode()
+    assert response.status_code == 302
+    assert response["Location"].startswith("https://github.com/login/oauth/authorize?")
+    assert "scope=user%3Aemail&" in response["Location"]

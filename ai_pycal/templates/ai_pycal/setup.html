@@ -3,7 +3,7 @@
 {% block title %}{% translate "Setup" %} · {{ site_name }}{% endblock %}
 {% block main %}
 <h1>{% translate "Set up a repository" %}</h1>
-{% if oauth_missing %}<div class="message message-warning" data-oauth-missing><strong>{% translate "People are asked to let the app act on their behalf when they sign in." %}</strong> {% translate "Sign them in with an OAuth app instead: GitHub then only tells who they are." %} <a href="{% url 'oauth_app' %}">{% translate "Set up the OAuth app" %}</a></div>{% endif %}
+{% if oauth_missing %}<div class="message message-warning" data-oauth-missing><strong>{% translate "Nobody can sign in until the OAuth app is entered." %}</strong> {% translate "It tells the site only who people are and their email addresses." %} <a href="{% url 'oauth_app' %}">{% translate "Set up the OAuth app" %}</a></div>{% endif %}
 {% if app_events %}<div class="message message-warning" data-missing-events><strong>{% translate "The GitHub App does not receive all events it needs." %}</strong> {% blocktranslate with events=app_events.missing|join:", " %}Missing: <code>{{ events }}</code>. Tick them in the settings of the app on GitHub, under Permissions and events; no new permission is needed.{% endblocktranslate %} {% translate "Settings of the app" as app_settings %}{% github_link app_events.url app_settings app_settings %}</div>{% endif %}
 <ol class="steps card">
   <li>{% blocktranslate %}Add the file <code>.github/agreements.yml</code> to the default branch of the repository.{% endblocktranslate %} {% help_link links.config_file "The configuration file" %}</li>
@@ -20,14 +20,14 @@
   <p class="message message-error">{% translate "This site has no GitHub App yet." %}</p>
   <p>{% blocktranslate %}The site can register its GitHub App itself and keep the credentials in its volume.{% endblocktranslate %}</p>
   {% include "ai_pycal/_register_app.html" %}
-  <p>{% blocktranslate %}Or set the credentials yourself. For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these six values from your GitHub App:{% endblocktranslate %}</p>
+  <p>{% blocktranslate %}Or set the credentials yourself. For a local test setup, copy <code>.env.development.example</code> to <code>.env</code> in the checkout, keeping any existing settings. Fill in these values from your GitHub App and your OAuth app for signing in:{% endblocktranslate %}</p>
   <pre><code>GITHUB_APP_ID=
 GITHUB_APP_SLUG=
-GITHUB_CLIENT_ID=
-GITHUB_SECRET=
 GITHUB_WEBHOOK_SECRET=
-GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem</code></pre>
-  <p>{% blocktranslate %}<code>GITHUB_SECRET</code> is the app's client secret. Save its private key as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</code> automatically; restart it after editing the file. It supplies localhost defaults for other required settings. Run <code>make livehtml</code> in another terminal for the local documentation.{% endblocktranslate %}</p>
+GITHUB_APP_PRIVATE_KEY_FILE=data/github-app.pem
+GITHUB_OAUTH_CLIENT_ID=
+GITHUB_OAUTH_SECRET=</code></pre>
+  <p>{% blocktranslate %}Save the private key of the GitHub App as <code>data/github-app.pem</code>. <code>make run</code> reads <code>.env</code> automatically; restart it after editing the file. It supplies localhost defaults for other required settings. Run <code>make livehtml</code> in another terminal for the local documentation.{% endblocktranslate %}</p>
   <p><a href="{{ links.app_setup }}">{% translate "Choose a GitHub App setup flow" %}</a></p>
   <ul>
     <li><a href="{{ links.app_create }}">{% translate "App manifest with the submission form" %}</a></li>

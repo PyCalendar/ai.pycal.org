@@ -79,8 +79,16 @@ def check_github_app(app_configs=None, **kwargs) -> list:
         )
         if not getattr(settings, name)
     ]
-    if not settings.SOCIALACCOUNT_PROVIDERS["github"].get("APP"):
-        missing.append("GITHUB_CLIENT_ID")
+    warnings = []
+    if not settings.SIGN_IN_WITH_OAUTH_APP:
+        warnings.append(
+            Warning(
+                "Nobody can sign in: the OAuth app is not configured (GITHUB_OAUTH_CLIENT_ID)",
+                hint=f"Enter it on {settings.SITE_URL}/setup/oauth-app/ with the setup code "
+                "(docs/how-to/github-app-site.rst, section oauth-app)",
+                id="ai_pycal.W004",
+            )
+        )
     if missing:
         return [
             Warning(
@@ -89,5 +97,5 @@ def check_github_app(app_configs=None, **kwargs) -> list:
                 "(docs/how-to/github-app-site.rst)",
                 id="ai_pycal.W001",
             )
-        ]
-    return []
+        ] + warnings
+    return warnings

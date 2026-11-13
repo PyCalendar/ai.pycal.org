@@ -12,6 +12,15 @@ Run the site with Docker
 The site listens on port 5000. Put a proxy with TLS in front of it and set
 ``SITE_URL``, ``ALLOWED_HOSTS`` and ``CSRF_TRUSTED_ORIGINS`` to its address.
 
+Then give the site its two apps on GitHub, each with the setup code that the
+site writes into its log:
+
+#. The GitHub App, which is installed on the repositories, receives their
+   webhooks and writes labels and checks: :doc:`github-app-site`.
+#. The OAuth app, which signs people in and tells the site only who they are
+   and their email addresses: :ref:`oauth-app`. Without it, nobody can sign
+   in.
+
 The SQLite database, the generated secret key and the private key of the
 GitHub App are in ``./data``: keep it in your backups. Set ``DATABASE_URL`` for
 PostgreSQL.

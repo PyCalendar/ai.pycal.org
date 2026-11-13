@@ -44,8 +44,8 @@ class ErrorPageMiddleware:
             The page of the error; None for other exceptions.
         """
         if isinstance(exception, SocialApp.DoesNotExist):
-            # allauth has no GitHub client: GITHUB_CLIENT_ID is not set
-            exception = SignInNotConfigured("GITHUB_CLIENT_ID, GITHUB_SECRET")
+            # allauth has no GitHub client: the OAuth app is not set
+            exception = SignInNotConfigured("GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_SECRET")
         if not isinstance(exception, AgreementError):
             return None
         if isinstance(exception, UnexpectedError):

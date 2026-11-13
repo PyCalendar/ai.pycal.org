@@ -2,24 +2,25 @@
 {% load i18n socialaccount %}
 {% block title %}{% translate "Sign in" %} · {{ site_name }}{% endblock %}
 {% block main %}
-{% if not github_app_configured %}
-<div class="card narrow" data-no-app>
+{% if not sign_in_configured %}
+<div class="card narrow" data-no-sign-in>
   <h1>{% translate "Sign in with GitHub" %}</h1>
-  <p class="message message-warning">{% translate "This site has no GitHub App yet, so nobody can sign in." %}</p>
-  <p>{% blocktranslate %}The people who run the site register the app here, on the site. It gets the permissions the site needs and the credentials are kept in the volume of the site.{% endblocktranslate %}</p>
-  {% include "ai_pycal/_register_app.html" %}
-  <p class="muted"><a href="{{ links.app_setup }}">{% translate "Other ways to set up the app" %}</a></p>
+  <p class="message message-warning">{% translate "Signing in is not set up yet, so nobody can sign in." %}</p>
+  <p>{% blocktranslate %}The people who run the site create an OAuth app on GitHub and enter it here, with the setup code of the log. It only tells the site who people are and their email addresses.{% endblocktranslate %}</p>
+  <p><a class="button" href="{% url 'oauth_app' %}">{% translate "Set up signing in" %}</a> <a href="{{ links.oauth_app }}">{% translate "How" %}</a></p>
+  {% if not github_app_configured %}<p>{% translate "The site has no GitHub App yet either." %}</p>{% include "ai_pycal/_register_app.html" %}{% endif %}
 </div>
 {% else %}
 <div class="card narrow">
   <h1>{% translate "Sign in with GitHub" %}</h1>
-  <p>{% blocktranslate %}This site only reads your GitHub handle. Administrators of repositories are also asked by GitHub which installations of the app they may manage.{% endblocktranslate %}</p>
+  <p>{% blocktranslate %}GitHub tells this site who you are and your email addresses, read only: they identify you on your pull requests. The site never acts on your behalf on GitHub.{% endblocktranslate %}</p>
   <form method="post" action="{% provider_login_url 'github' %}">
     {% csrf_token %}
     {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
     <button class="button" type="submit">{% translate "Sign in with GitHub" %}</button>
   </form>
   <p class="muted">{% translate "There are no passwords on this site." %}</p>
+  {% if not github_app_configured %}<div data-no-app><p class="message message-warning">{% translate "This site has no GitHub App yet: pull requests are not checked." %}</p>{% include "ai_pycal/_register_app.html" %}<p class="muted"><a href="{{ links.app_setup }}">{% translate "Other ways to set up the app" %}</a></p></div>{% endif %}
 </div>
 {% endif %}
 {% endblock %}

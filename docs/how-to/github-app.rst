@@ -7,6 +7,9 @@ GitHub App for the site, then configure the site with that app's credentials.
 Maintainers using an already configured site can go straight to
 :doc:`/tutorial/admin` to install its app on a repository.
 
+The site also needs an OAuth app that signs people in: create it after the
+GitHub App as :ref:`oauth-app` describes. Without it, nobody can sign in.
+
 Choose a setup flow
 ====================
 

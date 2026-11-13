@@ -16,26 +16,30 @@ def test_the_start_page(client):
 
 
 def test_sign_in_without_an_app_offers_to_register_it(client, settings):
-    """Without a GitHub App, as on a new site, the sign-in page offers to register it."""
-    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
+    """Without a GitHub App, as on a new site, the sign-in page offers to register it.
+
+    Signing in needs only the OAuth app, so the button stays.
+    """
+    settings.GITHUB_APP_ID = ""
     response = client.get("/accounts/login/")
     page = response.content.decode()
     assert response.status_code == 200
     assert "This site has no GitHub App yet" in page
     assert 'href="/setup/github-app/">Register GitHub App</a>' in page
-    assert 'action="/accounts/github/login/' not in page
+    assert 'action="/accounts/github/login/' in page
 
 
 def test_signing_in_without_client_explains_the_setup(client, settings):
-    """A sign-in sent without GITHUB_CLIENT_ID shows the error, its details and the button."""
-    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
+    """A sign-in sent without the OAuth app shows the error, its details and the guide."""
+    settings.SIGN_IN_WITH_OAUTH_APP = False
+    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": ["user:email"]}}
     response = client.post("/accounts/github/login/")
     page = response.content.decode()
     assert response.status_code == 503
     assert "Signing in with GitHub is not configured" in page
-    assert "GITHUB_CLIENT_ID" in page
+    assert "GITHUB_OAUTH_CLIENT_ID" in page
     assert "errors.html#ai_pycal.errors.github.SignInNotConfigured" in page
-    assert 'href="/setup/github-app/">Register GitHub App</a>' in page
+    assert "how-to/github-app-site.html#oauth-app" in page
     details = page.split('id="error-details"')[1].split("</textarea>")[0]
     assert "Error: SignInNotConfigured (HTTP 503)" in details
     assert "Page: /accounts/github/login/" in details
@@ -79,12 +83,13 @@ def test_documentation_navigation_and_error_help_share_the_configured_url(client
     page = client.get("/about/").content.decode()
     assert f'href="{base}"' in page
     assert f'href="{base}changelog.html"' in page
-    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": []}}
+    settings.SIGN_IN_WITH_OAUTH_APP = False
+    settings.SOCIALACCOUNT_PROVIDERS = {"github": {"SCOPE": ["user:email"]}}
     response = client.post("/accounts/github/login/")
     assert response.status_code == 503
     page = response.content.decode()
     assert f"{base}reference/errors.html#ai_pycal.errors.github.SignInNotConfigured" in page
-    assert f"{base}how-to/github-app.html" in page
+    assert f"{base}how-to/github-app-site.html#oauth-app" in page
 
 
 @pytest.mark.parametrize(

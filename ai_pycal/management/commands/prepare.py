@@ -46,6 +46,12 @@ class Command(BaseCommand):
                 f"{settings.SITE_URL}/setup/github-app/ with the setup code "
                 f"{AppRegistration.setup_code()}"
             )
+        if not settings.SIGN_IN_WITH_OAUTH_APP:
+            self.stdout.write(
+                "Nobody can sign in: this site has no OAuth app. Enter it on "
+                f"{settings.SITE_URL}/setup/oauth-app/ with the setup code "
+                f"{AppRegistration.setup_code()}"
+            )
 
     @staticmethod
     def unknown_admins() -> list[str]:

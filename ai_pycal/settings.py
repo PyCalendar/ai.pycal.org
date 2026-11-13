@@ -136,20 +136,27 @@ ACCOUNT_SIGNUP_FIELDS = ["username*"]
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_LOGIN_ON_GET = False  # a button with POST: no sign in by a link of another site
 SOCIALACCOUNT_STORE_TOKENS = False  # the site only reads who signed in; the app reads roles
-# People sign in with an OAuth app without scopes: GitHub tells only who they are, and
-# asks no permission to act on their behalf. Without one, the GitHub App signs them in.
+# People sign in with an OAuth app (docs/how-to/github-app-site.rst#oauth-app): GitHub tells
+# who they are and their email addresses, read only (scope user:email), and never asks to let
+# the site act on their behalf. Without it nobody can sign in: the people who run the site
+# enter it on /setup/oauth-app/ with the setup code of the log, or set it here.
 SIGN_IN_WITH_OAUTH_APP = bool(env("GITHUB_OAUTH_CLIENT_ID", default=""))
-_sign_in = (
-    (env("GITHUB_OAUTH_CLIENT_ID"), env("GITHUB_OAUTH_SECRET", default=""))
-    if SIGN_IN_WITH_OAUTH_APP
-    else (env("GITHUB_CLIENT_ID", default=""), env("GITHUB_SECRET", default=""))
-)
 SOCIALACCOUNT_PROVIDERS = {
     "github": {
-        "SCOPE": [],  # only the public identity
-        **({"APP": {"client_id": _sign_in[0], "secret": _sign_in[1]}} if _sign_in[0] else {}),
+        "SCOPE": ["user:email"],  # the identity and the email addresses, read only
+        **(
+            {
+                "APP": {
+                    "client_id": env("GITHUB_OAUTH_CLIENT_ID"),
+                    "secret": env("GITHUB_OAUTH_SECRET", default=""),
+                }
+            }
+            if SIGN_IN_WITH_OAUTH_APP
+            else {}
+        ),
     }
 }
+SOCIALACCOUNT_QUERY_EMAIL = True  # the verified addresses identify people and get the emails
 # GitHub handles that administer this site: the admin pages of Django
 SITE_ADMINS = [login.lower() for login in env.list("SITE_ADMINS", default=[])]
 
