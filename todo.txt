@@ -570,3 +570,11 @@
       SITE_ADMINS were only given at the sign-in, so a session of before SITE_ADMINS was set
       had none. They now follow SITE_ADMINS at every request (granted and taken away); users
       without GitHub, such as of createsuperuser, keep theirs. Tests.
+
+## 2026-11-13: a new version of the example AI policy
+
+- [x] New point 6 of the example AI policy (secrets stay out of prompts), shortened, also in
+      German and Spanish: the site took versions 3 (02a4327) and 4 (1516f03) within 10 s of the
+      push; the changes and the translations show; #2 asks for the new signature (state
+      missing, ai-policy-accepted removed).
+- [ ] Sign version 4 on #2 again (a person signs, on the page of the agreement).
