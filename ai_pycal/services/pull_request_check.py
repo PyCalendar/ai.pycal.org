@@ -21,6 +21,8 @@ class AgreementState:
     agreement: RequiredAgreement
     signed: bool
     required: bool = True
+    # optional and listed by no choice: signed for its own sake, its labels show it
+    free: bool = False
 
 
 class PullRequestCheck:
@@ -78,6 +80,11 @@ class PullRequestCheck:
         )
         choice = self.choice()
         selected = set(choice.agreements.values_list("pk", flat=True)) if choice else set()
+        listed = set(
+            RequiredAgreement.objects.filter(choices__repository=self.pull.repository).values_list(
+                "pk", flat=True
+            )
+        )
         signed = set(
             Signature.objects.filter(
                 github_id=self.pull.author_github_id,
@@ -85,7 +92,12 @@ class PullRequestCheck:
             ).values_list("version_id", flat=True)
         )
         return [
-            AgreementState(a, a.version_id in signed, a.mandatory or a.pk in selected)
+            AgreementState(
+                a,
+                a.version_id in signed,
+                a.mandatory or a.pk in selected,
+                free=not a.mandatory and a.pk not in listed,
+            )
             for a in agreements
         ]
 
@@ -98,13 +110,16 @@ class PullRequestCheck:
 
         Returns:
             The wanted and unwanted labels for agreements required on this PR: the labels of
-            signed agreements, and the unsigned labels of agreements not signed yet.
+            signed agreements, and the unsigned labels of agreements not signed yet. An
+            optional agreement that no choice lists adds its labels when it is signed.
         """
         wanted, unwanted = set(), set()
         for state in states:
             if state.required:
                 (wanted if state.signed else unwanted).update(state.agreement.labels)
                 (unwanted if state.signed else wanted).update(state.agreement.unsigned_labels)
+            elif state.free and state.signed:
+                wanted.update(state.agreement.labels)
         unsigned = {
             label
             for state in states
@@ -129,6 +144,8 @@ class PullRequestCheck:
         for state in states:
             name = state.agreement.name
             if label in state.agreement.labels:
+                if state.free:
+                    return f"{name} is signed" if state.signed else f"{name} is not signed"
                 if not state.required:
                     return f"{name} is not required for this choice"
                 return f"{name} is signed" if state.signed else f"{name} is not signed"
@@ -143,8 +160,10 @@ class PullRequestCheck:
     def run(self) -> list[AgreementState]:
         """Freeze an initial default, update GitHub and persist the current result."""
         pull = self.pull
-        if not pull.choice_initialized:
-            pull.choice = self.choice()
+        if not pull.choice_initialized and (initial := self.choice()) is not None:
+            # frozen once there is a choice: a project that adds choices later gives its
+            # default to the pull requests checked before
+            pull.choice = initial
             pull.choice_initialized = True
             pull.save(update_fields=["choice", "choice_initialized"])
         choice = self.choice()

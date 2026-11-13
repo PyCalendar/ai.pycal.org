@@ -543,4 +543,9 @@
       example file docs/_static/agreements.yml, which explains every field in comments; the
       example repository uses the same file.
 - [x] The documentation links to https://sign.pycal.org/ next to the GitHub icon.
-- [ ] Use the JSON to check why ai-policy-accepted is missing on PyCalendar/sign.pycal.org-example#2.
+- [x] Why ai-policy-accepted was missing on PyCalendar/sign.pycal.org-example#2: an optional
+      agreement that no choice lists never added its labels, even when signed, and an update did
+      not change that. Now it does when signed.
+- [x] A pull request first checked before the project offered choices froze "no choice"; now the
+      default applies when choices are added (migration 0021 unfreezes the existing ones). Tests.
+- [ ] Check #2 with the JSON after the deploy.

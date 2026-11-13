@@ -74,7 +74,7 @@ GitHub check names and the contributor JSON and badge endpoints.
    A YAML boolean, default ``true``. Mandatory agreements apply to every PR.
    Agreements with ``mandatory: false`` apply when a selected choice lists them.
    Other optional agreements can be read and signed independently without
-   blocking a PR.
+   blocking a PR; once signed, they add their ``pr.labels``.
 
 ``sign-min-seconds``
    Optional, since version ``2.2.0``. The time in seconds between opening the
@@ -87,7 +87,9 @@ GitHub check names and the contributor JSON and badge endpoints.
 ``pr.labels``
    Optional label or list of labels, each nonempty and at most 50 characters.
    Omit ``pr`` or use ``labels: []`` if the agreement grants no labels. An
-   agreement's labels apply when it is required on the PR and signed. Shared
+   agreement's labels apply when it is required on the PR and signed. An optional
+   agreement that no choice lists adds its labels when it is signed, such as
+   ``ai-policy-accepted`` of the example. Shared
    labels require all applicable agreements that grant them to be signed.
 
 ``pr.unsigned-labels``
@@ -125,7 +127,8 @@ Choices
 
 A contributor can set their own default for a project. It takes precedence
 over the project's default when a **new PR is first recorded**. The choice
-is then saved on that PR. Changing either default leaves existing PRs alone.
+is then saved on that PR. A PR recorded while the project offered no choice
+gets the default when the project adds choices. Changing either default leaves existing PRs alone.
 The contributor page lists existing PRs so the author can change each one.
 Only the PR author may change its choice. Changing a choice never signs an
 agreement, and previous signatures remain recorded for the agreement.
